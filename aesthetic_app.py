@@ -8,6 +8,9 @@ import os
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 
+# Configuración de CORS 
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
