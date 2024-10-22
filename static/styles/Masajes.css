@@ -222,21 +222,23 @@ a:hover {
 /* calificacion */
 
 .rating {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: flex-start;
+	gap: 5px;
 }
 
-.star{
-    font-size: 21px;
-    color: grey;
-    transition: color 0.3s;
-    cursor: pointer;
+.star {
+	font-size: 21px;
+	color: grey;
+	transition: color 0.3s;
+	cursor: pointer;
 }
 
 .star:hover,
 .star.checked {
-    color: gold;
+	color: gold;
 }
+
 
 /* COMPARTIR */
 
