@@ -81,6 +81,10 @@
                 <input type="text" id="search-input" placeholder="Buscar..." oninput="showSuggestions(this.value)" onkeydown="searchService(event)" autocomplete="off" />
                 <div id="suggestions" class="suggestions-list"></div>
             </div>
+            <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
+                <i class="fa-solid fa-share"></i> Compartir
+            </button>
+            
             {% endif %}
             <button class="cart-button" onclick="window.location.href='{{ url_for('carrito') }}'">🛒</button>
             {% if user_name %}
@@ -98,7 +102,7 @@
     </header>
 
     <div class="contenedor-imagen">
-        <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC AAAAAAA</h1>
+        <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
         <img src="../static/media/Imagenes Pag. Principal/ImagenPrincipal.png"/>
     </div>
 
@@ -154,21 +158,8 @@
             </div>
         </div>
     </div>
-
-
-
-
-
     <div class="container">
         <div class="content">
-            <h3>Nuestro Compromiso</h2>
-            <p>Calidad y Profesionalismo</p>
-            <p>Higiene y Seguridad</p>
-            <p>Atención Personalizada</p>
-            <h3>Nuestro Compromiso</h2>
-            <p>Calidad y Profesionalismo</p>
-            <p>Higiene y Seguridad</p>
-            <p>Atención Personalizada</p>
             <h3>Nuestro Compromiso</h2>
             <p>Calidad y Profesionalismo</p>
             <p>Higiene y Seguridad</p>
