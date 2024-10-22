@@ -150,6 +150,49 @@ a:hover {
 	font-size: 18px;
 }
 
+@media screen and (width >= 601px) and (width <= 927px){
+	body{
+		background-color: #FFE8ED;
+	}
+	  
+	.container {
+		display: block;
+		flex: 0;
+	}
+
+	.left-panel, .right-panel {
+		background-color: #FFE8ED;
+		display: block;
+		align-items: center;
+	}
+
+	.left-panel img, p{
+		display: none;
+	}
+
+	.informacion h1{
+        margin: 0;
+		padding: 0;
+		left: 10px;
+	}
+
+	.informacion{
+		margin-top: 0;
+		padding: 0;
+	}
+
+	.left-panel img{
+		padding: 0px 30px;
+		margin: -35px;
+		width: 170px;
+	}
+	
+	
+
+
+
+}
+
 /* ********************************** */
 /*         LISTA DE FAVORITOS         */
 /* ********************************** */
