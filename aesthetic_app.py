@@ -7,7 +7,6 @@ import random
 import os
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
-from models.calificacion import Calificacion
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -59,24 +58,6 @@ class Servicio(db.Model):
     categoria = db.Column(db.String, nullable=False)
     descripcion = db.Column(db.String, nullable=True)
     precio = db.Column(db.Float, nullable=False)
-
-@app.route('/calificar_servicio/<int:servicio_id>', methods=['POST'])
-def calificar_servicio(servicio_id):
-    data = request.get_json()
-    calificacion = data.get('calificacion')
-
-    if calificacion:
-        nueva_calificacion = Calificacion(
-            servicio_id=servicio_id,
-            usuario_id=session['user_id'],
-            calificacion=calificacion
-        )
-        db.session.add(nueva_calificacion)
-        db.session.commit()
-        return jsonify(success=True), 200
-    else:
-        return jsonify(success=False, message="Calificación no proporcionada"), 400
-
 
 @app.before_request
 def add_user_to_template():
