@@ -8,6 +8,7 @@ import os
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
+import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -137,12 +138,23 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
-            
+            # Validar que el nombre y apellido solo contengan letras
+            if not nombre.isalpha() or not apellido.isalpha():
+                return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
+
+            # Validar que el correo sea de Gmail
+            if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
+                return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
+
             if not validators.email(email):
                 return jsonify(success=False, message='El formato del correo es inválido.')
 
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
+
+            password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
+            if not re.match(password_regex, password):
+                return jsonify(success=False, message='La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
@@ -164,6 +176,7 @@ def register():
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
+
 
 
 @app.route('/register_success')
