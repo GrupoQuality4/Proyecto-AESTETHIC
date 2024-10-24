@@ -1,4 +1,4 @@
-from . import db
+from aesthetic_app import db
 
 class VerificationToken(db.Model):
     __tablename__ = 'verification_token'

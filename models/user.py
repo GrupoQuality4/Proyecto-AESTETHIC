@@ -1,4 +1,4 @@
-from . import db
+from aesthetic_app import db
 
 class User(db.Model):
     __tablename__ = 'user'

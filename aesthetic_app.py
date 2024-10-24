@@ -7,7 +7,8 @@ import random
 import os
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
-from models.calificacion import Calificacion
+import validators
+import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -59,24 +60,6 @@ class Servicio(db.Model):
     categoria = db.Column(db.String, nullable=False)
     descripcion = db.Column(db.String, nullable=True)
     precio = db.Column(db.Float, nullable=False)
-
-@app.route('/calificar_servicio/<int:servicio_id>', methods=['POST'])
-def calificar_servicio(servicio_id):
-    data = request.get_json()
-    calificacion = data.get('calificacion')
-
-    if calificacion:
-        nueva_calificacion = Calificacion(
-            servicio_id=servicio_id,
-            usuario_id=session['user_id'],
-            calificacion=calificacion
-        )
-        db.session.add(nueva_calificacion)
-        db.session.commit()
-        return jsonify(success=True), 200
-    else:
-        return jsonify(success=False, message="Calificación no proporcionada"), 400
-
 
 @app.before_request
 def add_user_to_template():
@@ -155,23 +138,35 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
-            # Verificar si el email ya está registrado
+            # Validar que el nombre y apellido solo contengan letras
+            if not nombre.isalpha() or not apellido.isalpha():
+                return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
+
+            # Validar que el correo sea de Gmail
+            if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
+                return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
+
+            if not validators.email(email):
+                return jsonify(success=False, message='El formato del correo es inválido.')
+
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
+
+            password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
+            if not re.match(password_regex, password):
+                return jsonify(success=False, message='La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
 
-            # Generar y almacenar el token de verificación
             token = generate_confirmation_token(new_user.email)
             expires_at = datetime.utcnow() + timedelta(hours=48)
             verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
             db.session.add(verification_token)
             db.session.commit()
 
-            # Enviar el correo de confirmación
             confirm_url = url_for('confirm_email', token=token, _external=True)
             html = render_template('activate.html', confirm_url=confirm_url)
             subject = "Por favor confirma tu correo"
@@ -182,6 +177,8 @@ def register():
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
 
+
+
 @app.route('/register_success')
 def register_success():
     return render_template('register_success.html')
@@ -191,8 +188,14 @@ def confirm_email(token):
     verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
 
     if verification_token.expires_at < datetime.utcnow():
-        flash('El enlace de confirmación ha expirado.', 'danger')
-        return redirect(url_for('home'))
+        user = verification_token.user
+        db.session.delete(verification_token)
+        db.session.delete(user)
+        db.session.commit()
+
+        flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
+        return redirect(url_for('register')) 
+
 
     user = verification_token.user
     db.session.delete(verification_token)
@@ -200,7 +203,6 @@ def confirm_email(token):
 
     flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
     return redirect(url_for('login'))
-
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
     if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
