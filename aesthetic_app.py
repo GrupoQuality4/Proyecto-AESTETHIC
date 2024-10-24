@@ -32,35 +32,6 @@ roles_users = db.Table('roles_users',
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 )
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(150), nullable=False)
-    apellido = db.Column(db.String(150), nullable=False)
-    email = db.Column(db.String(150), nullable=False, unique=True)
-    password = db.Column(db.String(256), nullable=False)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-
-class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    permissions = db.Column(db.String(200), nullable=True)
-
-class VerificationToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(256), nullable=False, unique=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    expires_at = db.Column(db.DateTime, nullable=False)
-    user = db.relationship('User', backref=db.backref('verification_tokens', lazy=True))
-    
-class Servicio(db.Model):
-    __tablename__ = 'servicio'
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String, nullable=False)
-    categoria = db.Column(db.String, nullable=False)
-    descripcion = db.Column(db.String, nullable=True)
-    precio = db.Column(db.Float, nullable=False)
-
 @app.before_request
 def add_user_to_template():
     g.user_name = session.get('user_name', None)
