@@ -7,6 +7,7 @@ import random
 import os
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
+import validators
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -136,7 +137,10 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
-            # Verificar si el email ya está registrado
+            
+            if not validators.email(email):
+                return jsonify(success=False, message='El formato del correo es inválido.')
+
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
 
@@ -145,14 +149,12 @@ def register():
             db.session.add(new_user)
             db.session.commit()
 
-            # Generar y almacenar el token de verificación
             token = generate_confirmation_token(new_user.email)
             expires_at = datetime.utcnow() + timedelta(hours=48)
             verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
             db.session.add(verification_token)
             db.session.commit()
 
-            # Enviar el correo de confirmación
             confirm_url = url_for('confirm_email', token=token, _external=True)
             html = render_template('activate.html', confirm_url=confirm_url)
             subject = "Por favor confirma tu correo"
@@ -163,6 +165,7 @@ def register():
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
 
+
 @app.route('/register_success')
 def register_success():
     return render_template('register_success.html')
@@ -172,8 +175,14 @@ def confirm_email(token):
     verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
 
     if verification_token.expires_at < datetime.utcnow():
-        flash('El enlace de confirmación ha expirado.', 'danger')
-        return redirect(url_for('home'))
+        user = verification_token.user
+        db.session.delete(verification_token)
+        db.session.delete(user)
+        db.session.commit()
+
+        flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
+        return redirect(url_for('register')) 
+
 
     user = verification_token.user
     db.session.delete(verification_token)
@@ -181,7 +190,6 @@ def confirm_email(token):
 
     flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
     return redirect(url_for('login'))
-
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
     if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
