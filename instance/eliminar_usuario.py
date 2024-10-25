@@ -1,6 +1,6 @@
 import sqlite3
 
-db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\PROYECTO-AESTHETIC\\instance\\Aestethic.db'
+db_path = 'C:\Users\CMVargas\Desktop\Proyecto-AESTETHIC\instance\eliminar_usuario.py'
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 

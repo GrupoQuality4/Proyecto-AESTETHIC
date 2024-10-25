@@ -32,40 +32,22 @@
             <img src="../static/media/Imagenes Pag. Principal/contactos.png"
                 alt="contact-info" />
         </div>
-        <div class="menu-header">
-            {% if user_name %}
-            <button id="button-header-favorite">
-                <i class="fa-solid fa-heart"></i>
-                <span class="counter-favorite">0</span>
-            </button>
-            <!--<button>
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="counter-cart">0</span>
-            </button>-->
-            {% endif %}
-        </div>
-        <div class="container-list-favorites">
-            <div class="header-favorite">
-                <h3>Mis Favoritos</h3>
-                <i class="fa-solid fa-xmark" id="btn-close"></i>
-            </div>
-            <hr />
-            <div class="list-favorites">
-                <div class="card-favorite">
-                    <p class="title"></p>
-                    <p></p>
-                </div>
-            </div>
-        </div>
     </div>
     <header>
-        <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="mostrar-menu">
+            &#8801
+        </label>
+        <nav class="menu">
             <a href="{{ url_for('home') }}">Inicio</a>
             <a href="{{ url_for('servicios') }}">Servicios</a>
             <a href="{{ url_for('gif_card') }}">Gift Card</a>
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
             <a href="{{ url_for('calendario') }}">Reserva</a>
+            <label for="check" class="esconder-menu">
+                &#215
+            </label>
         </nav>
         <div class="search-login">
             {% if user_email == 'cristianezequiel915@gmail.com' %}
@@ -99,7 +81,6 @@
 
     <div class="contenedor-imagen">
         <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
-        <img src="../static/media/Imagenes Pag. Principal/ImagenPrincipal.png"/>
     </div>
 
     <div class="swiper mySwiper">
