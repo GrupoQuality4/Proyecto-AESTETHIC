@@ -165,3 +165,21 @@ button:hover {
   .social-icons a {
     margin-left: 10px;
   }
+
+  @media screen and (width <= 927) {
+
+    .login-container{
+        display: block;
+        height: 0;
+    }
+
+    .login-left{
+        width: 0;
+        /*display: block;*/
+        padding: 0;
+    }
+    .login-right{
+        display: block;
+        width: 0;
+    }
+}
