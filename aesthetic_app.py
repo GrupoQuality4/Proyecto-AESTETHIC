@@ -9,6 +9,9 @@ from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
 import re
+from models.role import Role
+from models.user import User
+from models.verification_token import VerificationToken
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
