@@ -43,10 +43,9 @@
                         </p>
                         <div class="footer-card-product">
                             <span class="price">$79.99</span>
-
                             <div class="container-buttons-card">
                                 <button class="favorite">
-                                    <i class="fa-regular fa-heart" id="favorite-regular-5"></i>
+                                    <i class="fa-regular fa-heart"></i>
                                 </button>
                                 <button class="cart">
                                     <i class="fa-solid fa-cart-shopping"></i>
@@ -63,6 +62,9 @@
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
                         </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservar_servicio', servicio_id=1) }}" class="btn-reservar">Reservar</a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-product">
@@ -75,10 +77,9 @@
                             manchas, arrugas y cicatrices, promoviendo la regeneración celular.</p>
                         <div class="footer-card-product">
                             <span class="price">$129.99</span>
-
                             <div class="container-buttons-card">
                                 <button class="favorite">
-                                    <i class="fa-regular fa-heart" id="favorite-regular-6"></i>
+                                    <i class="fa-regular fa-heart"></i>
                                 </button>
                                 <button class="cart">
                                     <i class="fa-solid fa-cart-shopping"></i>
@@ -94,6 +95,9 @@
                                 <i class="bi bi-star-fill star" data-value="4"></i>
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
+                        </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservar_servicio', servicio_id=2) }}" class="btn-reservar">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -127,6 +131,9 @@
                                 <i class="bi bi-star-fill star" data-value="4"></i>
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
+                        </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservar_servicio', servicio_id=2) }}" class="btn-reservar">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -163,11 +170,13 @@
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
                         </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservar_servicio', servicio_id=2) }}" class="btn-reservar">Reservar</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <script src="/static/scripts/Servicios.js"></script>
         <script src="/static/scripts/Favoritos.js"></script>
 </body>

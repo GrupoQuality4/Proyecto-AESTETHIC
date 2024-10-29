@@ -12,7 +12,11 @@ body {
     height: 100vh;
     display: flex;
     justify-content: space-between;
-   
+}
+
+.left-panel, .right-panel {
+    flex: 1;
+    padding: 5px;
 }
 
 .left-panel {
@@ -22,32 +26,20 @@ body {
     align-items: center;
 }
 
-
-.left-panel, .right-panel {
-    flex: 1;
-    padding: 5px;
-}
-
-
 .left-panel h1 {
     color: #6C374D;
     font-size: 46px;
-    
 }
 
-.informacion{
+.left-panel .informacion {
     position: absolute;
     margin-top: 28%;
     padding: 15px;
-    color: #000000;
+    color: #000;
     text-align: center;
     font-size: 20px;
-}
-
-.left-panel .informacion{
     width: 45%;
 }
-
 
 .left-panel img {
     position: absolute;
@@ -56,7 +48,7 @@ body {
     height: 95%;
     border-radius: 30px;
     object-fit: cover;
-    opacity: .6;
+    opacity: 0.6;
 }
 
 .right-panel {
@@ -68,9 +60,9 @@ body {
     margin-top: 90px;
 }
 
-.right-panel h1{
+.right-panel h1 {
     font-size: 35px;
-    color: #000000;
+    color: #000;
 }
 
 a {
@@ -82,204 +74,223 @@ a:hover {
     text-decoration: underline;
 }
 
-/*         MARCAR FAVORITOS         */
-
+/* Productos */
 .container-products {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	margin: 30px 0;
-	gap: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin: 30px 0;
 }
 
 .card-product {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
 }
 
 .content-card-product {
-	display: flex;
-	flex-direction: column;
-	padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px;
 }
 
 .container-img {
-	height: 210px;
-	border-radius: 12px;
-	overflow: hidden;
+    height: 210px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .container-img img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
+/* Footer Card Product: Precio, Íconos y Estrellas */
 .footer-card-product {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+    padding: 0;
 }
-
 
 .price {
-	font-weight: 700;
-	font-size: 24px;
-	color: #555;
+    font-weight: 700;
+    font-size: 24px;
+    color: #555;
 }
 
+/* Botones en círculo: Favorito, Carrito, Compartir */
 .container-buttons-card {
-	display: flex;
-	gap: 20px;
+    display: flex;
+    gap: 10px;
 }
 
 .container-buttons-card button {
-	border: none;
-	background: none;
-	outline: none;
-	cursor: pointer;
-	box-shadow: 0px 0px 15px #00000025;
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	font-size: 18px;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0px 0px 15px #00000025;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ********************************** */
-/*         LISTA DE FAVORITOS         */
-/* ********************************** */
+/* Lista de Favoritos */
 .container-list-favorites {
-	position: fixed;
-	top: 0;
-	right: 0;
-	transform: translateX(400px);
-	background-color: #555;
-	opacity: 0;
-	width: 400px;
-	height: 100vh;
-	transition: all 0.5s linear;
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: translateX(400px);
+    background-color: #555;
+    opacity: 0;
+    width: 400px;
+    height: 100vh;
+    transition: all 0.5s linear;
 }
 
 .container-list-favorites.show {
-	opacity: 1;
-	transform: translateX(0);
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .header-favorite {
-	padding: 15px 30px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header-favorite i {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .list-favorites {
-	padding: 35px 20px;
-	display: flex;
-	flex-direction: column;
-	gap: 25px;
+    padding: 35px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .list-favorites .card-favorite {
-	width: 100%;
-	background-color: #fff;
-	box-shadow: 0px 0px 20px #00000065;
-	padding: 20px;
-	border-radius: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 30px;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px #00000065;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
 }
 
-.card-favorite .title {
-	color: #000;
-	flex: 1;
+.card-favorite .title,
+.card-favorite p:last-child {
+    color: #000;
 }
 
 .card-favorite p:last-child {
-	font-weight: 700;
-	font-size: 22px;
-	color: #000;
+    font-weight: 700;
+    font-size: 22px;
 }
 
-/* ------------------- */
-
-/* Corazón vacío por defecto */
+/* Corazón vacío y lleno (Favorito) */
 .favorite .fa-heart {
     color: black;
 }
 
-/* Corazón lleno cuando está marcado como favorito */
 .favorite.active .fa-heart {
-    color: pink; /* Cambia a color rosa cuando es favorito */
+    color: pink;
 }
 
-/* calificacion */
-
+/* Calificación con estrellas */
 .rating {
-	display: flex;
-	justify-content: flex-start;
-	gap: 5px;
+    display: flex;
+    gap: 5px;
 }
 
 .star {
-	font-size: 21px;
-	color: grey;
-	transition: color 0.3s;
-	cursor: pointer;
+    font-size: 21px;
+    color: grey;
+    transition: color 0.3s;
+    cursor: pointer;
 }
 
 .star:hover,
 .star.checked {
-	color: gold;
+    color: gold;
 }
 
-
-/* COMPARTIR */
-
+/* Compartir: Modal */
 .modal {
-	display: block;
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0,0,0,0.5);
-	z-index: 1000;
-  }
-  
-  .modal-content {
-	background-color: white;
-	margin: 10% auto;
-	padding: 20px;
-	width: 80%;
-	max-width: 400px;
-	border-radius: 10px;
-	text-align: center;
-  }
-  
-  .share-buttons a {
-	display: block;
-	margin: 10px 0;
-	text-decoration: none;
-	font-size: 18px;
-  }
-  
-  button {
-	background-color: #ffe8ed;
-	color: black;
-	padding: 10px;
-	border: none;
-	cursor: pointer;
-	border-radius: 5px;
-  }
-  
-  button:hover {
-	background-color: rosybrown;
-  }
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.share-buttons a {
+    display: block;
+    margin: 10px 0;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* Botón general */
+button,
+.btn-reservar {
+    background-color: #ffe8ed;
+    color: black;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover,
+.btn-reservar:hover {
+    background-color: rosybrown;
+}
+
+/* Botón "Reservar" en su propia línea */
+.button-reserve-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-reservar {
+    display: inline-block;
+    color: #4b1e29;
+    padding: 10px 20px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
