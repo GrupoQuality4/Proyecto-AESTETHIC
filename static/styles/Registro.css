@@ -184,6 +184,28 @@ a:hover {
     background: #b06a77;
 }
 
-@media screen and (width <=927) {
-    
+@media screen and (width <=627px) {
+    .container{
+        
+        display: block;
+        
+    }
+    .left-panel{
+        padding: 0;
+        flex-direction: row;
+        background-color: #fff;
+    }
+    .left-panel img{
+        margin: 0;
+        width: 110px;
+    }
+
+    .left-panel h1{
+        display: none;
+        font-size: 2em;
+        margin: 15px;
+    }
+    .right-panel{
+        padding: 0;
+    }
 }
