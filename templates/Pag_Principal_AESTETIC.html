@@ -44,7 +44,7 @@
             <a href="{{ url_for('gif_card') }}">Gift Card</a>
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
-            <a href="{{ url_for('calendario') }}">Reserva</a>
+            <a href="{{ url_for('reservas') }}">Reserva</a>
             <label for="check" class="esconder-menu">
                 &#215
             </label>
@@ -83,9 +83,10 @@
         </div>
     </header>
 
-    <div class="contenedor-imagen">
-        <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
-        <img src="../static/media/Imagenes Pag. Principal/ImagenPrincipal.png"/>
+    <div id="contenedor-imagen">
+        <div class="presentacion">
+            <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
+        </div>
     </div>
 
     <div class="swiper mySwiper">
