@@ -1,4 +1,3 @@
-// Variables para el primer calendario
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
@@ -86,7 +85,6 @@ function formatDate(date) {
 renderCalendar();
 updateSelectedDates();
 
-// Variables y funciones para el segundo calendario
 let currentMonth2 = currentDate.getMonth();
 let currentYear2 = currentDate.getFullYear();
 
@@ -123,6 +121,4 @@ function renderSecondCalendar() {
 
     calendarBody2.innerHTML = days;
 }
-
-// Inicializa el segundo calendario
 renderSecondCalendar();
