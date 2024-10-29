@@ -68,12 +68,12 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 90%;
 }
 
 label {
     color: #000000;
     margin-bottom: 5px;
-    align-self: flex-start;
     margin: 10px 220px;
 }
 
@@ -95,8 +95,7 @@ input[type="password"] {
     text-decoration: none;
     font-size: 0.9em;
     margin-bottom: 20px;
-    align-self: flex-start;
-    margin: 10px 350px;
+    margin: 10px 150px;
 }
 
 .remember-me {
@@ -104,8 +103,7 @@ input[type="password"] {
     color: #6a2e39;
     font-size: 1em;
     margin-bottom: 20px;
-    align-self: flex-start;
-    margin: 10px 350px;
+    margin: 10px 150px;
 }
 
 button {
@@ -146,6 +144,8 @@ button:hover {
     border: 1px solid #f5c6cb;
 }
 
+
+
 .footer {
     background-color: #d08590;
     padding: 5px 10px;
@@ -165,3 +165,44 @@ button:hover {
   .social-icons a {
     margin-left: 10px;
   }
+
+  @media (width <= 927px) {
+    .login-container{
+        display: block;
+        height: auto;
+    }
+
+    .login-left{
+        flex-direction: row-reverse;
+        width: 100%;
+        padding: 0;
+
+    }
+    .login-left h2 {
+        margin: 20px;
+        font-size: 3em;
+    }
+    .login-right h3{
+        display: none;
+    }
+    .login-left img {
+        max-width: 12em;
+        margin-top: 0;
+    }
+
+    .login-right{
+        width: 100%;
+        padding: 0;
+    }
+
+    /**/
+    .social-icons {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 20px;
+    }
+    .social-icons img {
+        width: 50px;
+        height: auto;
+    }
+}

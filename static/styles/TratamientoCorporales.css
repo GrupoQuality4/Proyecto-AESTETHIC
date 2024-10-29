@@ -20,6 +20,7 @@ body {
     display: block;
     flex-direction: column;
     align-items: center;
+	height: 150%;
 }
 
 
@@ -37,7 +38,7 @@ body {
 
 .informacion{
     position: absolute;
-    margin-top: 27%;
+    margin-top: 20%;
     padding: 34px;
     color: #000000;
     text-align: center;
@@ -52,8 +53,8 @@ body {
 .left-panel img {
     position: absolute;
     display: block;
-    width: 49%;
-    height: 95%;
+    width: 40em;
+    height: 120%;
     border-radius: 30px;
     object-fit: cover;
     opacity: .6;
@@ -61,11 +62,11 @@ body {
 
 .right-panel {
     background-color: #fff;
-    display: flex;
+    display: grid;
     flex-direction: column;
+	margin-top: -10px;
     justify-content: center;
     align-items: center;
-    margin-top: 90px;
 }
 
 .right-panel h1{
@@ -148,6 +149,132 @@ a:hover {
 	height: 40px;
 	border-radius: 50%;
 	font-size: 18px;
+}
+
+@media screen and (width >= 760px) and (width <= 927px){
+	body{
+		background-color: #FFE8ED;
+	}
+	  
+	.container {
+		display: block;
+		flex: 1;
+	}
+
+	.container-products{
+		margin: 0;
+		gap: 35px 50px;
+	}
+
+	.left-panel, .right-panel {
+		background-color: #FFE8ED;
+		display: block;
+		align-items: center;
+	}
+
+	.left-panel {
+		background-color: #f5d9e0;
+		display: block;
+		flex-direction: column;
+		align-items: center;
+		height: 60%;
+	}
+
+	.left-panel img{
+		width: 100%;
+		height: 60%;
+	}
+
+	.informacion{
+		position: absolute;
+		margin-top: 10%;
+		padding: 34px;
+		color: #000000;
+		text-align: center;
+		font-size: 22px;
+	}
+	
+	.left-panel .informacion{
+		width: 90%;
+	}
+
+	.informacion h1{
+        margin: -50px;
+		padding: 0;
+		position: absolute;
+		left: 25%;
+		font-size: 1.8em;
+		white-space: nowrap;
+	}
+}
+
+@media screen and (width <= 760px){
+	body{
+		background-color: #FFE8ED;
+	}
+	  
+	.container {
+		display: block;
+		flex: 1;
+	}
+
+	.container-products{
+		margin: 0;
+		gap: 35px 50px;
+	}
+
+	.left-panel, .right-panel {
+		background-color: #FFE8ED;
+		display: block;
+		align-items: center;
+	}
+
+	.left-panel {
+		background-color: #f5d9e0;
+		display: block;
+		flex-direction: column;
+		align-items: center;
+		height: 60%;
+	}
+
+	.left-panel img{
+		width: 100%;
+		height: 60%;
+	}
+
+	.informacion{
+		position: absolute;
+		margin-top: 10%;
+		padding: 34px;
+		color: #000000;
+		text-align: center;
+		font-size: 22px;
+	}
+	
+	.left-panel .informacion{
+		width: 90%;
+	}
+
+	.informacion h1{
+        margin: -50px;
+		padding: 0;
+		position: absolute;
+		left: 20%;
+		font-size: 1.8em;
+		white-space: nowrap;
+	}
+
+	.container-products{
+		display: block;
+	}
+	.card-product {
+		display: flex;
+		flex-direction: column;
+		gap: -0px;
+		cursor: pointer;
+		margin: 5px;
+		padding: 25px;
+	}
 }
 
 /* ********************************** */
