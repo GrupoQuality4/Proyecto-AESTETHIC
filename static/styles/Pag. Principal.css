@@ -82,6 +82,10 @@ header {
   font-size: 20px;
 }
 
+.mostrar-menu{
+  order: 1;
+}
+
 .mostrar-menu,
 .esconder-menu{
   font-size: 30px;
@@ -266,6 +270,7 @@ p {
 h2{
   font-size: 30px;
   text-align: center;
+  margin: 19px;
 }
 
 
@@ -311,11 +316,13 @@ h2{
   }
 
   .columna{
+    padding: 0;
     border-bottom: 1px solid #ccc;
   }
   .columna ul {
     margin: 20px 110px;
     font-size: 20px;
+    text-align: center;
 }
 }
 
@@ -432,7 +439,7 @@ button:hover {
 h2 {
   text-align: center;
   font-size: 1.5em;
-  margin: 0;
+  margin: 19px;
   color: #5a2a34;
 }
 
@@ -545,6 +552,9 @@ form textarea{
     padding: 0;
     margin: 0;
   }
+  #contacto{
+    display: block;
+  }
 
 }
 
@@ -559,10 +569,4 @@ form textarea{
     display: none;
   }
 }
-
-  */
-
-
-
-
 
