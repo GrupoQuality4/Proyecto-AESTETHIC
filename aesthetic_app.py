@@ -112,11 +112,14 @@ def login():
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
             flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('home'))
+            next_url = request.args.get('next')
+            return redirect(next_url or url_for('home'))
         else:
             flash('Correo o contraseña incorrectos', 'danger')
 
-    return render_template('Login.html')
+    mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
+    return render_template('Login.html', mensaje_login=mensaje_login)
+
 
 @app.route('/logout')
 def logout():
@@ -138,11 +141,9 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
-            # Validar que el nombre y apellido solo contengan letras
             if not nombre.isalpha() or not apellido.isalpha():
                 return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
 
-            # Validar que el correo sea de Gmail
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
 
@@ -176,8 +177,6 @@ def register():
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
-
-
 
 @app.route('/register_success')
 def register_success():
@@ -307,9 +306,16 @@ def gif_card():
 def contactos():
     return render_template('Contactos.html')
 
-@app.route('/calendario')
-def calendario():
-    return render_template('Calendario.html')
+@app.route('/reservas')
+def reservas():
+    return render_template('Reservas.html')
+
+@app.route('/servicio/<int:servicio_id>/reservar')
+def reservar_servicio(servicio_id):
+    if 'user_id' not in session:
+        flash("Debes iniciar sesión para hacer una reserva.", "warning")
+        return redirect(url_for('login', next=url_for('reservas')))
+    return redirect(url_for('reservas'))
 
 @app.route('/carrito')
 def carrito():

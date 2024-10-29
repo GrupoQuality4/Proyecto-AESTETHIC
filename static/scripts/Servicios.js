@@ -1,67 +1,32 @@
 document.querySelectorAll('.card-product').forEach(function(productCard) {
   let selectedRating = 0;
   const stars = productCard.querySelectorAll('.star');
-  const submitButton = productCard.querySelector('.submit-rating');
-  const ratingValueDisplay = document.createElement('span');
-  ratingValueDisplay.classList.add('rating-value');
-  ratingValueDisplay.textContent = '0/5';
-  submitButton.insertAdjacentElement('beforebegin', ratingValueDisplay);
 
   stars.forEach(function(star) {
-    star.addEventListener('mouseover', function() {
-      const rating = parseFloat(star.getAttribute('data-value'));
-      highlightStars(rating, stars);
-    });
-
-    star.addEventListener('click', function() {
-      selectedRating = parseFloat(star.getAttribute('data-value'));
-      ratingValueDisplay.textContent = `${selectedRating}/5`;
-      highlightStars(selectedRating, stars);
-    });
-
-    star.addEventListener('mouseleave', function() {
-      highlightStars(selectedRating, stars);
-    });
-  });
-
-  submitButton.addEventListener('click', function() {
-    if (selectedRating > 0) {
-      fetch('/submit_rating', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          rating: selectedRating,
-          servicio_id: productCard.getAttribute('data-product-id')
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('¡Gracias por tu calificación!');
-        } else {
-          alert('Error al enviar la calificación');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar la calificación');
+      star.addEventListener('mouseover', function() {
+          const rating = parseFloat(star.getAttribute('data-value'));
+          highlightStars(rating, stars);
       });
-    } else {
-      alert('Por favor selecciona una calificación');
-    }
+
+      star.addEventListener('click', function() {
+          selectedRating = parseFloat(star.getAttribute('data-value'));
+          highlightStars(selectedRating, stars);
+      });
+
+      star.addEventListener('mouseleave', function() {
+          highlightStars(selectedRating, stars);
+      });
   });
 
   function highlightStars(rating, stars) {
-    stars.forEach(function(star) {
-      const starValue = parseFloat(star.getAttribute('data-value'));
-      if (starValue <= rating) {
-        star.classList.add('checked');
-      } else {
-        star.classList.remove('checked');
-      }
-    });
+      stars.forEach(function(star) {
+          const starValue = parseFloat(star.getAttribute('data-value'));
+          if (starValue <= rating) {
+              star.classList.add('checked');
+          } else {
+              star.classList.remove('checked');
+          }
+      });
   }
 });
 document.querySelectorAll('.card-product').forEach(function(productCard) {
