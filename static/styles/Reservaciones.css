@@ -151,4 +151,37 @@ body {
     color: #a05252;
 }
 
+.flatpickr-day {
+    border-radius: 50%;
+}
+
+.flatpickr-day.disponible {
+    background-color: green !important;
+    color: white !important;
+}
+
+.flatpickr-day.ocupado {
+    background-color: red !important;
+    color: white !important;
+}
+
+#calendario-turnos .turno-disponible {
+    padding: 8px;
+    background-color: #7dc242;
+    color: white;
+    margin-bottom: 5px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#calendario-turnos .turno-ocupado {
+    padding: 8px;
+    background-color: #d9534f;
+    color: white;
+    margin-bottom: 5px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+
 
