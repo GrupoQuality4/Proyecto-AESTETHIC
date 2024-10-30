@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva - Aesthetic Estética Integral</title>
     <link rel="stylesheet" href="../static/styles/Reservaciones.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="container">
@@ -13,65 +14,177 @@
             <img src="../static/media/Imagenes Pag. Reservaciones/logo_encabezado.png" alt="Logo Aesthetic" class="logo">
         </div>
         <div class="right-panel">
+            <div class="services-gallery">
+                <h3>Servicios Disponibles</h3>
+                <div class="service-row">
+                    <div class="service-card">
+                        <h4>Exfoliación Corporal</h4>
+                        <p>Lunes: 09:00 - 10:00, 14:00 - 15:00, 17:00 - 18:00</p>
+                        <p>Miércoles: 09:00 - 10:00, 17:00 - 18:00, 20:00 - 21:00</p>
+                        <p><strong>$79.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Envoltura de Algas o Barro</h4>
+                        <p>Martes: 09:00 - 10:00, 14:00 - 15:00</p>
+                        <p>Miércoles: 18:00 - 19:00</p>
+                        <p><strong>$129.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Masaje Reafirmante</h4>
+                        <p>Lunes: 10:00 - 11:00, 15:00 - 16:00</p>
+                        <p>Jueves: 13:00 - 14:00, 18:00 - 19:00</p>
+                        <p><strong>$199.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Tratamiento de Drenaje Linfático</h4>
+                        <p>Martes: 15:00 - 16:00</p>
+                        <p>Viernes: 14:00 - 15:00</p>
+                        <p><strong>$49.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Microdermoabrasión</h4>
+                        <p>Lunes: 15:00 - 16:00</p>
+                        <p>Miércoles: 10:00 - 11:00</p>
+                        <p><strong>$199.99</strong></p>
+                    </div>
+                </div>
+                <div class="service-row">
+                    <div class="service-card">
+                        <h4>Limpieza Facial Profunda</h4>
+                        <p>Lunes: 10:00 - 11:00</p>
+                        <p>Martes: 18:00 - 19:00</p>
+                        <p><strong>$79.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Peeling Químico</h4>
+                        <p>Martes: 10:00 - 11:00, 17:00 - 18:00</p>
+                        <p>Miércoles: 14:00 - 15:00</p>
+                        <p><strong>$129.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Depilación Láser</h4>
+                        <p>Martes: 11:00 - 12:00, 19:00 - 20:00</p>
+                        <p>Viernes: 19:00 - 20:00</p>
+                        <p><strong>$199.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Masaje Relajante con Aromaterapia</h4>
+                        <p>Lunes: 12:00 - 13:00</p>
+                        <p>Jueves: 16:00 - 17:00</p>
+                        <p><strong>$79.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Reflexología</h4>
+                        <p>Miércoles: 17:00 - 18:00</p>
+                        <p>Jueves: 12:00 - 13:00</p>
+                        <p><strong>$49.99</strong></p>
+                    </div>
+                </div>
+            </div>
             <form class="reservation-form">
                 <label for="nombre">Nombre del cliente</label>
                 <input type="text" id="nombre" placeholder="Nombre del cliente">
 
-                <label for="fecha">Fecha de reserva</label>
+                <label for="servicio">Servicio al que asistirá</label>
+                <select id="servicio" onchange="mostrarOpcionesSubservicio()">
+                    <option value="">Selecciona un servicio</option>
+                    <option value="corporal">Tratamiento Corporal</option>
+                    <option value="facial">Tratamiento Facial</option>
+                    <option value="depilacion">Depilación</option>
+                    <option value="manos">Spa de Manos</option>
+                    <option value="masaje">Masaje</option>
+                </select>
+
+                <div id="subservicio-corporal" style="display: none;">
+                    <label for="subservicio-corporal-select">Seleccione el tipo de tratamiento corporal</label>
+                    <select id="subservicio-corporal-select" onchange="configurarCalendario()">
+                        <option>Exfoliación corporal</option>
+                        <option>Envoltura de algas o barro</option>
+                        <option>Masaje reafirmante</option>
+                        <option>Tratamiento de drenaje linfático</option>
+                    </select>
+                </div>
+
+                <div id="subservicio-facial" style="display: none;">
+                    <label for="subservicio-facial-select">Seleccione el tipo de tratamiento facial</label>
+                    <select id="subservicio-facial-select" onchange="configurarCalendario()">
+                        <option>Limpieza facial profunda</option>
+                        <option>Peeling químico</option>
+                        <option>Microdermoabrasión</option>
+                        <option>Tratamiento con ácido hialurónico</option>
+                    </select>
+                </div>
+
+                <div id="subservicio-depilacion" style="display: none;">
+                    <label for="subservicio-depilacion-select">Seleccione el tipo de depilación</label>
+                    <select id="subservicio-depilacion-select" onchange="configurarCalendario()">
+                        <option>Depilación con cera</option>
+                        <option>Depilación con hilo</option>
+                        <option>Depilación láser</option>
+                        <option>Depilación con crema depilatoria</option>
+                    </select>
+                </div>
+
+                <div id="subservicio-manos" style="display: none;">
+                    <label for="subservicio-manos-select">Seleccione el tipo de tratamiento para manos</label>
+                    <select id="subservicio-manos-select" onchange="configurarCalendario()">
+                        <option>Exfoliación e Hidratación Profunda</option>
+                        <option>Masaje Relajante de Manos</option>
+                        <option>Tratamiento de Parafina</option>
+                        <option>Manicura SPA Completa</option>
+                    </select>
+                </div>
+
+                <div id="subservicio-masaje" style="display: none;">
+                    <label for="subservicio-masaje-select">Seleccione el tipo de masaje</label>
+                    <select id="subservicio-masaje-select" onchange="configurarCalendario()">
+                        <option>Masaje Relajante con Aromaterapia</option>
+                        <option>Masaje Descontracturante</option>
+                        <option>Masaje con Piedras Calientes</option>
+                        <option>Masaje de Reflexología</option>
+                    </select>
+                </div>
+
+                <label for="fecha">Fecha de disponibles</label>
                 <input type="date" id="fecha">
+
+                <label for="fecha-reservada">Fecha de reservadas</label>
+                <input type="date" id="fecha-reservada">
 
                 <label for="hora">Hora de reserva</label>
                 <select id="hora">
-                    <option>10:00</option>
-                    <option>11:00</option>
-                    <option>12:00</option>
-                    <option>13:00</option>
-                    <option>17:00</option>
-                    <option>18:00</option>
-                    <option>19:00</option>
-                    <option>20:00</option>
+                    <!-- Horarios se cargarán aquí dinámicamente -->
                 </select>
-
-                <label for="servicio">Servicio al que asistirá</label>
-                <select id="servicio">
-                    <option>Tratamiento Corporal</option>
-                    <option>Tratamiento Facial</option>
-                    <option>Depilacion</option>
-                    <option>Spa de Manos</opction>
-                    <option>Masaje</option>
-                </select>
-
                 <label for="metodo-pago">Método de pago</label>
                 <select id="metodo-pago">
                     <option>Tarjeta</option>
                     <option>Efectivo</option>
                     <option>Transferencia</option>
                 </select>
-
                 <button type="submit" class="submit-button">Confirmar reserva</button>
             </form>
         </div>
     </div>
     <footer class="footer">
         <div class="footer-content">
-            <p>
-                <strong>© 2024 Para Estetica AESTHETIC. Creado por el Equipo 4</strong>
-            </p>
+            <p><strong>© 2024 Para Estetica AESTHETIC. Creado por el Equipo 4</strong></p>
         </div>
         <div class="social-icons">
-            <a href="https://www.facebook.com/profile.php?id=61563739507826" target="_block" class="iconofacebook">
-                <img src="../static/media/Imagenes Pag. Principal/facebook.png"
-                    alt="logofacebook" />
+            <a href="https://www.facebook.com/profile.php?id=61563739507826" target="_blank" class="iconofacebook">
+                <img src="../static/media/Imagenes Pag. Principal/facebook.png" alt="logofacebook" />
             </a>
-            <a href="https://www.instagram.com/aesthetic2024_ok?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_block" class="iconoinstagram">
-                <img src="../static/media/Imagenes Pag. Principal/instagram.png"
-                    alt="logoinstagram" />
+            <a href="https://www.instagram.com/aesthetic2024_ok?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="iconoinstagram">
+                <img src="../static/media/Imagenes Pag. Principal/instagram.png" alt="logoinstagram" />
             </a>
-            <a href="https://www.linkedin.com/in/aesthetic-estetica-163b4b330/" target="_block" class="iconolinkedin">
-                <img src="../static/media/Imagenes Pag. Principal/linkedin.png"
-                    alt="logolinkedin" />
+            <a href="https://www.linkedin.com/in/aesthetic-estetica-163b4b330/" target="_blank" class="iconolinkedin">
+                <img src="../static/media/Imagenes Pag. Principal/linkedin.png" alt="logolinkedin" />
             </a>
         </div>
     </footer>
+    <script src="../static/scripts/Reservacion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 </body>
 </html>
+
+

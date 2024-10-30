@@ -317,6 +317,22 @@ def reservar_servicio(servicio_id):
         return redirect(url_for('login', next=url_for('reservas')))
     return redirect(url_for('reservas'))
 
+@app.route('/buscar_servicios_fecha', methods=['GET'])
+def buscar_servicios_fecha():
+    fecha = request.args.get('fecha')
+    
+    if not fecha:
+        return jsonify({"error": "Fecha no proporcionada"}), 400
+    servicios_disponibles = Servicio.query.filter_by(fecha_disponible=fecha).all()
+
+    servicios = [{
+        "titulo": servicio.titulo,
+        "descripcion": servicio.descripcion,
+        "precio": servicio.precio
+    } for servicio in servicios_disponibles]
+    
+    return jsonify({"servicios": servicios})
+
 @app.route('/carrito')
 def carrito():
     user_name = session.get('user_name', None)
