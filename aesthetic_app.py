@@ -1,20 +1,23 @@
-from flask import Flask, g, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask import g, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_migrate import Migrate
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
+from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import os
+import re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-import re
+from models import db, User, Role, Servicio, VerificationToken, Reserva
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+
+db.init_app(app)
 migrate = Migrate(app, db)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -26,40 +29,6 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
-
-roles_users = db.Table('roles_users',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
-)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(150), nullable=False)
-    apellido = db.Column(db.String(150), nullable=False)
-    email = db.Column(db.String(150), nullable=False, unique=True)
-    password = db.Column(db.String(256), nullable=False)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-
-class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    permissions = db.Column(db.String(200), nullable=True)
-
-class VerificationToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(256), nullable=False, unique=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    expires_at = db.Column(db.DateTime, nullable=False)
-    user = db.relationship('User', backref=db.backref('verification_tokens', lazy=True))
-    
-class Servicio(db.Model):
-    __tablename__ = 'servicio'
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String, nullable=False)
-    categoria = db.Column(db.String, nullable=False)
-    descripcion = db.Column(db.String, nullable=True)
-    precio = db.Column(db.Float, nullable=False)
 
 @app.before_request
 def add_user_to_template():
@@ -118,8 +87,6 @@ def login():
             return redirect(next_url or url_for('home'))
         else:
             flash('Correo o contraseña incorrectos', 'danger')
-    
-    # Mostrar mensaje de advertencia solo si el parámetro `next` es `/reservas`
     if request.args.get('next') == '/reservas':
         mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
 
@@ -197,9 +164,8 @@ def confirm_email(token):
         db.session.commit()
 
         flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
-        return redirect(url_for('register')) 
-
-
+        return redirect(url_for('register'))
+    
     user = verification_token.user
     db.session.delete(verification_token)
     db.session.commit()
@@ -317,6 +283,16 @@ def reservas():
     if 'user_id' not in session:
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
+
+@app.route('/historial_reservas')
+def historial_reservas():
+    if 'user_id' not in session:
+        return redirect(url_for('login', next=url_for('historial_reservas')))
+    
+    user_id = session['user_id']
+    reservas = Reserva.query.filter_by(user_id=user_id).order_by(Reserva.fecha_reserva.desc()).all()
+    
+    return render_template('historial_reservas.html', reservas=reservas)
 
 @app.route('/servicio/<int:servicio_id>/reservar')
 def reservar_servicio(servicio_id):

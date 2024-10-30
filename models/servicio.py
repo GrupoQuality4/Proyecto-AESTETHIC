@@ -1,4 +1,4 @@
-from aesthetic_app import db
+from . import db
 
 class Servicio(db.Model):
     __tablename__ = 'servicio'
