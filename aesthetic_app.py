@@ -36,6 +36,12 @@ def add_user_to_template():
     g.user_apellido = session.get('user_apellido', None)
     g.user_email = session.get('user_email', None)
     g.avatar_color = session.get('avatar_color', None)
+    user_id = session.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            session['user_roles'] = [role.name for role in user.roles]
+
 
 def generate_random_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
@@ -77,6 +83,15 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
+            verification_token = VerificationToken.query.filter_by(user_id=user.id).first()
+
+            if verification_token and verification_token.expires_at < datetime.utcnow():
+                db.session.delete(verification_token)
+                db.session.delete(user)
+                db.session.commit()
+                flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
+                return redirect(url_for('register'))
+
             session['user_id'] = user.id
             session['user_name'] = user.nombre
             session['user_apellido'] = user.apellido
@@ -85,12 +100,13 @@ def login():
             flash('Inicio de sesión exitoso', 'success')
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
-        else:
-            flash('Correo o contraseña incorrectos', 'danger')
+
+        flash('Correo o contraseña incorrectos', 'danger')
     if request.args.get('next') == '/reservas':
         mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
 
     return render_template('Login.html', mensaje_login=mensaje_login)
+
 
 @app.route('/logout')
 def logout():
@@ -118,15 +134,12 @@ def register():
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
 
-            if not validators.email(email):
-                return jsonify(success=False, message='El formato del correo es inválido.')
-
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
 
-            password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
+            password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
-                return jsonify(success=False, message='La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
+                return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
@@ -134,7 +147,7 @@ def register():
             db.session.commit()
 
             token = generate_confirmation_token(new_user.email)
-            expires_at = datetime.utcnow() + timedelta(hours=48)
+            expires_at = datetime.utcnow() + timedelta(hours=24)
             verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
             db.session.add(verification_token)
             db.session.commit()
@@ -148,6 +161,7 @@ def register():
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
+
 
 @app.route('/register_success')
 def register_success():
@@ -172,45 +186,34 @@ def confirm_email(token):
 
     flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
     return redirect(url_for('login'))
+
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
-    if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
+    if 'Administrador' not in session.get('user_roles', []):
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('home'))
-    
-    if request.method == 'POST':
-        role_name = request.form['role_name']
-        permissions = request.form.get('permissions', '')
-        new_role = Role(name=role_name, permissions=permissions)
-        db.session.add(new_role)
-        db.session.commit()
-        flash('Rol agregado exitosamente', 'success')
-    
-    roles = Role.query.all()
-    return render_template('manage_roles.html', roles=roles)
+    return render_template('manage_roles.html')
 
 @app.route('/assign_role', methods=['GET', 'POST'])
 def assign_role():
-    if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
+    if 'Administrador' not in session.get('user_roles', []):
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('home'))
-    
-    if request.method == 'POST':
-        user_email = request.form['user_email']
-        role_id = request.form['role_id']
-        user = User.query.filter_by(email=user_email).first()
-        role = Role.query.get(role_id)
-        
-        if user and role:
-            user.roles.append(role)
-            db.session.commit()
-            flash('Rol asignado exitosamente', 'success')
-        else:
-            flash('Usuario o rol no encontrado', 'danger')
-    
-    users = User.query.all()
-    roles = Role.query.all()
-    return render_template('assign_role.html', users=users, roles=roles)
+    return render_template('assign_role.html')
+
+@app.route('/create_service_category', methods=['GET', 'POST'])
+def create_service_category():
+    if 'Administrador' not in session.get('user_roles', []):
+        flash('No tienes permiso para acceder a esta página', 'danger')
+        return redirect(url_for('home'))
+    return render_template('create_service_category.html')
+
+@app.route('/manage_service_category')
+def manage_service_category():
+    if 'Administrador' not in session.get('user_roles', []):
+        flash('No tienes permiso para acceder a esta página', 'danger')
+        return redirect(url_for('home'))
+    return render_template('manage_service_category.html')
 
 def user_has_permission(user, permission):
     for role in user.roles:
@@ -237,7 +240,6 @@ def buscar_servicios():
         {'nombre': 'Tratamientos Corporales', 'ruta': url_for('tratamientos_corporales')}
     ]
     resultados = [s for s in servicios if query in s['nombre'].lower()]
-    
     return jsonify(resultados)
 
 @app.route('/servicios')
@@ -324,14 +326,6 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
-
-@app.route('/create_service_category', methods=['GET', 'POST'])
-def create_service_category():
-    return render_template('create_service_category.html')
-
-@app.route('/manage_service_category')
-def manage_service_category():
-    return render_template('manage_service_category.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
