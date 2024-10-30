@@ -23,14 +23,6 @@ header {
     margin-left: 95%;
 }
 
-#volver{
-	display: block;		
-}
-#volver i{
-	font-size: 35px;
-	margin: 15px 0px;
-}
-
 .container {
     display: flex;
     flex: 1;
@@ -137,6 +129,10 @@ body > .footer {
 	#buscador{
 		display: none;
 	}
+	#volver{
+		display: none;		
+	}
+	
 }
 
 @media screen and (width <= 600px){
@@ -149,6 +145,10 @@ body > .footer {
 		padding-left: 20%;
 	}
 
+	#volver i{
+		font-size: 35px;
+		margin: 15px 0px;
+	}
 	
 
 	#buscador{
@@ -241,6 +241,11 @@ body > .footer {
 
 	.menu-header{
 		margin-left: 0;
+	}
+
+	#volver i{
+		font-size: 35px;
+		margin: 15px 0px;
 	}
 
 	#buscador{

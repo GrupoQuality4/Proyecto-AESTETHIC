@@ -9,6 +9,18 @@ body {
     height: 100vh;
 }
 
+#atras{
+    position: absolute;
+    top: 0;
+    left: 0px;
+    margin: 10px;
+}
+
+#atras i{
+    font-size: 30px;
+    margin: 0;
+}
+
 .login-left {
     background-color: #FFE8ED;
     width: 50%;

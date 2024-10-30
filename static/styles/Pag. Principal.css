@@ -605,15 +605,12 @@ form textarea{
 @media screen and (width <= 645px) {
   .header{
     padding: 0px 100px;
+    justify-content: flex-start;
   }
   .search-container{
     width: 170px;
   }
-  .cart-button{
-    display: none;
-  }
-  .share-button  {
-    display: none;
-}
+
+
 
 }
