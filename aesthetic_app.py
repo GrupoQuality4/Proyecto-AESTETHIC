@@ -100,6 +100,8 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    mensaje_login = None
+
     if request.method == 'POST':
         email = request.form['usuario']
         password = request.form['contrasena']
@@ -116,10 +118,12 @@ def login():
             return redirect(next_url or url_for('home'))
         else:
             flash('Correo o contraseña incorrectos', 'danger')
+    
+    # Mostrar mensaje de advertencia solo si el parámetro `next` es `/reservas`
+    if request.args.get('next') == '/reservas':
+        mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
 
-    mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
     return render_template('Login.html', mensaje_login=mensaje_login)
-
 
 @app.route('/logout')
 def logout():
@@ -308,7 +312,10 @@ def contactos():
 
 @app.route('/reservas')
 def reservas():
-    return render_template('Reservas.html')
+    if 'user_id' not in session:
+        return redirect(url_for('login', next='/reservas'))
+    return render_template('Reservaciones.html')
+
 
 @app.route('/servicio/<int:servicio_id>/reservar')
 def reservar_servicio(servicio_id):

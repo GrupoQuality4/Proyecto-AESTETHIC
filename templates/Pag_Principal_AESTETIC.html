@@ -32,31 +32,15 @@
             <img src="../static/media/Imagenes Pag. Principal/contactos.png"
                 alt="contact-info" />
         </div>
-        <div class="menu-header">
-            {% if user_name %}
-            <button id="button-header-favorite">
-                <i class="fa-solid fa-heart"></i>
-                <span class="counter-favorite">0</span>
-            </button>
-            <!--<button>
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="counter-cart">0</span>
-            </button>-->
-            {% endif %}
-        </div>
-        <div class="container-list-favorites">
-            <div class="header-favorite">
-                <h3>Mis Favoritos</h3>
-                <i class="fa-solid fa-xmark" id="btn-close"></i>
-            </div>
-            <hr />
-            <div class="list-favorites">
-                <div class="card-favorite">
-                    <p class="title"></p>
-                    <p></p>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
     </div>
     <header>
         <nav>
@@ -84,7 +68,6 @@
             <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
                 <i class="fa-solid fa-share"></i> Compartir
             </button>
-            
             {% endif %}
             <button class="cart-button" onclick="window.location.href='{{ url_for('carrito') }}'">🛒</button>
             {% if user_name %}

@@ -165,3 +165,28 @@ button:hover {
   .social-icons a {
     margin-left: 10px;
   }
+
+  .alert {
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.alert-info {
+    color: #6c374d;
+    background-color: #fff0f3;
+    border-color: #d08590;
+}
+
+.alert-info a {
+    color: #d08590;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.alert-info a:hover {
+    text-decoration: underline;
+}
