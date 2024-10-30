@@ -82,12 +82,11 @@ header {
   font-size: 20px;
 }
 
-.mostrar-menu{
-  order: 1;
-}
+
 
 .mostrar-menu,
 .esconder-menu{
+  margin-left: -35px;
   font-size: 30px;
   cursor: pointer;
   display: none;
@@ -613,5 +612,8 @@ form textarea{
   .cart-button{
     display: none;
   }
+  .share-button  {
+    display: none;
 }
 
+}

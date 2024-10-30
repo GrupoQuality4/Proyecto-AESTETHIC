@@ -16,10 +16,15 @@
 </head>
 <body>
     <header>
-        <div id="buscador">
+        <div id="volver">
+            <a href="{{ url_for('home') }}">
+                <i class="fa-solid fa-arrow-circle-left"></i>
+            </a>
+        </div>
+        <!--<div id="buscador">
             <input type="text" placeholder="Busqueda">
             <i class="fa-solid fa-search"></i>
-          </div>
+          </div>-->
           
         <div class="menu-header">
             {% if g.user_name %}
