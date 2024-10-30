@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,14 @@
     <link rel="stylesheet" href="../static/styles/Reservaciones.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
+
 <body>
     <div class="container">
         <div class="left-panel">
             <h2>Inicia tu reserva</h2>
-            <a href="{{ url_for('home') }}">
-                <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral" class="logo">
+            <a href="{{ url_for('servicios') }}">
+                <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral"
+                    class="logo">
             </a>
         </div>
         <div class="right-panel">
@@ -88,38 +91,35 @@
                 <input type="text" id="nombre" placeholder="Nombre del cliente">
 
                 <label for="servicio">Servicio al que asistirá</label>
-                <select id="servicio" onchange="mostrarOpcionesSubservicio()">
+                <select id="servicio" name="servicio" onchange="mostrarOpcionesSubservicio()">
                     <option value="">Selecciona un servicio</option>
-                    <option value="corporal">Tratamiento Corporal</option>
-                    <option value="facial">Tratamiento Facial</option>
-                    <option value="depilacion">Depilación</option>
-                    <option value="manos">Spa de Manos</option>
-                    <option value="masaje">Masaje</option>
+                    <option value="corporal" {% if tratamiento == 'Tratamiento Corporal' %}selected{% endif %}>Tratamiento Corporal</option>
+                    <option value="facial" {% if tratamiento=='Tratamiento Facial' %}selected{% endif %}>Tratamiento Facial</option>
+                    <option value="depilacion" {% if tratamiento=='Depilación' %}selected{% endif %}>Depilación</option>
+                    <option value="manos" {% if tratamiento=='Spa de Manos' %}selected{% endif %}>Spa de Manos</option>
+                    <option value="masaje" {% if tratamiento=='Masaje' %}selected{% endif %}>Masaje</option>
                 </select>
-
-                <div id="subservicio-corporal" style="display: none;">
+                <div id="subservicio-corporal" style="display: {% if tratamiento == 'Tratamiento Corporal' %}block{% else %}none{% endif %};">
                     <label for="subservicio-corporal-select">Seleccione el tipo de tratamiento corporal</label>
-                    <select id="subservicio-corporal-select" onchange="configurarCalendario()">
-                        <option>Exfoliación corporal</option>
-                        <option>Envoltura de algas o barro</option>
-                        <option>Masaje reafirmante</option>
-                        <option>Tratamiento de drenaje linfático</option>
+                    <select id="subservicio-corporal-select" name="subservicio-corporal">
+                        <option {% if subservicio == 'Exfoliación Corporal' %}selected{% endif %}>Exfoliación Corporal</option>
+                        <option {% if subservicio == 'Envoltura de algas o barro' %}selected{% endif %}>Envoltura de algas o barro</option>
+                        <option {% if subservicio == 'Masaje reafirmante' %}selected{% endif %}>Masaje reafirmante</option>
+                        <option {% if subservicio == 'Tratamiento de drenaje linfático' %}selected{% endif %}>Tratamiento de drenaje linfático</option>
                     </select>
                 </div>
-
                 <div id="subservicio-facial" style="display: none;">
                     <label for="subservicio-facial-select">Seleccione el tipo de tratamiento facial</label>
-                    <select id="subservicio-facial-select" onchange="configurarCalendario()">
+                    <select id="subservicio-facial-select" name="subservicio-facial">
                         <option>Limpieza facial profunda</option>
                         <option>Peeling químico</option>
                         <option>Microdermoabrasión</option>
                         <option>Tratamiento con ácido hialurónico</option>
                     </select>
                 </div>
-
                 <div id="subservicio-depilacion" style="display: none;">
                     <label for="subservicio-depilacion-select">Seleccione el tipo de depilación</label>
-                    <select id="subservicio-depilacion-select" onchange="configurarCalendario()">
+                    <select id="subservicio-depilacion-select" name="subservicio-depilacion">
                         <option>Depilación con cera</option>
                         <option>Depilación con hilo</option>
                         <option>Depilación láser</option>
@@ -129,7 +129,7 @@
 
                 <div id="subservicio-manos" style="display: none;">
                     <label for="subservicio-manos-select">Seleccione el tipo de tratamiento para manos</label>
-                    <select id="subservicio-manos-select" onchange="configurarCalendario()">
+                    <select id="subservicio-manos-select" name="subservicio-manos">
                         <option>Exfoliación e Hidratación Profunda</option>
                         <option>Masaje Relajante de Manos</option>
                         <option>Tratamiento de Parafina</option>
@@ -139,19 +139,15 @@
 
                 <div id="subservicio-masaje" style="display: none;">
                     <label for="subservicio-masaje-select">Seleccione el tipo de masaje</label>
-                    <select id="subservicio-masaje-select" onchange="configurarCalendario()">
+                    <select id="subservicio-masaje-select" name="subservicio-masaje">
                         <option>Masaje Relajante con Aromaterapia</option>
                         <option>Masaje Descontracturante</option>
                         <option>Masaje con Piedras Calientes</option>
                         <option>Masaje de Reflexología</option>
                     </select>
                 </div>
-
-                <label for="fecha">Fecha de disponibles</label>
-                <input type="date" id="fecha">
-
-                <label for="fecha-reservada">Fecha de reservadas</label>
-                <input type="date" id="fecha-reservada">
+                <label for="fecha">Fecha de reserva</label>
+                <input type="text" id="fecha">
 
                 <label for="hora">Hora de reserva</label>
                 <select id="hora">
@@ -167,6 +163,7 @@
             </form>
         </div>
     </div>
+
     <footer class="footer">
         <div class="footer-content">
             <p><strong>© 2024 Para Estetica AESTHETIC. Creado por el Equipo 4</strong></p>
@@ -187,6 +184,5 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 </body>
+
 </html>
-
-

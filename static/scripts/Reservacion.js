@@ -89,18 +89,43 @@ const horariosPorSubservicio = {
 };
 
 function mostrarOpcionesSubservicio() {
-    document.getElementById("subservicio-corporal").style.display = "none";
-
     const servicioSeleccionado = document.getElementById("servicio").value;
+    document.getElementById("subservicio-corporal").style.display = "none";
+    document.getElementById("subservicio-facial").style.display = "none";
+    document.getElementById("subservicio-depilacion").style.display = "none";
+    document.getElementById("subservicio-manos").style.display = "none";
+    document.getElementById("subservicio-masaje").style.display = "none";
     if (servicioSeleccionado === "corporal") {
         document.getElementById("subservicio-corporal").style.display = "block";
+    } else if (servicioSeleccionado === "facial") {
+        document.getElementById("subservicio-facial").style.display = "block";
+    } else if (servicioSeleccionado === "depilacion") {
+        document.getElementById("subservicio-depilacion").style.display = "block";
+    } else if (servicioSeleccionado === "manos") {
+        document.getElementById("subservicio-manos").style.display = "block";
+    } else if (servicioSeleccionado === "masaje") {
+        document.getElementById("subservicio-masaje").style.display = "block";
     }
-
     configurarCalendario();
 }
+
 function obtenerSubservicioSeleccionado() {
-    if (document.getElementById("subservicio-corporal").style.display === "block") {
+    const servicioSeleccionado = document.getElementById("servicio").value;
+
+    if (servicioSeleccionado === "corporal" && document.getElementById("subservicio-corporal").style.display === "block") {
         return document.getElementById("subservicio-corporal-select").value;
+    }
+    if (servicioSeleccionado === "facial" && document.getElementById("subservicio-facial").style.display === "block") {
+        return document.getElementById("subservicio-facial-select").value;
+    }
+    if (servicioSeleccionado === "depilacion" && document.getElementById("subservicio-depilacion").style.display === "block") {
+        return document.getElementById("subservicio-depilacion-select").value;
+    }
+    if (servicioSeleccionado === "manos" && document.getElementById("subservicio-manos").style.display === "block") {
+        return document.getElementById("subservicio-manos-select").value;
+    }
+    if (servicioSeleccionado === "masaje" && document.getElementById("subservicio-masaje").style.display === "block") {
+        return document.getElementById("subservicio-masaje-select").value;
     }
     return null;
 }
@@ -114,7 +139,7 @@ function configurarCalendario() {
     flatpickr("#fecha", {
         dateFormat: "Y-m-d",
         locale: "es",
-        onChange: function(selectedDates, dateStr, instance) {
+        onChange: function(selectedDates, dateStr) {
             const fechaSeleccionada = new Date(dateStr);
             const diaSemanaCapitalizado = obtenerNombreDiaSemana(fechaSeleccionada);
 
@@ -128,10 +153,10 @@ function configurarCalendario() {
         }
     });
 }
+
 function actualizarHorarios(subservicio, diaSemana) {
     const horarioSelect = document.getElementById("hora");
     horarioSelect.innerHTML = "";
-
     if (horariosPorSubservicio[subservicio] && horariosPorSubservicio[subservicio][diaSemana]) {
         const horarios = horariosPorSubservicio[subservicio][diaSemana];
         horarios.forEach(hora => {
@@ -146,6 +171,11 @@ function actualizarHorarios(subservicio, diaSemana) {
         horarioSelect.appendChild(option);
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    mostrarOpcionesSubservicio();
+    configurarCalendario();
+});
+
 
 
 

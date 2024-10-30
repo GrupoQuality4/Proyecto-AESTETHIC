@@ -312,10 +312,11 @@ def contactos():
 
 @app.route('/reservas')
 def reservas():
+    tratamiento = request.args.get('tratamiento', '')
+    subservicio = request.args.get('subservicio', '')
     if 'user_id' not in session:
         return redirect(url_for('login', next='/reservas'))
-    return render_template('Reservaciones.html')
-
+    return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
 
 @app.route('/servicio/<int:servicio_id>/reservar')
 def reservar_servicio(servicio_id):
