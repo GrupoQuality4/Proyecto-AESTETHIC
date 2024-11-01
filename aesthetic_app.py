@@ -10,7 +10,7 @@ import re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -326,68 +326,6 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
-
-@app.route('/api/obtener_disponibilidad_semanal', methods=['GET'])
-def obtener_disponibilidad_semanal():
-    servicio = request.args.get('servicio')
-
-    disponibilidad_por_dia_semana = {
-        "Exfoliación Corporal": {
-            "Lunes": {"total_turnos": 3, "ocupados": 1},
-            "Miércoles": {"total_turnos": 3, "ocupados": 2},
-            "Jueves": {"total_turnos": 3, "ocupados": 3},
-            "Viernes": {"total_turnos": 3, "ocupados": 1},
-            "Sábado": {"total_turnos": 3, "ocupados": 0}
-        },
-
-    }
-
-    return jsonify(disponibilidad_por_dia_semana.get(servicio, {}))
-
-@app.route('/api/reservar_turno', methods=['POST'])
-def reservar_turno():
-    data = request.get_json()
-    user_id = data['user_id']
-    servicio = data['servicio']
-    fecha_uso = datetime.strptime(data['fecha_uso'], '%Y-%m-%d %H:%M:%S')
-    dia_semana = fecha_uso.strftime("%A")
-
-    disponibilidad = Disponibilidad.query.filter_by(servicio=servicio, dia_semana=dia_semana,
-                                                    hora_inicio=fecha_uso.time()).first()
-
-    if not disponibilidad:
-        return jsonify({"success": False, "message": "No hay disponibilidad para este horario"}), 400
-    turnos_ocupados = Reserva.query.filter_by(servicio=servicio, fecha_uso=fecha_uso).count()
-
-    if turnos_ocupados >= disponibilidad.total_turnos:
-        return jsonify({"success": False, "message": "No hay turnos disponibles para este horario"}), 400
-
-    nueva_reserva = Reserva(user_id=user_id, servicio=servicio, fecha_uso=fecha_uso)
-    db.session.add(nueva_reserva)
-    db.session.commit()
-
-    return jsonify({"success": True, "message": "Turno reservado exitosamente"})
-
-@app.route('/api/obtener_disponibilidad', methods=['GET'])
-def obtener_disponibilidad():
-    servicio = request.args.get('servicio')
-    
-    disponibilidad = Disponibilidad.query.filter_by(servicio=servicio).all()
-
-    resultado = []
-    for d in disponibilidad:
-        turnos_ocupados = Reserva.query.filter_by(servicio=servicio, fecha_uso=d.hora_inicio).count()
-        turnos_disponibles = d.total_turnos - turnos_ocupados
-
-        resultado.append({
-            "dia_semana": d.dia_semana,
-            "hora_inicio": d.hora_inicio.strftime('%H:%M'),
-            "hora_fin": d.hora_fin.strftime('%H:%M'),
-            "turnos_disponibles": turnos_disponibles
-        })
-
-    return jsonify(resultado)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
