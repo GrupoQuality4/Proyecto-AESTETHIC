@@ -229,19 +229,6 @@ def restricted_page():
         return redirect(url_for('home'))
     return render_template('restricted_page.html')
 
-@app.route('/buscar_servicios', methods=['GET'])
-def buscar_servicios():
-    query = request.args.get('query', '').lower()
-    servicios = [
-        {'nombre': 'Tratamientos Faciales', 'ruta': url_for('tratamiento_facial')},
-        {'nombre': 'Depilación', 'ruta': url_for('tratamiento_depilacion')},
-        {'nombre': 'Masajes', 'ruta': url_for('tratamiento_masajes')},
-        {'nombre': 'Spa de Manos', 'ruta': url_for('tratamiento_spa_de_manos')},
-        {'nombre': 'Tratamientos Corporales', 'ruta': url_for('tratamientos_corporales')}
-    ]
-    resultados = [s for s in servicios if query in s['nombre'].lower()]
-    return jsonify(resultados)
-
 @app.route('/servicios')
 def servicios():
     return render_template('Servicios.html')
@@ -295,29 +282,6 @@ def historial_reservas():
     reservas = Reserva.query.filter_by(user_id=user_id).order_by(Reserva.fecha_reserva.desc()).all()
     
     return render_template('historial_reservas.html', reservas=reservas)
-
-@app.route('/servicio/<int:servicio_id>/reservar')
-def reservar_servicio(servicio_id):
-    if 'user_id' not in session:
-        flash("Debes iniciar sesión para hacer una reserva.", "warning")
-        return redirect(url_for('login', next=url_for('reservas')))
-    return redirect(url_for('reservas'))
-
-@app.route('/buscar_servicios_fecha', methods=['GET'])
-def buscar_servicios_fecha():
-    fecha = request.args.get('fecha')
-    
-    if not fecha:
-        return jsonify({"error": "Fecha no proporcionada"}), 400
-    servicios_disponibles = Servicio.query.filter_by(fecha_disponible=fecha).all()
-
-    servicios = [{
-        "titulo": servicio.titulo,
-        "descripcion": servicio.descripcion,
-        "precio": servicio.precio
-    } for servicio in servicios_disponibles]
-    
-    return jsonify({"servicios": servicios})
 
 @app.route('/carrito')
 def carrito():
