@@ -9,14 +9,9 @@ body {
 
 .container {
     width: 100%;
-    height: 155vh;
+    height: 150vh;
     display: flex;
     justify-content: space-between;
-}
-
-.left-panel, .right-panel {
-    flex: 1;
-    padding: 5px;
 }
 
 .left-panel {
@@ -26,24 +21,34 @@ body {
     align-items: center;
 }
 
+.left-panel, .right-panel {
+    flex: 1;
+    padding: 5px;
+}
+
+
 .left-panel h1 {
     color: #6C374D;
     font-size: 46px;
 }
 
 .informacion {
-    position: relative;
+    position: absolute;
     margin-top: 0;
     padding: 34px;
-    color: #000;
+    color: #000000;
     text-align: center;
     font-size: 25px;
+}
+
+.left-panel .informacion{
+    width: 33%;
 }
 
 .left-panel img {
     position: absolute;
     display: block;
-    width: 33%;
+    width: 38%;
     height: 125%;
     border-radius: 30px;
     object-fit: cover;
@@ -73,16 +78,13 @@ a:hover {
     text-decoration: underline;
 }
 
+/*         MARCAR FAVORITOS         */
+
 .container-products {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	margin: 20px;
 	gap: 30px;
-}
-
-
-.h3 {
-    text-align: center;
 }
 
 .card-product {
@@ -115,9 +117,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 15px;
     padding: 0;
-    margin-top: 10px;
 }
 
 .footer-card-product p, h3{
@@ -137,19 +137,17 @@ a:hover {
 }
 
 .container-buttons-card button {
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
-    box-shadow: 0px 0px 15px #00000025;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	border: none;
+	background: none;
+	outline: none;
+	cursor: pointer;
+	box-shadow: 0px 0px 15px #00000025;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	font-size: 18px;
 }
+
 
 @media screen and (width >= 760px) and (width <= 927px){
 	body{
@@ -186,13 +184,17 @@ a:hover {
 		height: 60%;
 	}
 
-	.left-panel .informacion{
-        position: absolute;
-		margin-top: 0%;
+	.informacion{
+		position: absolute;
+		margin-top: -5%;
 		padding: 34px;
 		color: #000000;
 		text-align: center;
-		font-size: 20px;
+		font-size: 25px;
+	}
+	
+	.left-panel .informacion{
+		width: 90%;
 	}
 
 
@@ -265,8 +267,9 @@ a:hover {
 /* ********************************** */
 /*         LISTA DE FAVORITOS         */
 /* ********************************** */
-
-
+=======
+/* Lista de Favoritos */
+>>>>>>> Reservas-3
 .container-list-favorites {
     position: fixed;
     top: 0;
@@ -415,6 +418,8 @@ button:hover,
     transition: background-color 0.3s ease;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
+
+
 
 
   
