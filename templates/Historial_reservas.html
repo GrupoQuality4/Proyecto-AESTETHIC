@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Reservas</title>
+    <link rel="stylesheet" href="../static/styles/historial_reservas.css">
+</head>
+<body>
+    <h2>Historial de Reservas</h2>
+
+    {% if reservas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Fecha de Reserva</th>
+                    <th>Fecha de Uso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.servicio }}</td>
+                        <td>{{ reserva.fecha_reserva.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ reserva.fecha_uso.strftime('%Y-%m-%d %H:%M') if reserva.fecha_uso else 'No especificada' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No tienes reservas anteriores.</p>
+    {% endif %}
+</body>
+</html>
+

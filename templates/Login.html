@@ -17,32 +17,26 @@
 <body>
     <div class="login-container">
         <div class="login-left">
+<<<<<<< HEAD
             <div id="atras">
                 <a href="{{ url_for('home') }}">
                     <i class="fa-solid fa-arrow-circle-left"></i>
                 </a>
             </div>
             <h2>Iniciar Sesion</h2>
+=======
+            <h2>Iniciar Sesión</h2>
+>>>>>>> Reservas-3
             <a href="{{ url_for('home') }}">
                 <img src="../static/media/Imagenes Pag. Login/logo_encabezado.png" alt="Aesthetic Estética Integral" class="logo">
             </a>
         </div>
         <div class="login-right">
-            <h3>Iniciar Sesion</h3>
-            <h2>Bienvenidos a nuestro centro de estética</h2>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flash-messages">
-                        {% for category, message in messages %}
-                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
             {% if mensaje_login %}
-            <p class="alert alert-info">{{ mensaje_login }}</p>
+                <p class="alert alert-info" id="mensaje-login">{{ mensaje_login }}</p>
             {% endif %}
+            <h3>Iniciar Sesión</h3>
+            <h2>Bienvenidos a nuestro centro de estética</h2>
             <form action="{{ url_for('login') }}" method="post">
                 <label for="usuario">Usuario</label>
                 <input type="email" id="usuario" name="usuario" placeholder="persona@encodelabs.com" required>
@@ -59,9 +53,7 @@
     </div>
     <footer class="footer">
         <div class="footer-content">
-            <p>
-                <strong>© 2024 Para Estetica AESTHETIC. Creado por el Equipo 4</strong>
-            </p>
+            <p><strong>© 2024 Para Estética AESTHETIC. Creado por el Equipo 4</strong></p>
         </div>
         <div class="social-icons">
             <a href="https://www.facebook.com/profile.php?id=61563739507826" class="iconofacebook">
@@ -75,6 +67,7 @@
             </a>
         </div>
     </footer>
+    <script src="../static/scripts/Login.js"></script>
 </body>
 </html>
 

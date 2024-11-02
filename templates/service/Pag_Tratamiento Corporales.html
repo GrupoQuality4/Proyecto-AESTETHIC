@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/static/styles/TratamientoCorporales.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
-
 <body>
     <div class="container">
         <div class="left-panel">
@@ -41,14 +40,14 @@
                             <span class="price">$79.99</span>
                             <div class="container-buttons-card">
                                 <button class="favorite">
-                                    <i class="fa-regular fa-heart" id="favorite-1"></i>
+                                    <i class="fa-regular fa-heart"></i>
                                 </button>
                                 <button class="cart">
                                     <i class="fa-solid fa-cart-shopping"></i>
                                 </button>
                                 <button class="share">
-                                    <i class="fa-solid fa-share"></i>
-                                </button>
+                                    <i class="bi bi-share"></i>
+                                </button>                                
                             </div>
                             <div class="rating">
                                 <i class="bi bi-star-fill star" data-value="1"></i>
@@ -57,7 +56,9 @@
                                 <i class="bi bi-star-fill star" data-value="4"></i>
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
-                            <input type="hidden" class="rating-input" value="0">
+                        </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservas', tratamiento='Tratamiento Corporal', servicio='Exfoliación Corporal') }}" class="btn-reservar">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -72,14 +73,15 @@
                             <span class="price">$129.99</span>
                             <div class="container-buttons-card">
                                 <button class="favorite">
-                                    <i class="fa-regular fa-heart" id="favorite-2"></i>
+                                    <i class="fa-regular fa-heart"></i>
                                 </button>
                                 <button class="cart">
                                     <i class="fa-solid fa-cart-shopping"></i>
                                 </button>
                                 <button class="share">
-                                    <i class="fa-solid fa-share"></i>
+                                    <i class="bi bi-share"></i>
                                 </button>
+                                
                             </div>
                             <div class="rating">
                                 <i class="bi bi-star-fill star" data-value="1"></i>
@@ -89,10 +91,11 @@
                                 <i class="bi bi-star-fill star" data-value="5"></i>
                             </div>
                         </div>
+                        <div class="button-reserve-container">
+                            <a href="{{ url_for('reservas', tratamiento='Tratamiento Corporal', subservicio='Envoltura de algas o barro') }}" class="btn-reservar">Reservar</a>
+                        </div>
                     </div>
                 </div>
-            
-        
             <div class="card-product">
                 <div class="container-img">
                     <img src="/static/media/Imagenes Pag.Tratamientos Corporales/Corporal3.jpeg" alt="imagen Producto"/>
@@ -102,17 +105,17 @@
                     <p>Este tipo de masaje, con aceites o cremas específicas, ayuda a tonificar la piel y mejorar la elasticidad, ideal para combatir la flacidez.</p><br>
                     <div class="footer-card-product">
                         <span class="price">$199.99</span>
-        
                         <div class="container-buttons-card">
                             <button class="favorite">
-                                <i class="fa-regular fa-heart" id="favorite-3"></i>
+                                <i class="fa-regular fa-heart"></i>
                             </button>
                             <button class="cart">
                                 <i class="fa-solid fa-cart-shopping"></i>
                             </button>
                             <button class="share">
-                                <i class="fa-solid fa-share"></i>
+                                <i class="bi bi-share"></i>
                             </button>
+                            
                         </div>
                         <div class="rating">
                             <i class="bi bi-star-fill star" data-value="1"></i>
@@ -122,9 +125,11 @@
                             <i class="bi bi-star-fill star" data-value="5"></i>
                         </div>
                     </div>
+                    <div class="button-reserve-container">
+                        <a href="{{ url_for('reservas', tratamiento='Tratamiento Corporal', subservicio='Masaje reafirmante') }}" class="btn-reservar">Reservar</a>
+                    </div>
                 </div>
             </div>
-        
             <div class="card-product">
                 <div class="container-img">
                     <img src="/static/media/Imagenes Pag.Tratamientos Corporales/Corporal4.jpeg" alt="imagen Producto"/>
@@ -134,17 +139,16 @@
                     <p>Un masaje suave que estimula el sistema linfático, eliminando toxinas y reduciendo la retención de líquidos, lo que puede ayudar a combatir la celulitis y mejorar la salud en general.</p>
                     <div class="footer-card-product">
                         <span class="price">$49.99</span>
-        
                         <div class="container-buttons-card">
                             <button class="favorite">
-                                <i class="fa-regular fa-heart" id="favorite-4"></i>
+                                <i class="fa-regular fa-heart"></i>
                             </button>
                             <button class="cart">
                                 <i class="fa-solid fa-cart-shopping"></i>
                             </button>
                             <button class="share">
-                                <i class="fa-solid fa-share"></i>
-                            </button>
+                                <i class="bi bi-share"></i>
+                            </button>                            
                         </div>
                         <div class="rating">
                             <i class="bi bi-star-fill star" data-value="1"></i>
@@ -154,12 +158,13 @@
                             <i class="bi bi-star-fill star" data-value="5"></i>
                         </div>
                     </div>
+                    <div class="button-reserve-container">
+                        <a href="{{ url_for('reservas', tratamiento='Tratamiento Corporal', subservicio='Tratamiento de drenaje linfático') }}" class="btn-reservar">Reservar</a>
+                    </div>
                 </div>
             </div>
         </div>
-
         <script src="/static/scripts/Servicios.js"></script>
         <script src="/static/scripts/Favoritos.js"></script>
 </body>
-
 </html>

@@ -329,6 +329,7 @@ h2{
   background-color: #d08590;
   padding: 5px 10px;
   display: flex;
+  color: #fff;
 }
 
 .footer-content {
@@ -433,7 +434,10 @@ button:hover {
   background-color: #f0f0f0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Reservas-3
 /*----------- MAPA ---------- */
 h2 {
   text-align: center;
@@ -496,6 +500,35 @@ button {
 button:hover {
   background-color: rosybrown;
 }
+
+.flash-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.flash-message {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  transition: opacity 0.5s ease;
+}
+
+.flash-success {
+  background-color: #4CAF50;
+}
+
+.flash-info {
+  background-color: #2196F3;
+}
+
+.flash-danger {
+  background-color: #f44336;
+}
+
 
 
 

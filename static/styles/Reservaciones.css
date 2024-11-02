@@ -1,0 +1,184 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5d9e0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+}
+
+.left-panel {
+    background-color: #FFE8ED;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.left-panel h2 {
+    color: #6a2e39;
+    font-size: 5em;
+    margin: 0;
+}
+
+.left-panel .logo {
+    max-width: 100%;
+    height: auto;
+    margin-top: 70px;
+}
+
+.right-panel {
+    background-color: #fff;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+}
+
+.reservation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.reservation-form label {
+    font-size: 1em;
+    color: #6C374D;
+}
+
+.reservation-form input,
+.reservation-form select {
+    padding: 10px;
+    border: 1px solid #f5d9e0;
+    border-radius: 5px;
+    background-color: #f5d9e0;
+    color: #6C374D;
+    font-size: 1em;
+}
+
+.submit-button {
+    padding: 10px;
+    background-color: #b87b8b;
+    color: #fff;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #a0667b;
+}
+
+.footer {
+    background-color: #d08590;
+    padding: 10px 20px;
+    display: flex;
+    color: #fff;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto; /* Empuja el footer hacia la parte inferior */
+}
+
+.footer-content {
+    text-align: left;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a {
+    color: #fff;
+}
+
+.services-gallery {
+    padding: 20px;
+    background-color: #f8d8d8;
+}
+
+.services-gallery h3 {
+    text-align: center;
+    color: #a05252;
+    margin-bottom: 20px;
+}
+
+.service-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.service-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    width: 18%; /* Para que quepan 5 por fila */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.service-card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.service-card h4 {
+    font-size: 1em;
+    margin: 10px 0;
+    color: #a05252;
+}
+
+.service-card p {
+    font-size: 0.9em;
+    color: #5f5f5f;
+}
+
+.service-card p strong {
+    font-size: 1.1em;
+    color: #a05252;
+}
+
+.flatpickr-day {
+    border-radius: 50%;
+}
+
+.flatpickr-day.disponible {
+    background-color: green !important;
+    color: white !important;
+}
+
+.flatpickr-day.ocupado {
+    background-color: red !important;
+    color: white !important;
+}
+
+.categoria {
+    background-color: #f4d3da;
+    padding: 10px;
+    border-radius: 15px;
+    text-align: center;
+    margin: 10px 0;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+.subservicios {
+    margin-top: 20px;
+}
+
+
+
+
+

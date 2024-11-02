@@ -1,6 +1,7 @@
-from aesthetic_app import db
+from . import db
 
 class VerificationToken(db.Model):
+
     __tablename__ = 'verification_token'
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(256), nullable=False, unique=True)

@@ -178,6 +178,7 @@ button:hover {
     margin-left: 10px;
   }
 
+<<<<<<< HEAD
   @media (width <= 927px) {
     .login-container{
         display: block;
@@ -218,3 +219,29 @@ button:hover {
         height: auto;
     }
 }
+=======
+  .alert {
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.alert-info {
+    color: #6c374d;
+    background-color: #fff0f3;
+    border-color: #d08590;
+}
+
+.alert-info a {
+    color: #d08590;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.alert-info a:hover {
+    text-decoration: underline;
+}
+>>>>>>> Reservas-3

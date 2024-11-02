@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,12 +8,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="../static/styles/Pag. Principal.css" />
     <link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-			integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-			crossorigin="anonymous"
-			referrerpolicy="no-referrer"
-		/>
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    />
 </head>
 
 <body>
@@ -25,13 +24,25 @@
             </a>
         </div>
         <div class="title">
-            <img src="../static/media/Imagenes Pag. Principal/titulo_logo.png"
-                alt="titulo_logo" />
+            <img src="../static/media/Imagenes Pag. Principal/titulo_logo.png" alt="titulo_logo" />
         </div>
         <div class="contact-info">
+<<<<<<< HEAD
             <img src="../static/media/Imagenes Pag. Principal/contactos.png"
                 alt="contact-info" />
+=======
+            <img src="../static/media/Imagenes Pag. Principal/contactos.png" alt="contact-info" />
+>>>>>>> Reservas-3
         </div>
+    </div>
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
     </div>
     <header>
         <input type="checkbox" id="check">
@@ -45,48 +56,57 @@
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
             <a href="{{ url_for('reservas') }}">Reserva</a>
+<<<<<<< HEAD
             <label for="check" class="esconder-menu">
                 &#215
             </label>
+=======
+            {% if user_name and not user_email == 'aestheticestetica22@gmail.com' %}
+                <a href="{{ url_for('historial_reservas') }}">Historial de Reservas</a>
+            {% endif %}
+>>>>>>> Reservas-3
         </nav>
         <div class="search-login">
-            {% if user_email == 'cristianezequiel915@gmail.com' %}
-            <div class="admin-buttons">
-                <button class="admin-button" onclick="window.location.href='{{ url_for('manage_roles') }}'">Adm. Rol</button>
-                <button class="admin-button" onclick="window.location.href='{{ url_for('assign_role') }}'">Asignar Rol</button>
-
-                <button class="admin-button" onclick="window.location.href='{{ url_for('create_service_category') }}'">Crear Categoría</button>
-                <button class="admin-button" onclick="window.location.href='{{ url_for('manage_service_category') }}'">Gestionar Categorías</button>
-            </div>
+            {% if user_email == 'aestheticestetica22@gmail.com' %}
+                <div class="admin-buttons">
+                    <button class="admin-button" onclick="window.location.href='{{ url_for('manage_roles') }}'">Adm. Rol</button>
+                    <button class="admin-button" onclick="window.location.href='{{ url_for('assign_role') }}'">Asignar Rol</button>
+                    <button class="admin-button" onclick="window.location.href='{{ url_for('create_service_category') }}'">Crear Categoría</button>
+                    <button class="admin-button" onclick="window.location.href='{{ url_for('manage_service_category') }}'">Gestionar Categorías</button>
+                </div>
             {% else %}
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Buscar..." oninput="showSuggestions(this.value)" onkeydown="searchService(event)" autocomplete="off" />
-                <div id="suggestions" class="suggestions-list"></div>
-            </div>
-            <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
-                <i class="fa-solid fa-share"></i> Compartir
-            </button>
-            
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar..." oninput="showSuggestions(this.value)" onkeydown="searchService(event)" autocomplete="off" />
+                    <div id="suggestions" class="suggestions-list"></div>
+                </div>
+                <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
+                    <i class="fa-solid fa-share"></i> Compartir
+                </button>
             {% endif %}
             <button class="cart-button" onclick="window.location.href='{{ url_for('carrito') }}'">🛒</button>
             {% if user_name %}
-            <div class="user-avatar">
-                <div class="avatar" style="background-color: {{ avatar_color }};">{{ user_name[0] }}{{ user_apellido[0]
-                    }}</div>
-                <span class="user-name">{{ user_name }}</span>
-                <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
-            </div>
+                <div class="user-avatar">
+                    <div class="avatar" style="background-color: {{ avatar_color }};">{{ user_name[0] }}{{ user_apellido[0] }}</div>
+                    <span class="user-name">{{ user_name }}</span>
+                    <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
+                </div>
             {% else %}
-            <a href="{{ url_for('login') }}">Iniciar Sesión</a>
-            <a href="{{ url_for('register') }}">Crear Cuenta</a>
+                <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+                <a href="{{ url_for('register') }}">Crear Cuenta</a>
             {% endif %}
         </div>
     </header>
+<<<<<<< HEAD
 
     <div id="contenedor-imagen">
         <div class="presentacion">
             <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
         </div>
+=======
+    <div class="contenedor-imagen">
+        <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
+        <img src="../static/media/Imagenes Pag. Principal/ImagenPrincipal.png" />
+>>>>>>> Reservas-3
     </div>
 
     <div class="swiper mySwiper">

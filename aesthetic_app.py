@@ -1,20 +1,25 @@
-from flask import Flask, g, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask import g, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_migrate import Migrate
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
+from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import os
+import re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-import re
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+
+db.init_app(app)
 migrate = Migrate(app, db)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -27,46 +32,18 @@ mail = Mail(app)
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-roles_users = db.Table('roles_users',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
-)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(150), nullable=False)
-    apellido = db.Column(db.String(150), nullable=False)
-    email = db.Column(db.String(150), nullable=False, unique=True)
-    password = db.Column(db.String(256), nullable=False)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-
-class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    permissions = db.Column(db.String(200), nullable=True)
-
-class VerificationToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(256), nullable=False, unique=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    expires_at = db.Column(db.DateTime, nullable=False)
-    user = db.relationship('User', backref=db.backref('verification_tokens', lazy=True))
-    
-class Servicio(db.Model):
-    __tablename__ = 'servicio'
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String, nullable=False)
-    categoria = db.Column(db.String, nullable=False)
-    descripcion = db.Column(db.String, nullable=True)
-    precio = db.Column(db.Float, nullable=False)
-
 @app.before_request
 def add_user_to_template():
     g.user_name = session.get('user_name', None)
     g.user_apellido = session.get('user_apellido', None)
     g.user_email = session.get('user_email', None)
     g.avatar_color = session.get('avatar_color', None)
+    user_id = session.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            session['user_roles'] = [role.name for role in user.roles]
+
 
 def generate_random_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
@@ -100,12 +77,23 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    mensaje_login = None
+
     if request.method == 'POST':
         email = request.form['usuario']
         password = request.form['contrasena']
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
+            verification_token = VerificationToken.query.filter_by(user_id=user.id).first()
+
+            if verification_token and verification_token.expires_at < datetime.utcnow():
+                db.session.delete(verification_token)
+                db.session.delete(user)
+                db.session.commit()
+                flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
+                return redirect(url_for('register'))
+
             session['user_id'] = user.id
             session['user_name'] = user.nombre
             session['user_apellido'] = user.apellido
@@ -114,10 +102,11 @@ def login():
             flash('Inicio de sesión exitoso', 'success')
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
-        else:
-            flash('Correo o contraseña incorrectos', 'danger')
 
-    mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
+        flash('Correo o contraseña incorrectos', 'danger')
+    if request.args.get('next') == '/reservas':
+        mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
+
     return render_template('Login.html', mensaje_login=mensaje_login)
 
 
@@ -147,15 +136,12 @@ def register():
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
 
-            if not validators.email(email):
-                return jsonify(success=False, message='El formato del correo es inválido.')
-
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
 
-            password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
+            password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
-                return jsonify(success=False, message='La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
+                return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
@@ -163,7 +149,7 @@ def register():
             db.session.commit()
 
             token = generate_confirmation_token(new_user.email)
-            expires_at = datetime.utcnow() + timedelta(hours=48)
+            expires_at = datetime.utcnow() + timedelta(hours=24)
             verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
             db.session.add(verification_token)
             db.session.commit()
@@ -177,6 +163,7 @@ def register():
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
+
 
 @app.route('/register_success')
 def register_success():
@@ -193,54 +180,42 @@ def confirm_email(token):
         db.session.commit()
 
         flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
-        return redirect(url_for('register')) 
-
-
+        return redirect(url_for('register'))
+    
     user = verification_token.user
     db.session.delete(verification_token)
     db.session.commit()
 
     flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
     return redirect(url_for('login'))
+
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
-    if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
+    if 'Administrador' not in session.get('user_roles', []):
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('home'))
-    
-    if request.method == 'POST':
-        role_name = request.form['role_name']
-        permissions = request.form.get('permissions', '')
-        new_role = Role(name=role_name, permissions=permissions)
-        db.session.add(new_role)
-        db.session.commit()
-        flash('Rol agregado exitosamente', 'success')
-    
-    roles = Role.query.all()
-    return render_template('manage_roles.html', roles=roles)
+    return render_template('manage_roles.html')
 
 @app.route('/assign_role', methods=['GET', 'POST'])
 def assign_role():
-    if 'user_email' not in session or session['user_email'] != 'cristianezequiel915@gmail.com':
+    if 'Administrador' not in session.get('user_roles', []):
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('home'))
-    
-    if request.method == 'POST':
-        user_email = request.form['user_email']
-        role_id = request.form['role_id']
-        user = User.query.filter_by(email=user_email).first()
-        role = Role.query.get(role_id)
-        
-        if user and role:
-            user.roles.append(role)
-            db.session.commit()
-            flash('Rol asignado exitosamente', 'success')
-        else:
-            flash('Usuario o rol no encontrado', 'danger')
-    
-    users = User.query.all()
-    roles = Role.query.all()
-    return render_template('assign_role.html', users=users, roles=roles)
+    return render_template('assign_role.html')
+
+@app.route('/create_service_category', methods=['GET', 'POST'])
+def create_service_category():
+    if 'Administrador' not in session.get('user_roles', []):
+        flash('No tienes permiso para acceder a esta página', 'danger')
+        return redirect(url_for('home'))
+    return render_template('create_service_category.html')
+
+@app.route('/manage_service_category')
+def manage_service_category():
+    if 'Administrador' not in session.get('user_roles', []):
+        flash('No tienes permiso para acceder a esta página', 'danger')
+        return redirect(url_for('home'))
+    return render_template('manage_service_category.html')
 
 def user_has_permission(user, permission):
     for role in user.roles:
@@ -255,20 +230,6 @@ def restricted_page():
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('home'))
     return render_template('restricted_page.html')
-
-@app.route('/buscar_servicios', methods=['GET'])
-def buscar_servicios():
-    query = request.args.get('query', '').lower()
-    servicios = [
-        {'nombre': 'Tratamientos Faciales', 'ruta': url_for('tratamiento_facial')},
-        {'nombre': 'Depilación', 'ruta': url_for('tratamiento_depilacion')},
-        {'nombre': 'Masajes', 'ruta': url_for('tratamiento_masajes')},
-        {'nombre': 'Spa de Manos', 'ruta': url_for('tratamiento_spa_de_manos')},
-        {'nombre': 'Tratamientos Corporales', 'ruta': url_for('tratamientos_corporales')}
-    ]
-    resultados = [s for s in servicios if query in s['nombre'].lower()]
-    
-    return jsonify(resultados)
 
 @app.route('/servicios')
 def servicios():
@@ -308,14 +269,37 @@ def contactos():
 
 @app.route('/reservas')
 def reservas():
-    return render_template('Reservas.html')
-
-@app.route('/servicio/<int:servicio_id>/reservar')
-def reservar_servicio(servicio_id):
+    tratamiento = request.args.get('tratamiento', '')
+    subservicio = request.args.get('subservicio', '')
     if 'user_id' not in session:
-        flash("Debes iniciar sesión para hacer una reserva.", "warning")
-        return redirect(url_for('login', next=url_for('reservas')))
-    return redirect(url_for('reservas'))
+        return redirect(url_for('login', next='/reservas'))
+    return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
+
+@app.route('/api/obtener_categorias', methods=['GET'])
+def obtener_categorias():
+    categorias = Categoria.query.all()
+    categorias_json = [{"id": cat.id, "nombre": cat.nombre} for cat in categorias]
+    return jsonify(categorias_json)
+
+@app.route('/api/obtener_subservicios', methods=['GET'])
+def obtener_subservicios():
+    categorias = request.args.get('categorias')
+    if not categorias:
+        return jsonify({"error": "Categoría no especificada"}), 400
+
+    subservicios = Servicio.query.filter_by(categorias=categorias).all()
+    subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
+    return jsonify(subservicios_json)
+
+@app.route('/historial_reservas')
+def historial_reservas():
+    if 'user_id' not in session:
+        return redirect(url_for('login', next=url_for('historial_reservas')))
+    
+    user_id = session['user_id']
+    reservas = Reserva.query.filter_by(user_id=user_id).order_by(Reserva.fecha_reserva.desc()).all()
+    
+    return render_template('historial_reservas.html', reservas=reservas)
 
 @app.route('/carrito')
 def carrito():
@@ -324,14 +308,6 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
-
-@app.route('/create_service_category', methods=['GET', 'POST'])
-def create_service_category():
-    return render_template('create_service_category.html')
-
-@app.route('/manage_service_category')
-def manage_service_category():
-    return render_template('manage_service_category.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

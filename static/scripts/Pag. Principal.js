@@ -66,7 +66,7 @@ function searchService(event) {
   }
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
   if (!event.target.closest('.search-container')) {
     document.getElementById('suggestions').style.display = 'none';
   }
@@ -104,9 +104,18 @@ function openShareModal(pageTitle, pageDescription, pageUrl, pageImage) {
 function closeModal() {
   const modal = document.getElementById('share-modal');
   if (modal) {
-      modal.remove();
+    modal.remove();
   }
 }
+setTimeout(function () {
+  const flashMessages = document.querySelectorAll('.flash-message');
+  flashMessages.forEach(function (message) {
+    message.style.opacity = '0';
+    setTimeout(() => { message.remove(); }, 500);
+  });
+}, 3000);
+
+
 
 
 

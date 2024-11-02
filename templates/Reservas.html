@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservas</title>
-    <link rel="stylesheet" href="../static/styles/Calendario.css">
+    <link rel="stylesheet" href="../static/styles/Reservas.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
 </head>
 <body>
@@ -45,7 +45,11 @@
                 </div>
             </section>
             <div class="reservation-container">
-                <button class="reservation-button">Iniciar reserva</button>
+                <h2>Buscar servicios por fecha</h2>
+                <input type="date" id="fecha-busqueda" name="fecha">
+                <button id="buscar-servicios" class="btn btn-primary">Buscar servicios</button>
+            </div>
+            <div id="resultado-servicios">
             </div>
             <section class="instructions">
                 <ul>
