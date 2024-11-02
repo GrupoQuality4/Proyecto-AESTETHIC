@@ -124,14 +124,19 @@ body > .footer {
 }
 
 /*         WEB DESDE EL CELU        */
+#volver i{
+	font-size: 35px;
+	margin: 15px 0px;
+	color: #FCFEFE;
+}
 
 @media (width >=928px){
 	#buscador{
 		display: none;
 	}
-	#volver{
+	/*#volver{
 		display: none;		
-	}
+	}*/
 	
 }
 

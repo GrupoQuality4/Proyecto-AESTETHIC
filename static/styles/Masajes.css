@@ -14,6 +14,23 @@ body {
     justify-content: space-between;
 }
 
+#atras{
+    position: absolute;
+    top: 0;
+    left: 10px;
+    margin: 0;
+}
+
+#atras i{
+	font-size: 35px;
+	margin: 15px 0px;
+	color: #ffffff;
+}
+.fa-arrow-circle-left{
+    position: relative;
+    color: #fff;
+}
+
 .left-panel {
     background-color: #f5d9e0;
     display: block;
@@ -33,7 +50,7 @@ body {
 
 .informacion {
     position: absolute;
-    margin-top: 20%;
+    margin-top: 0;
     padding: 15px;
     color: #000;
     text-align: center;
@@ -51,7 +68,7 @@ body {
     height: 125%;
     border-radius: 30px;
     object-fit: cover;
-    opacity: .5;
+    opacity: .4;
   }
 
 .right-panel {

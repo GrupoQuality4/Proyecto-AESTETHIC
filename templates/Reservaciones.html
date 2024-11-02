@@ -17,6 +17,11 @@
                 <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral"
                     class="logo">
             </a>
+            <div id="atras">
+                <a href="{{ url_for('home') }}">
+                    <i class="fa-solid fa-arrow-circle-left"></i>
+                </a>
+            </div>
         </div>
         <div class="right-panel">
             <div class="services-gallery">
@@ -146,10 +151,10 @@
                 </div>
             </div>
             <form class="reservation-form">
-                <label for="nombre">Nombre del cliente</label>
+                <label for="nombre"></label>
                 <input type="text" id="nombre" placeholder="Nombre del cliente">
 
-                <label for="servicio">Servicio al que asistirá</label>
+                <label for="servicio"></label>
                 <select id="servicio" name="servicio" onchange="cargarSubservicios()">
                     <option value="">Selecciona una categoría</option>
                     <option value="1">Tratamiento Corporal</option>
@@ -158,7 +163,7 @@
                     <option value="4">Spa de Manos</option>
                     <option value="5">Masaje</option>
                 </select>
-                <label for="subservicio-corporal-select">Seleccione el tipo de tratamiento</label>
+                <label for="subservicio-corporal-select"></label>
                 <select id="subservicio-corporal-select" name="subservicio-corporal">
                     <option value="">Seleccione un tratamiento</option>
                     <!-- Opciones dinámicas cargadas desde la API -->
