@@ -10,7 +10,9 @@ import re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -272,6 +274,22 @@ def reservas():
     if 'user_id' not in session:
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
+
+@app.route('/api/obtener_categorias', methods=['GET'])
+def obtener_categorias():
+    categorias = Categoria.query.all()
+    categorias_json = [{"id": cat.id, "nombre": cat.nombre} for cat in categorias]
+    return jsonify(categorias_json)
+
+@app.route('/api/obtener_subservicios', methods=['GET'])
+def obtener_subservicios():
+    categorias = request.args.get('categorias')
+    if not categorias:
+        return jsonify({"error": "Categoría no especificada"}), 400
+
+    subservicios = Servicio.query.filter_by(categorias=categorias).all()
+    subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
+    return jsonify(subservicios_json)
 
 @app.route('/historial_reservas')
 def historial_reservas():
