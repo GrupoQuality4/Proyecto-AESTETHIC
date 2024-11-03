@@ -29,33 +29,16 @@ body {
 .left-panel h1 {
     color: #6C374D;
     font-size: 46px;
-<<<<<<< HEAD
-	text-align: center;
-    
-=======
->>>>>>> Reservas-3
 }
 
 .left-panel .informacion {
     position: absolute;
-<<<<<<< HEAD
-    margin-top: 0;
-    padding: 34px;
-    color: #000000;
-    text-align: center;
-    font-size: 26px;
-}
-
-.left-panel .informacion{
-    width: 34%;
-=======
     margin-top: 30%;
     padding: 15px;
     color: #000;
     text-align: center;
     font-size: 22px;
     width: 45%;
->>>>>>> Reservas-3
 }
 
 .left-panel img {
@@ -65,11 +48,7 @@ body {
     height: 125%;
     border-radius: 30px;
     object-fit: cover;
-<<<<<<< HEAD
-    opacity: .4;
-=======
     opacity: 0.6;
->>>>>>> Reservas-3
 }
 
 .right-panel {
@@ -96,19 +75,6 @@ a:hover {
 
 /* Productos */
 .container-products {
-<<<<<<< HEAD
-	display: grid;
-	grid-template-columns: repeat(2, 0.5fr);
-	margin: 20px;
-	gap: 30px;
-}
-
-.card-product {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	cursor: pointer;
-=======
     display: grid;
     grid-template-columns: repeat(2, 0.5fr);
     gap: 10px;
@@ -119,7 +85,6 @@ a:hover {
     flex-direction: column;
     gap: 0px;
     cursor: pointer;
->>>>>>> Reservas-3
 }
 
 .content-card-product {
@@ -150,13 +115,6 @@ a:hover {
     margin-top: 10px;
 }
 
-<<<<<<< HEAD
-.footer-card-product p, h3{
-	margin: 0;
-}
-
-=======
->>>>>>> Reservas-3
 .price {
     font-weight: 700;
     font-size: 24px;
@@ -184,7 +142,6 @@ a:hover {
     justify-content: center;
 }
 
-<<<<<<< HEAD
 @media screen and (width >= 760px) and (width <= 927px){
 	body{
 		background-color: #FFE8ED;
@@ -303,9 +260,6 @@ a:hover {
 /* ********************************** */
 /*         LISTA DE FAVORITOS         */
 /* ********************************** */
-=======
-/* Lista de Favoritos */
->>>>>>> Reservas-3
 .container-list-favorites {
     position: fixed;
     top: 0;

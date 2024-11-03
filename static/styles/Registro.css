@@ -184,7 +184,6 @@ a:hover {
     background: #b06a77;
 }
 
-<<<<<<< HEAD
 #atras{
     position: absolute;
     top: 0;
@@ -228,7 +227,9 @@ a:hover {
         background-color: #FFE8ED;
         padding: 0;
     }
-=======
+
+}
+
 .password-container {
     position: relative;
     display: flex;
@@ -247,5 +248,4 @@ a:hover {
     cursor: pointer;
     font-size: 18px; /* Tamaño del ícono */
     color: #888; /* Color del ícono */
->>>>>>> Reservas-3
 }

@@ -178,7 +178,6 @@ button:hover {
     margin-left: 10px;
   }
 
-<<<<<<< HEAD
   @media (width <= 927px) {
     .login-container{
         display: block;
@@ -219,7 +218,6 @@ button:hover {
         height: auto;
     }
 }
-=======
   .alert {
     padding: 10px 15px;
     margin-bottom: 20px;
@@ -244,4 +242,3 @@ button:hover {
 .alert-info a:hover {
     text-decoration: underline;
 }
->>>>>>> Reservas-3
