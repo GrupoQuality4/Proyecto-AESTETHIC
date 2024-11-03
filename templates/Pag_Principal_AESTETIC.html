@@ -26,6 +26,10 @@
         <div class="title">
             <img src="../static/media/Imagenes Pag. Principal/titulo_logo.png" alt="titulo_logo" />
         </div>
+        <div class="contact-info">
+            <img src="../static/media/Imagenes Pag. Principal/contactos.png"
+                alt="contact-info" />
+        </div>
     </div>
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -48,6 +52,11 @@
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
             <a href="{{ url_for('reservas') }}">Reserva</a>
+
+            <label for="check" class="esconder-menu">
+                &#215
+            </label>
+
             {% if user_name and not user_email == 'aestheticestetica22@gmail.com' %}
                 <a href="{{ url_for('historial_reservas') }}">Historial de Reservas</a>
             {% endif %}
@@ -87,7 +96,6 @@
         <div class="presentacion">
             <h1>BIENVENIDO AL CENTRO DE ESTÉTICA AESTHETIC</h1>
         </div>
-    </div>
 
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
