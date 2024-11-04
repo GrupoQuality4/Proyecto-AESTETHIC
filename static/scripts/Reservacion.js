@@ -201,6 +201,73 @@ function renderSecondCalendar() {
 renderCalendar();
 renderSecondCalendar();
 
+document.querySelector('.submit-button').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const reservaData = {
+        user_id: 1,
+        servicio: document.getElementById('servicio').value,
+        fecha_reserva: document.getElementById('fecha').value,
+        fecha_uso: document.getElementById('fecha').value,
+    };
+
+    fetch('/api/reserva', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reservaData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+document.querySelector('.submit-button').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const reservaData = {
+        user_id: 1,
+        servicio: document.getElementById('servicio').value,
+        fecha_reserva: document.getElementById('fecha').value,
+        fecha_uso: document.getElementById('fecha').value,
+    };
+
+    console.log("Datos de reserva enviados:", reservaData);
+
+    fetch('/api/reserva', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reservaData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            document.getElementById('confirmationModal').style.display = 'flex';
+        } else {
+            alert(data.error || 'Hubo un problema con la reserva. Intente nuevamente.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
+    });
+});
+function cerrarConfirmacion() {
+
+    document.getElementById('confirmationModal').style.display = 'none';
+    window.location.reload();
+}
+
+
+
 
 
 

@@ -291,10 +291,6 @@ def obtener_subservicios():
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
 
-from flask import jsonify, request
-from datetime import datetime
-from models import Horario  # Asegúrate de importar el modelo Horario
-
 @app.route('/api/obtener_horarios')
 def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
@@ -312,7 +308,6 @@ def obtener_horarios():
 
     horarios_disponibles = []
     for h in horarios:
-        # Verificamos si hora_inicio y hora_fin son strings y convertimos si es necesario
         hora_inicio = h.hora_inicio
         hora_fin = h.hora_fin
 
@@ -334,6 +329,38 @@ def obtener_dia_semana(fecha):
     fecha_dt = datetime.strptime(fecha, "%Y-%m-%d")
     return dias_semana[fecha_dt.weekday()]
 
+@app.route('/api/reserva', methods=['POST'])
+def guardar_reserva():
+    try:
+        data = request.get_json()
+        print("Datos recibidos:", data)
+        
+        user_id = data.get('user_id')
+        servicio = data.get('servicio')
+        fecha_reserva = data.get('fecha_reserva')
+        fecha_uso = data.get('fecha_uso')
+
+        if not all([user_id, servicio, fecha_reserva, fecha_uso]):
+            return jsonify({"error": "Todos los campos son requeridos"}), 400
+
+        try:
+            fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d').date()
+            fecha_uso = datetime.strptime(fecha_uso, '%Y-%m-%d').date()
+        except ValueError as e:
+            print("Error de formato de fecha:", e)
+            return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
+
+        nueva_reserva = Reserva(user_id=user_id, servicio=servicio, fecha_reserva=fecha_reserva, fecha_uso=fecha_uso)
+        
+        db.session.add(nueva_reserva)
+        db.session.commit()
+        
+        print("Reserva guardada con éxito")
+        return jsonify({"message": "Reserva guardada exitosamente"}), 201
+
+    except Exception as e:
+        print(f"Error al guardar la reserva: {e}")
+        return jsonify({"error": "Ocurrió un error en el servidor. Intente nuevamente más tarde."}), 500
 
 @app.route('/historial_reservas')
 def historial_reservas():
