@@ -291,6 +291,50 @@ def obtener_subservicios():
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
 
+from flask import jsonify, request
+from datetime import datetime
+from models import Horario  # Asegúrate de importar el modelo Horario
+
+@app.route('/api/obtener_horarios')
+def obtener_horarios():
+    servicio_id = request.args.get('servicio_id')
+    subservicio_id = request.args.get('subservicio_id')
+    fecha = request.args.get('fecha')
+
+    if not servicio_id or not fecha:
+        return jsonify({"error": "Parámetros incompletos"}), 400
+
+    dia_semana = obtener_dia_semana(fecha)
+    horarios = Horario.query.filter_by(
+        servicio_id=servicio_id,
+        dia_semana=dia_semana
+    ).all()
+
+    horarios_disponibles = []
+    for h in horarios:
+        # Verificamos si hora_inicio y hora_fin son strings y convertimos si es necesario
+        hora_inicio = h.hora_inicio
+        hora_fin = h.hora_fin
+
+        if isinstance(hora_inicio, str):
+            hora_inicio = datetime.strptime(hora_inicio, "%H:%M").time()
+        if isinstance(hora_fin, str):
+            hora_fin = datetime.strptime(hora_fin, "%H:%M").time()
+
+        horarios_disponibles.append({
+            "id": h.id,
+            "hora_inicio": hora_inicio.strftime("%H:%M"),
+            "hora_fin": hora_fin.strftime("%H:%M")
+        })
+
+    return jsonify({"horarios": horarios_disponibles})
+
+def obtener_dia_semana(fecha):
+    dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+    fecha_dt = datetime.strptime(fecha, "%Y-%m-%d")
+    return dias_semana[fecha_dt.weekday()]
+
+
 @app.route('/historial_reservas')
 def historial_reservas():
     if 'user_id' not in session:

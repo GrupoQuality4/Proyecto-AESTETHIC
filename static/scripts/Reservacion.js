@@ -44,15 +44,43 @@ function seleccionarServicio(categoria, servicio) {
     }, 500);
 }
 
-// Configuración del selector de fecha usando flatpickr
 document.addEventListener("DOMContentLoaded", function() {
+    // Inicializar el calendario usando Flatpickr
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
         dateFormat: "Y-m-d",
-        minDate: "today"
+        minDate: "today",
+        onChange: function(selectedDates, dateStr) {
+            cargarHorarios(dateStr); // Llama a la función para cargar horarios
+        }
     });
 });
+
+// Función para cargar horarios disponibles para la fecha y servicio seleccionados
+function cargarHorarios(fecha) {
+    const servicioId = document.getElementById("servicio").value; // Obtiene el ID del servicio seleccionado
+    const subservicioId = document.getElementById("subservicio-corporal-select").value; // ID del subservicio seleccionado, si existe
+    const horaSelect = document.getElementById("hora"); // Elemento de selección de horario
+
+    // Reiniciar las opciones del selector de hora
+    horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+
+    // Llamada a la API para obtener los horarios disponibles según el servicio, subservicio y fecha
+    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&fecha=${fecha}`)
+    .then(response => response.json())
+    .then(data => {
+        data.horarios.forEach(horario => {
+            const option = document.createElement("option");
+            option.value = horario.id;
+            option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
+            horaSelect.appendChild(option);
+        });
+    })
+    .catch(error => console.error("Error al cargar horarios:", error));
+
+}
+
 
 document.getElementById("servicio").addEventListener("change", function() {
     const tratamientoContainer = document.getElementById("tratamiento-container");
