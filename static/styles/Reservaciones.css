@@ -150,21 +150,6 @@ body {
     font-size: 1.1em;
     color: #a05252;
 }
-
-.flatpickr-day {
-    border-radius: 50%;
-}
-
-.flatpickr-day.disponible {
-    background-color: green !important;
-    color: white !important;
-}
-
-.flatpickr-day.ocupado {
-    background-color: red !important;
-    color: white !important;
-}
-
 .categoria {
     background-color: #f4d3da;
     padding: 10px;
@@ -177,6 +162,115 @@ body {
 .subservicios {
     margin-top: 20px;
 }
+
+.calendar-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.calendar {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    height: 390px;
+}
+
+#calendarBody, #calendarBody2 {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 30px;
+}
+
+.calendar-day {
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.2em;
+    background-color: #FFE8ED; /* Color rosita claro para todos los días */
+    color: black;
+    border: 2px solid #FFE8ED; /* Borde en el color especificado */
+}
+
+.calendar-day.sunday {
+    background-color: #6a6a6a; /* Gris oscuro para domingos */
+    color: white;
+}
+
+.calendar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #6a2e39;
+}
+
+.calendar span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #6a2e39;
+}
+
+.day-header {
+    font-weight: bold;
+    color: #6a2e39;
+    text-align: center;
+    padding: 5px 0;
+    font-size: 1.2em;
+}
+
+.grey-calendar {
+    background-color: #f0f0f0;
+}
+
+.grey-calendar .calendar-day {
+    background-color: #FFE8ED; /* Color rosita claro para todos los días en el segundo calendario */
+    color: black;
+    border: 2px solid #FFE8ED;
+}
+
+/* Leyenda de colores */
+.legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.available-color {
+    background-color: #FFE8ED; /* Color rosita claro para disponible */
+}
+
+.occupied-color {
+    background-color: #d3a3a3; /* Color rosita fuerte para ocupado */
+}
+
+.sunday-color {
+    background-color: #6a6a6a; /* Color gris oscuro para día no laborable */
+}
+
+
+
+
+
 
 
 
