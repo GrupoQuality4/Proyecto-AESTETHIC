@@ -1,18 +1,15 @@
 import sqlite3
 
-db_path = 'C:\\Users\\Tecno\\Desktop\\\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
-#db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-def eliminar_usuario(user_id):
-    delete_query = "DELETE FROM user WHERE id = ?;"
-    cursor.execute(delete_query, (user_id,))
+def renombrar_tabla(old_name, new_name):
+    rename_query = f"ALTER TABLE {old_name} RENAME TO {new_name};"
+    cursor.execute(rename_query)
     conn.commit()
-    print(f"Usuario con ID {user_id} eliminado.")
+    print(f"Tabla '{old_name}' renombrada a '{new_name}'.")
 
-user_id = int(input("Ingrese el ID del usuario que desea eliminar: "))
-eliminar_usuario(user_id)
-
+renombrar_tabla('user', 'users')
 conn.close()
-
