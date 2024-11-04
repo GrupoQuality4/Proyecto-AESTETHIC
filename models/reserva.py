@@ -5,9 +5,11 @@ class Reserva(db.Model):
     __tablename__ = 'reservas'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    nombre_cliente = db.Column(db.String(50), nullable=False)
     servicio = db.Column(db.String(50), nullable=False)
     fecha_reserva = db.Column(db.Date, nullable=False)
     fecha_uso = db.Column(db.Date, nullable=False)
+    horario = db.Column(db.String(20), nullable=True)
 
     user = relationship("User", back_populates="reservas")
 

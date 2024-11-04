@@ -339,10 +339,14 @@ def guardar_reserva():
         servicio = data.get('servicio')
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
+        horario = data.get('horario')  # Nuevo campo horario
+        nombre_cliente = data.get('nombre_cliente')  # Nuevo campo nombre_cliente
 
+        # Validar campos requeridos
         if not all([user_id, servicio, fecha_reserva, fecha_uso]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
+        # Validar el formato de fecha
         try:
             fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d').date()
             fecha_uso = datetime.strptime(fecha_uso, '%Y-%m-%d').date()
@@ -350,17 +354,34 @@ def guardar_reserva():
             print("Error de formato de fecha:", e)
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
-        nueva_reserva = Reserva(user_id=user_id, servicio=servicio, fecha_reserva=fecha_reserva, fecha_uso=fecha_uso)
-        
+        # Recuperar el nombre del cliente usando el `user_id` si no se proporciona
+        if not nombre_cliente:
+            user = User.query.get(user_id)
+            if user:
+                nombre_cliente = user.nombre
+            else:
+                return jsonify({"error": "Usuario no encontrado"}), 404
+
+        # Crear la nueva reserva
+        nueva_reserva = Reserva(
+            user_id=user_id,
+            nombre_cliente=nombre_cliente,
+            servicio=servicio,
+            fecha_reserva=fecha_reserva,
+            fecha_uso=fecha_uso,
+            horario=horario
+        )
+
         db.session.add(nueva_reserva)
         db.session.commit()
-        
+
         print("Reserva guardada con éxito")
         return jsonify({"message": "Reserva guardada exitosamente"}), 201
 
     except Exception as e:
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": "Ocurrió un error en el servidor. Intente nuevamente más tarde."}), 500
+
 
 @app.route('/historial_reservas')
 def historial_reservas():
