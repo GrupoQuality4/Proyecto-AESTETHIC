@@ -57,30 +57,40 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Función para cargar horarios disponibles para la fecha y servicio seleccionados
 function cargarHorarios(fecha) {
-    const servicioId = document.getElementById("servicio").value; // Obtiene el ID del servicio seleccionado
-    const subservicioId = document.getElementById("subservicio-corporal-select").value; // ID del subservicio seleccionado, si existe
-    const horaSelect = document.getElementById("hora"); // Elemento de selección de horario
+    const servicioId = document.getElementById("servicio").value;
+    const subservicioId = document.getElementById("subservicio-corporal-select").value;
+    const horaSelect = document.getElementById("hora");
 
-    // Reiniciar las opciones del selector de hora
+    if (!servicioId || !subservicioId) {
+        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        return;
+    }
+
     horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
 
-    // Llamada a la API para obtener los horarios disponibles según el servicio, subservicio y fecha
     fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&fecha=${fecha}`)
-    .then(response => response.json())
-    .then(data => {
-        data.horarios.forEach(horario => {
-            const option = document.createElement("option");
-            option.value = horario.id;
-            option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
-            horaSelect.appendChild(option);
-        });
-    })
-    .catch(error => console.error("Error al cargar horarios:", error));
-
+        .then(response => response.json())
+        .then(data => {
+            if (data.horarios && data.horarios.length > 0) {
+                data.horarios.forEach(horario => {
+                    const option = document.createElement("option");
+                    option.value = horario.id;
+                    option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
+                    horaSelect.appendChild(option);
+                });
+            } else {
+                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+            }
+        })
+        .catch(error => console.error("Error al cargar horarios:", error));
 }
-
+document.getElementById("servicio").addEventListener("change", function() {
+    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
+});
+document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
+    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
+});
 
 document.getElementById("servicio").addEventListener("change", function() {
     const tratamientoContainer = document.getElementById("tratamiento-container");
@@ -92,11 +102,10 @@ document.getElementById("servicio").addEventListener("change", function() {
     }
 });
 
-// Configuración del primer calendario
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
-let currentMonth2 = currentDate.getMonth() + 1; // El segundo calendario muestra el siguiente mes
+let currentMonth2 = currentDate.getMonth() + 1;
 let currentYear2 = currentDate.getFullYear();
 
 const calendarBody = document.getElementById('calendarBody');
@@ -104,7 +113,6 @@ const currentMonthElement = document.getElementById('currentMonth');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
-// Navegación del primer calendario
 prevBtn.addEventListener('click', () => {
     currentMonth--;
     renderCalendar();
@@ -114,7 +122,6 @@ nextBtn.addEventListener('click', () => {
     renderCalendar();
 });
 
-// Lista de fechas ocupadas para el primer calendario
 const occupiedDates = [
     new Date(currentYear, currentMonth, 5).toDateString(),
     new Date(currentYear, currentMonth, 12).toDateString(),
