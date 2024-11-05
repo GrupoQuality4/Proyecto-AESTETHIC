@@ -205,34 +205,8 @@ document.querySelector('.submit-button').addEventListener('click', function(even
     event.preventDefault();
 
     const reservaData = {
-        user_id: 1,
-        servicio: document.getElementById('servicio').value,
-        fecha_reserva: document.getElementById('fecha').value,
-        fecha_uso: document.getElementById('fecha').value,
-    };
-
-    fetch('/api/reserva', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reservaData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            alert(data.message);
-        } else {
-            alert(data.error);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-});
-document.querySelector('.submit-button').addEventListener('click', function(event) {
-    event.preventDefault();
-
-    const reservaData = {
-        user_id: 1,
+        user_id: 1,  // Ajusta esto para obtener el ID correcto si lo tienes en otro lugar
+        nombre_cliente: document.getElementById('nombre').value,  // Nuevo campo capturado del input
         servicio: document.getElementById('servicio').value,
         fecha_reserva: document.getElementById('fecha').value,
         fecha_uso: document.getElementById('fecha').value,
@@ -260,6 +234,7 @@ document.querySelector('.submit-button').addEventListener('click', function(even
         alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
     });
 });
+
 function cerrarConfirmacion() {
 
     document.getElementById('confirmationModal').style.display = 'none';
