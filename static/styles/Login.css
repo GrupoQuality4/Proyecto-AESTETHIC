@@ -17,8 +17,8 @@ body {
 }
 
 #atras i{
-    font-size: 30px;
-    margin: 0;
+    font-size: 25px;
+    color: black;
 }
 
 .login-left {
@@ -156,8 +156,6 @@ button:hover {
     border: 1px solid #f5c6cb;
 }
 
-
-
 .footer {
     background-color: #d08590;
     padding: 5px 10px;
@@ -262,5 +260,7 @@ button:hover {
     background-color: #f44336; /* Rojo para error */
     color: white;
 }
+
+
 
 
