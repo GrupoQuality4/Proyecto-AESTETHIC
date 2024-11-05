@@ -203,10 +203,14 @@ renderSecondCalendar();
 
 document.querySelector('.submit-button').addEventListener('click', function(event) {
     event.preventDefault();
-
+    const user_id = localStorage.getItem('user_id');
+    if (!user_id) {
+        alert("Usuario no identificado. Por favor, inicie sesión para hacer una reserva.");
+        return;
+    }
     const reservaData = {
-        user_id: 1,  // Ajusta esto para obtener el ID correcto si lo tienes en otro lugar
-        nombre_cliente: document.getElementById('nombre').value,  // Nuevo campo capturado del input
+        user_id: user_id,
+        nombre_cliente: document.getElementById('nombre').value,
         servicio: document.getElementById('servicio').value,
         fecha_reserva: document.getElementById('fecha').value,
         fecha_uso: document.getElementById('fecha').value,
