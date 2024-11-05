@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
-    const successMessage = document.getElementById('successMessage');
+    const successMessageRegistro = document.getElementById('successMessageRegistro'); // Agrega esta línea
+    const errorMessage = document.getElementById('errorMessage');
+    let errorTimeout;
 
     registerForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        
         const formData = new FormData(registerForm);
         const formDataObj = {};
         formData.forEach((value, key) => (formDataObj[key] = value));
@@ -22,9 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 if (result.success) {
                     registerForm.style.display = 'none';
-                    successMessage.style.display = 'block';
+                    successMessageRegistro.style.display = 'block'; // Modifica esta línea
+                    errorMessage.style.display = 'none';
                 } else {
-                    alert(result.message || 'Hubo un error en el registro.');
+                    if (errorTimeout) clearTimeout(errorTimeout);
+                    errorMessage.textContent = result.message || 'Hubo un error en el registro.';
+                    errorMessage.style.display = 'block';
+                    errorTimeout = setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
                 }
             } else {
                 console.error('Error en la respuesta del servidor');
@@ -34,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 function togglePassword(fieldId) {
     const passwordField = document.getElementById(fieldId);
     const fieldType = passwordField.getAttribute("type");

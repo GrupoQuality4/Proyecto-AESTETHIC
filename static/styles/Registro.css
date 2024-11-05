@@ -249,3 +249,79 @@ a:hover {
     font-size: 18px; /* Tamaño del ícono */
     color: #888; /* Color del ícono */
 }
+
+.login-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.login-link a {
+    color: #d17b8f; /* Ajusta el color según tu paleta */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.flash-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.flash-message.danger {
+    background-color: #f44336; /* Rojo */
+    color: white;
+}
+
+#successMessageRegistro {
+    text-align: center;
+    background-color: #fbe9f0;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#successMessageRegistro img {
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+#successMessageRegistro h1 {
+    color: #b565a7;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+#successMessageRegistro p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
+#successMessageRegistro .button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #b565a7;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#successMessageRegistro .button:hover {
+    background-color: #8e478d;
+}
