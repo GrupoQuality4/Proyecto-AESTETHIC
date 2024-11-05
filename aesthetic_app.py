@@ -1,24 +1,18 @@
-from flask import Flask
+from flask import Flask, g, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask import g, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
-import random
-import os
-import re
+import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
 from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
 
-
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db.init_app(app)
 migrate = Migrate(app, db)
 
@@ -44,17 +38,11 @@ def add_user_to_template():
         if user:
             session['user_roles'] = [role.name for role in user.roles]
 
-
 def generate_random_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 def send_email(to, subject, template):
-    msg = Message(
-        subject,
-        recipients=[to],
-        html=template,
-        sender=app.config['MAIL_USERNAME']
-    )
+    msg = Message(subject, recipients=[to], html=template, sender=app.config['MAIL_USERNAME'])
     mail.send(msg)
 
 def generate_confirmation_token(email):
@@ -78,22 +66,18 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     mensaje_login = None
-
     if request.method == 'POST':
         email = request.form['usuario']
         password = request.form['contrasena']
         user = User.query.filter_by(email=email).first()
-
         if user and check_password_hash(user.password, password):
             verification_token = VerificationToken.query.filter_by(user_id=user.id).first()
-
             if verification_token and verification_token.expires_at < datetime.utcnow():
                 db.session.delete(verification_token)
                 db.session.delete(user)
                 db.session.commit()
                 flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
                 return redirect(url_for('register'))
-
             session['user_id'] = user.id
             session['user_name'] = user.nombre
             session['user_apellido'] = user.apellido
@@ -102,13 +86,10 @@ def login():
             flash('Inicio de sesión exitoso', 'success')
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
-
         flash('Correo o contraseña incorrectos', 'danger')
     if request.args.get('next') == '/reservas':
         mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
-
     return render_template('Login.html', mensaje_login=mensaje_login)
-
 
 @app.route('/logout')
 def logout():
@@ -129,41 +110,32 @@ def register():
             apellido = data.get('apellido')
             email = data.get('email')
             password = data.get('contrasena')
-
             if not nombre.isalpha() or not apellido.isalpha():
                 return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
-
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
-
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
-
             password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
-
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
-
             token = generate_confirmation_token(new_user.email)
             expires_at = datetime.utcnow() + timedelta(hours=24)
             verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
             db.session.add(verification_token)
             db.session.commit()
-
             confirm_url = url_for('confirm_email', token=token, _external=True)
             html = render_template('activate.html', confirm_url=confirm_url)
             subject = "Por favor confirma tu correo"
             send_email(new_user.email, subject, html)
-
             return jsonify(success=True)
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
-
 
 @app.route('/register_success')
 def register_success():
@@ -172,20 +144,16 @@ def register_success():
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
     verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
-
     if verification_token.expires_at < datetime.utcnow():
         user = verification_token.user
         db.session.delete(verification_token)
         db.session.delete(user)
         db.session.commit()
-
         flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
         return redirect(url_for('register'))
-    
     user = verification_token.user
     db.session.delete(verification_token)
     db.session.commit()
-
     flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
     return redirect(url_for('login'))
 
@@ -286,7 +254,6 @@ def obtener_subservicios():
     categorias = request.args.get('categorias')
     if not categorias:
         return jsonify({"error": "Categoría no especificada"}), 400
-
     subservicios = Servicio.query.filter_by(categorias=categorias).all()
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
@@ -296,32 +263,19 @@ def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
     subservicio_id = request.args.get('subservicio_id')
     fecha = request.args.get('fecha')
-
     if not servicio_id or not fecha:
         return jsonify({"error": "Parámetros incompletos"}), 400
-
     dia_semana = obtener_dia_semana(fecha)
-    horarios = Horario.query.filter_by(
-        servicio_id=servicio_id,
-        dia_semana=dia_semana
-    ).all()
-
+    horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_semana=dia_semana).all()
     horarios_disponibles = []
     for h in horarios:
         hora_inicio = h.hora_inicio
         hora_fin = h.hora_fin
-
         if isinstance(hora_inicio, str):
             hora_inicio = datetime.strptime(hora_inicio, "%H:%M").time()
         if isinstance(hora_fin, str):
             hora_fin = datetime.strptime(hora_fin, "%H:%M").time()
-
-        horarios_disponibles.append({
-            "id": h.id,
-            "hora_inicio": hora_inicio.strftime("%H:%M"),
-            "hora_fin": hora_fin.strftime("%H:%M")
-        })
-
+        horarios_disponibles.append({"id": h.id, "hora_inicio": hora_inicio.strftime("%H:%M"), "hora_fin": hora_fin.strftime("%H:%M")})
     return jsonify({"horarios": horarios_disponibles})
 
 def obtener_dia_semana(fecha):
@@ -333,27 +287,21 @@ def obtener_dia_semana(fecha):
 def guardar_reserva():
     try:
         data = request.get_json()
-        print("Datos recibidos:", data)
-        
         user_id = data.get('user_id')
         servicio = data.get('servicio')
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
-        nombre_cliente = data.get('nombre_cliente')  # Capturar el nombre del cliente
+        nombre_cliente = data.get('nombre_cliente')
 
-        # Verificar que todos los campos estén presentes
         if not all([user_id, servicio, fecha_reserva, fecha_uso, nombre_cliente]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
-        # Verificar formato de fecha
         try:
             fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d').date()
             fecha_uso = datetime.strptime(fecha_uso, '%Y-%m-%d').date()
         except ValueError as e:
-            print("Error de formato de fecha:", e)
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
-        # Obtener el usuario usando db.session.get()
         usuario = db.session.get(User, user_id)
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
@@ -367,22 +315,42 @@ def guardar_reserva():
         )
         db.session.add(nueva_reserva)
         db.session.commit()
+
+        try:
+            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso)
+        except Exception as e:
+            print(f"Error al enviar el correo: {e}")
+            return jsonify({"error": "Reserva guardada, pero ocurrió un error al enviar el correo."}), 500
         
-        print("Reserva guardada con éxito")
         return jsonify({"message": "Reserva guardada exitosamente"}), 201
 
     except Exception as e:
         print(f"Error al guardar la reserva: {e}")
-        return jsonify({"error": "Ocurrió un error en el servidor. Intente nuevamente más tarde."}), 500
+        return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
+
+
+def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
+    try:
+        html = render_template('reserva_confirmacion.html', 
+                               nombre_cliente=nombre_cliente, 
+                               servicio=servicio, 
+                               fecha_reserva=fecha_reserva, 
+                               horario=horario)
+        msg = Message(subject="Confirmación de su Reserva",
+                      recipients=[email],
+                      html=html,
+                      sender=app.config['MAIL_USERNAME'])
+        mail.send(msg)
+        print("Correo enviado exitosamente.")
+    except Exception as e:
+        print(f"Error al enviar el correo de reserva: {e}")
 
 @app.route('/historial_reservas')
 def historial_reservas():
     if 'user_id' not in session:
         return redirect(url_for('login', next=url_for('historial_reservas')))
-    
     user_id = session['user_id']
     reservas = Reserva.query.filter_by(user_id=user_id).order_by(Reserva.fecha_reserva.desc()).all()
-    
     return render_template('historial_reservas.html', reservas=reservas)
 
 @app.route('/carrito')
@@ -392,6 +360,20 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
+
+@app.route('/test_mail')
+def test_mail():
+    try:
+        msg = Message("Correo de prueba", 
+                      recipients=["correo_destino@example.com"],
+                      body="Este es un correo de prueba.", 
+                      sender=app.config['MAIL_USERNAME'])
+        mail.send(msg)
+        return "Correo de prueba enviado correctamente."
+    except Exception as e:
+        print(f"Error al enviar el correo de prueba: {e}")
+        return f"Error al enviar el correo de prueba: {e}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

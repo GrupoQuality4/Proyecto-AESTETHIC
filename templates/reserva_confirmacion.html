@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Reserva</title>
+    <link rel="stylesheet" href="../static/styles/reserva_confirmacion.css">
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="../static/media/Imagenes Pag. Principal/logo_encabezado.png" alt="Aesthetic Estética Integral">
+        </div>
+        <h2>¡Gracias por su reserva, {{ nombre_cliente }}!</h2>
+        <p>Estos son los detalles de su reserva:</p>
+        <ul class="details">
+            <li><strong>Servicio:</strong> {{ servicio }}</li>
+            <li><strong>Fecha:</strong> {{ fecha_reserva }}</li>
+            <li><strong>Hora:</strong> {{ horario }}</li>
+        </ul>
+        <p>Si tiene alguna duda, puede contactarnos a través de nuestro sitio web o responder a este correo.</p>
+        <p>¡Esperamos verlo pronto!</p>
+        <div class="footer">
+            <p>&copy; 2024 Aesthetic Estética Integral. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
+
