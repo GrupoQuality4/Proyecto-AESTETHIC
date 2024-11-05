@@ -361,20 +361,6 @@ def carrito():
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
 
-@app.route('/test_mail')
-def test_mail():
-    try:
-        msg = Message("Correo de prueba", 
-                      recipients=["correo_destino@example.com"],
-                      body="Este es un correo de prueba.", 
-                      sender=app.config['MAIL_USERNAME'])
-        mail.send(msg)
-        return "Correo de prueba enviado correctamente."
-    except Exception as e:
-        print(f"Error al enviar el correo de prueba: {e}")
-        return f"Error al enviar el correo de prueba: {e}"
-
-
 if __name__ == '__main__':
     app.run(debug=True)
 
