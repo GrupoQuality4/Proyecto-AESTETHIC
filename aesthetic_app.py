@@ -42,8 +42,12 @@ def generate_random_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 def send_email(to, subject, template):
-    msg = Message(subject, recipients=[to], html=template, sender=app.config['MAIL_USERNAME'])
-    mail.send(msg)
+    try:
+        msg = Message(subject, recipients=[to], html=template, sender=app.config['MAIL_USERNAME'])
+        mail.send(msg)
+    except Exception as e:
+        print(f"Error al enviar el correo: {e}")
+
 
 def generate_confirmation_token(email):
     return ts.dumps(email, salt='email-confirm-key')
@@ -110,6 +114,7 @@ def register():
             apellido = data.get('apellido')
             email = data.get('email')
             password = data.get('contrasena')
+
             if not nombre.isalpha() or not apellido.isalpha():
                 return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
@@ -119,23 +124,33 @@ def register():
             password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
+
+
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
-            token = generate_confirmation_token(new_user.email)
-            expires_at = datetime.utcnow() + timedelta(hours=24)
-            verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
-            db.session.add(verification_token)
-            db.session.commit()
-            confirm_url = url_for('confirm_email', token=token, _external=True)
-            html = render_template('activate.html', confirm_url=confirm_url)
-            subject = "Por favor confirma tu correo"
-            send_email(new_user.email, subject, html)
-            return jsonify(success=True)
+
+            try:
+                token = generate_confirmation_token(new_user.email)
+                expires_at = datetime.utcnow() + timedelta(hours=24)
+                verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
+                db.session.add(verification_token)
+                db.session.commit()
+
+                confirm_url = url_for('confirm_email', token=token, _external=True)
+                html = render_template('activate.html', confirm_url=confirm_url)
+                subject = "Por favor confirma tu correo"
+                send_email(new_user.email, subject, html)
+                return jsonify(success=True)
+            except Exception as e:
+                print(f"Error al generar o almacenar el token: {e}")
+                db.session.rollback()
+                return jsonify(success=False, message="Error al generar el token de verificación."), 500
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
+
 
 @app.route('/register_success')
 def register_success():
@@ -143,19 +158,31 @@ def register_success():
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
-    verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
-    if verification_token.expires_at < datetime.utcnow():
+    try:
+        verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
+        
+        # Verificar si el token ha expirado
+        if verification_token.expires_at < datetime.utcnow():
+            user = verification_token.user
+            db.session.delete(verification_token)
+            db.session.delete(user)
+            db.session.commit()
+            flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
+            return redirect(url_for('register'))
+        
+        # Marcar al usuario como verificado y eliminar el token
         user = verification_token.user
+        user.is_verified = True  # Asegúrate de tener este campo en el modelo User
         db.session.delete(verification_token)
-        db.session.delete(user)
         db.session.commit()
-        flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
+        
+        flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
+        return redirect(url_for('login'))
+    except Exception as e:
+        print(f"Error al confirmar el token: {e}")
+        flash('El token es inválido o ha expirado.', 'danger')
         return redirect(url_for('register'))
-    user = verification_token.user
-    db.session.delete(verification_token)
-    db.session.commit()
-    flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
-    return redirect(url_for('login'))
+
 
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
@@ -293,19 +320,23 @@ def guardar_reserva():
         fecha_uso = data.get('fecha_uso')
         nombre_cliente = data.get('nombre_cliente')
 
+        # Validación de todos los campos
         if not all([user_id, servicio, fecha_reserva, fecha_uso, nombre_cliente]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
+        # Validación del formato de fecha
         try:
             fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d').date()
             fecha_uso = datetime.strptime(fecha_uso, '%Y-%m-%d').date()
-        except ValueError as e:
+        except ValueError:
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
+        # Verificación de usuario existente
         usuario = db.session.get(User, user_id)
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
 
+        # Creación de la reserva
         nueva_reserva = Reserva(
             user_id=user_id,
             servicio=servicio,
@@ -316,6 +347,7 @@ def guardar_reserva():
         db.session.add(nueva_reserva)
         db.session.commit()
 
+        # Envío de correo de confirmación
         try:
             enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso)
         except Exception as e:
@@ -345,6 +377,7 @@ def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horari
     except Exception as e:
         print(f"Error al enviar el correo de reserva: {e}")
 
+
 @app.route('/historial_reservas')
 def historial_reservas():
     if 'user_id' not in session:
@@ -360,20 +393,6 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
-
-@app.route('/test_mail')
-def test_mail():
-    try:
-        msg = Message("Correo de prueba", 
-                      recipients=["correo_destino@example.com"],
-                      body="Este es un correo de prueba.", 
-                      sender=app.config['MAIL_USERNAME'])
-        mail.send(msg)
-        return "Correo de prueba enviado correctamente."
-    except Exception as e:
-        print(f"Error al enviar el correo de prueba: {e}")
-        return f"Error al enviar el correo de prueba: {e}"
-
 
 if __name__ == '__main__':
     app.run(debug=True)
