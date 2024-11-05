@@ -44,14 +44,52 @@ function seleccionarServicio(categoria, servicio) {
     }, 500);
 }
 
-// Configuración del selector de fecha usando flatpickr
 document.addEventListener("DOMContentLoaded", function() {
+    // Inicializar el calendario usando Flatpickr
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
         dateFormat: "Y-m-d",
-        minDate: "today"
+        minDate: "today",
+        onChange: function(selectedDates, dateStr) {
+            cargarHorarios(dateStr); // Llama a la función para cargar horarios
+        }
     });
+});
+
+function cargarHorarios(fecha) {
+    const servicioId = document.getElementById("servicio").value;
+    const subservicioId = document.getElementById("subservicio-corporal-select").value;
+    const horaSelect = document.getElementById("hora");
+
+    if (!servicioId || !subservicioId) {
+        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        return;
+    }
+
+    horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+
+    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&fecha=${fecha}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.horarios && data.horarios.length > 0) {
+                data.horarios.forEach(horario => {
+                    const option = document.createElement("option");
+                    option.value = horario.id;
+                    option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
+                    horaSelect.appendChild(option);
+                });
+            } else {
+                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+            }
+        })
+        .catch(error => console.error("Error al cargar horarios:", error));
+}
+document.getElementById("servicio").addEventListener("change", function() {
+    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
+});
+document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
+    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
 });
 
 document.getElementById("servicio").addEventListener("change", function() {
@@ -64,11 +102,10 @@ document.getElementById("servicio").addEventListener("change", function() {
     }
 });
 
-// Configuración del primer calendario
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
-let currentMonth2 = currentDate.getMonth() + 1; // El segundo calendario muestra el siguiente mes
+let currentMonth2 = currentDate.getMonth() + 1;
 let currentYear2 = currentDate.getFullYear();
 
 const calendarBody = document.getElementById('calendarBody');
@@ -76,7 +113,6 @@ const currentMonthElement = document.getElementById('currentMonth');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
-// Navegación del primer calendario
 prevBtn.addEventListener('click', () => {
     currentMonth--;
     renderCalendar();
@@ -86,7 +122,6 @@ nextBtn.addEventListener('click', () => {
     renderCalendar();
 });
 
-// Lista de fechas ocupadas para el primer calendario
 const occupiedDates = [
     new Date(currentYear, currentMonth, 5).toDateString(),
     new Date(currentYear, currentMonth, 12).toDateString(),
@@ -165,6 +200,48 @@ function renderSecondCalendar() {
 
 renderCalendar();
 renderSecondCalendar();
+
+document.querySelector('.submit-button').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const reservaData = {
+        user_id: 1,  // Ajusta esto para obtener el ID correcto si lo tienes en otro lugar
+        nombre_cliente: document.getElementById('nombre').value,  // Nuevo campo capturado del input
+        servicio: document.getElementById('servicio').value,
+        fecha_reserva: document.getElementById('fecha').value,
+        fecha_uso: document.getElementById('fecha').value,
+    };
+
+    console.log("Datos de reserva enviados:", reservaData);
+
+    fetch('/api/reserva', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reservaData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            document.getElementById('confirmationModal').style.display = 'flex';
+        } else {
+            alert(data.error || 'Hubo un problema con la reserva. Intente nuevamente.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
+    });
+});
+
+function cerrarConfirmacion() {
+
+    document.getElementById('confirmationModal').style.display = 'none';
+    window.location.reload();
+}
+
+
 
 
 

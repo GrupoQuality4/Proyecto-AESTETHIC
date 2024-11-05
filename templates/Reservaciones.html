@@ -24,7 +24,6 @@
                     <span id="currentMonth">octubre de 2024</span>
                     <button id="nextBtn">►</button>
                     <div id="calendarBody"></div>
-                    <!-- Leyenda para el primer calendario -->
                     <div class="legend">
                         <div class="legend-item">
                             <div class="legend-color available-color"></div>
@@ -202,8 +201,7 @@
             </div>                   
             <form class="reservation-form">
                 <label for="nombre">Nombre del cliente</label>
-                <input type="text" id="nombre" placeholder="Nombre del cliente">
-
+                <input type="text" id="nombre" placeholder="Nombre del cliente" required>
                 <label for="servicio">Servicio al que asistirá</label>
                 <select id="servicio" name="servicio" onchange="cargarSubservicios()">
                     <option value="">Selecciona una categoría</option>
@@ -237,6 +235,13 @@
                 </select>
                 <button class="submit-button">Reservar</button>
             </form>
+        </div>
+    </div>
+    <div class="confirmation-modal" id="confirmationModal" style="display: none;">
+        <div class="confirmation-content">
+            <h2>¡Muchas gracias!</h2>
+            <p>Su reserva se ha realizado con éxito.</p>
+            <button onclick="cerrarConfirmacion()">OK</button>
         </div>
     </div>
     <footer class="footer">

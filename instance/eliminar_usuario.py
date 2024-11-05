@@ -1,18 +1,21 @@
 import sqlite3
 
-db_path = 'C:\\Users\\Tecno\\Desktop\\\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
-#db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+# Ruta a tu archivo de base de datos SQLite
+#db_path = 'C:\\Users\\Tecno\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+# O usa esta ruta si corresponde:
+db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+
+# Conectar a la base de datos
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-def eliminar_usuario(user_id):
-    delete_query = "DELETE FROM user WHERE id = ?;"
-    cursor.execute(delete_query, (user_id,))
+# Eliminar todas las reservas
+try:
+    cursor.execute("DELETE FROM reservas;")
     conn.commit()
-    print(f"Usuario con ID {user_id} eliminado.")
+    print("Todas las reservas han sido eliminadas.")
+except sqlite3.OperationalError as e:
+    print(f"Error al eliminar reservas: {e}")
 
-user_id = int(input("Ingrese el ID del usuario que desea eliminar: "))
-eliminar_usuario(user_id)
-
+# Cerrar la conexión
 conn.close()
-
