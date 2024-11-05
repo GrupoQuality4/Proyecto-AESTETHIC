@@ -187,25 +187,19 @@ a:hover {
 #atras{
     position: absolute;
     top: 0;
-    left: 10px;
+    left: 0px;
     margin: 10px;
-    background-color: #d08590;
 }
 
 #atras i{
-    font-size: 30px;
-    margin: 0;
-    background-color: #d08590;
-}
-.fa-arrow-circle-left{
-    position: relative;
-    background-color: #d08590;
+    font-size: 25px;
+    color: black;
 }
 
 
 @media screen and (width <=627px) {
-    .container{       
-        display: block;        
+    .container{
+        display: block;
     }
 
     .left-panel{

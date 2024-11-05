@@ -88,7 +88,7 @@ def login():
             return redirect(next_url or url_for('home'))
         flash('Correo o contraseña incorrectos', 'danger')
     if request.args.get('next') == '/reservas':
-        mensaje_login = "Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate."
+        flash("Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate.", "danger")
     return render_template('Login.html', mensaje_login=mensaje_login)
 
 @app.route('/logout')
