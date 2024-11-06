@@ -104,7 +104,9 @@ def login():
             session['avatar_color'] = generate_random_color()
             response = jsonify(success=True, user_id=user.user_id)
             response.set_cookie('user_id', str(user.user_id))
-            
+
+            flash('Inicio de sesión exitoso', 'success')
+            next_url = request.args.get('next')
             return redirect(url_for('home'))
 
         flash('Correo o contraseña incorrectos', 'danger')
