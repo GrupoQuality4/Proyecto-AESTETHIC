@@ -256,15 +256,15 @@ body {
 }
 
 .available-color {
-    background-color: #FFE8ED; /* Color rosita claro para disponible */
+    background-color: #FFE8ED;
 }
 
 .occupied-color {
-    background-color: #d3a3a3; /* Color rosita fuerte para ocupado */
+    background-color: #d3a3a3;
 }
 
 .sunday-color {
-    background-color: #6a6a6a; /* Color gris oscuro para día no laborable */
+    background-color: #6a6a6a;
 }
 
 .confirmation-modal {

@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
         dateFormat: "Y-m-d",
         minDate: "today",
         onChange: function(selectedDates, dateStr) {
-            cargarHorarios(dateStr); // Llama a la función para cargar horarios
+            cargarHorarios(dateStr);
         }
     });
 });
@@ -203,10 +203,15 @@ renderSecondCalendar();
 
 document.querySelector('.submit-button').addEventListener('click', function(event) {
     event.preventDefault();
-
+    const user_id = localStorage.setItem('user_id', user_id);
+    if (!user_id) {
+        alert("Usuario no identificado. Por favor, inicie sesión para hacer una reserva.");
+        window.location.href = '/login';s
+        return;
+    }
     const reservaData = {
-        user_id: 1,  // Ajusta esto para obtener el ID correcto si lo tienes en otro lugar
-        nombre_cliente: document.getElementById('nombre').value,  // Nuevo campo capturado del input
+        user_id: user_id,
+        nombre_cliente: document.getElementById('nombre').value,
         servicio: document.getElementById('servicio').value,
         fecha_reserva: document.getElementById('fecha').value,
         fecha_uso: document.getElementById('fecha').value,
@@ -234,6 +239,39 @@ document.querySelector('.submit-button').addEventListener('click', function(even
         alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
     });
 });
+
+document.querySelector('#login-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(document.querySelector('#login-form'));
+    fetch('/login', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('user_id', data.user_id);
+            const nextUrl = new URLSearchParams(window.location.search).get('next') || '/';
+            window.location.href = nextUrl;
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al iniciar sesión. Intente nuevamente más tarde.');
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.querySelector('.submit-button');
+    if (submitButton) {
+        submitButton.addEventListener('click', function(event) {
+        });
+    } else {
+        console.error("El botón con clase 'submit-button' no se encontró en el DOM.");
+    }
+});
+
 
 function cerrarConfirmacion() {
 

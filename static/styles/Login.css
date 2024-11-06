@@ -17,8 +17,8 @@ body {
 }
 
 #atras i{
-    font-size: 30px;
-    margin: 0;
+    font-size: 25px;
+    color: black;
 }
 
 .login-left {
@@ -156,8 +156,6 @@ button:hover {
     border: 1px solid #f5c6cb;
 }
 
-
-
 .footer {
     background-color: #d08590;
     padding: 5px 10px;
@@ -242,3 +240,27 @@ button:hover {
 .alert-info a:hover {
     text-decoration: underline;
 }
+
+.flash-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.flash-message.success {
+    background-color: #4caf50; /* Verde para éxito */
+    color: white;
+}
+.flash-message.danger {
+    background-color: #f44336; /* Rojo para error */
+    color: white;
+}
+
+
+
+

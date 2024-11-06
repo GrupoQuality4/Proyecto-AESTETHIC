@@ -27,14 +27,13 @@
             </a>
         </div>
         <div class="right-panel">
+            <div id="errorMessage" class="flash-message danger" style="display: none;"></div>
             <h2>Crear Cuenta</h2>
             <h5>Bienvenidos a Aesthetic</h5>
             <form id="registerForm" method="post">
                 <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre" required>
                 <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido" required>
                 <input type="email" id="email" name="email" placeholder="Introduce tu email" required>
-                
-                <!-- Campo de contraseña con ícono de ojo -->
                 <div class="password-container">
                     <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
                     <span class="toggle-password" onclick="togglePassword('contrasena')">&#128065;</span>
@@ -49,11 +48,15 @@
                     <label for="terms">He leído y acepto los <a href="#">términos y condiciones de Aesthetic</a></label>
                 </div>
                 <button type="submit">REGISTRARSE</button>
+                <div class="login-link">
+                    <p>¿Ya tienes cuenta?<a href="{{ url_for('login') }}">Ir al login</p>
+                </div>
             </form>
-            <div id="successMessage" style="display: none;">
+            <div id="successMessageRegistro" style="display: none;" class="registro-exito">
                 <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral" class="logo">
                 <h1>¡Se ha registrado con éxito!</h1>
                 <p>El proceso se ha realizado correctamente. Le hemos enviado un correo electrónico con el enlace para verificar su cuenta antes de ingresar a la plataforma.</p>
+                <a href="{{ url_for('login') }}?registro_exitoso=true" class="btn">Ir al login</a>
             </div>
         </div>
     </div>
