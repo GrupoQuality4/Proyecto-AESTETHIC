@@ -135,6 +135,7 @@ def register():
             password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
+
             try:
                 # Hash de la contraseña y creación del nuevo usuario
                 hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
