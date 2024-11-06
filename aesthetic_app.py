@@ -67,34 +67,6 @@ def home():
     avatar_color = session.get('avatar_color', None)
     return render_template('Pag_Principal_AESTETIC.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    mensaje_login = None
-    if request.method == 'POST':
-        email = request.form['usuario']
-        password = request.form['contrasena']
-        user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
-            verification_token = VerificationToken.query.filter_by(user_id=user.id).first()
-            if verification_token and verification_token.expires_at < datetime.utcnow():
-                db.session.delete(verification_token)
-                db.session.delete(user)
-                db.session.commit()
-                flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
-                return redirect(url_for('register'))
-            session['user_id'] = user.id
-            session['user_name'] = user.nombre
-            session['user_apellido'] = user.apellido
-            session['user_email'] = user.email
-            session['avatar_color'] = generate_random_color()
-            flash('Inicio de sesión exitoso', 'success')
-            next_url = request.args.get('next')
-            return redirect(next_url or url_for('home'))
-        flash('Correo o contraseña incorrectos', 'danger')
-    if request.args.get('next') == '/reservas':
-        flash("Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate.", "danger")
-    return render_template('Login.html', mensaje_login=mensaje_login)
-
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
@@ -104,6 +76,42 @@ def logout():
     session.pop('avatar_color', None)
     flash('Has cerrado sesión', 'success')
     return redirect(url_for('home'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    mensaje_login = None
+
+    # Verificar si hay un mensaje de registro exitoso en la sesión
+    registro_exitoso = session.pop('registro_exitoso', None)
+
+    if request.method == 'POST':
+        email = request.form['usuario']
+        password = request.form['contrasena']
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            verification_token = VerificationToken.query.filter_by(user_id=user.user_id).first()
+            if verification_token and verification_token.expires_at < datetime.utcnow():
+                db.session.delete(verification_token)
+                db.session.delete(user)
+                db.session.commit()
+                flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
+                return redirect(url_for('register'))
+
+            session['user_id'] = user.user_id
+            session['user_name'] = user.nombre
+            session['user_apellido'] = user.apellido
+            session['user_email'] = user.email
+            session['avatar_color'] = generate_random_color()
+            response = jsonify(success=True, user_id=user.user_id)
+            response.set_cookie('user_id', str(user.user_id))
+            
+            return redirect(url_for('home'))
+
+        flash('Correo o contraseña incorrectos', 'danger')
+        
+    if request.args.get('next') == '/reservas':
+        flash("Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate.", "danger")
+    return render_template('Login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -115,6 +123,7 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
+            # Validaciones de entrada
             if not nombre.isalpha() or not apellido.isalpha():
                 return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
@@ -124,17 +133,22 @@ def register():
             password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
-
-
-            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-            new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
+            try:
+                # Hash de la contraseña y creación del nuevo usuario
+                hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+                new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
+                db.session.add(new_user)
+                db.session.commit()
+            except Exception as e:
+                print(f"Error al crear el usuario: {e}")
+                db.session.rollback()
+                return jsonify(success=False, message="Error al crear el usuario en la base de datos."), 500
 
             try:
+                # Generación del token de verificación y envío del correo
                 token = generate_confirmation_token(new_user.email)
                 expires_at = datetime.utcnow() + timedelta(hours=24)
-                verification_token = VerificationToken(token=token, user_id=new_user.id, expires_at=expires_at)
+                verification_token = VerificationToken(token=token, user_id=new_user.user_id, expires_at=expires_at)
                 db.session.add(verification_token)
                 db.session.commit()
 
@@ -142,47 +156,45 @@ def register():
                 html = render_template('activate.html', confirm_url=confirm_url)
                 subject = "Por favor confirma tu correo"
                 send_email(new_user.email, subject, html)
-                return jsonify(success=True)
+
+                # Enviar respuesta JSON en lugar de redirigir
+                return jsonify(success=True, message="¡Se ha registrado con éxito! Revisa tu correo para verificar tu cuenta.")
             except Exception as e:
-                print(f"Error al generar o almacenar el token: {e}")
+                print(f"Error al generar o almacenar el token o al enviar el correo: {e}")
                 db.session.rollback()
-                return jsonify(success=False, message="Error al generar el token de verificación."), 500
+                return jsonify(success=False, message="Error al generar el token de verificación o enviar el correo."), 500
         else:
             return jsonify(success=False, message="Tipo de contenido no soportado"), 415
     return render_template('Registro.html')
 
-
-@app.route('/register_success')
-def register_success():
-    return render_template('register_success.html')
-
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
     try:
+        # Busca el token en la base de datos
         verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
-        
-        # Verificar si el token ha expirado
+
+        # Verifica si el token ha expirado
         if verification_token.expires_at < datetime.utcnow():
+            # Si el token expiró, eliminar el token y el usuario
             user = verification_token.user
             db.session.delete(verification_token)
             db.session.delete(user)
             db.session.commit()
             flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
             return redirect(url_for('register'))
-        
-        # Marcar al usuario como verificado y eliminar el token
+
+        # Si el token es válido y no ha expirado, verificar al usuario y marcar el token como usado
         user = verification_token.user
-        user.is_verified = True  # Asegúrate de tener este campo en el modelo User
-        db.session.delete(verification_token)
-        db.session.commit()
-        
+        user.is_verified = True  # Marcar al usuario como verificado
+        verification_token.is_used = True  # Marcar el token como usado
+        db.session.commit()  # Guardar los cambios sin eliminar el token
+
         flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
         return redirect(url_for('login'))
     except Exception as e:
         print(f"Error al confirmar el token: {e}")
         flash('El token es inválido o ha expirado.', 'danger')
         return redirect(url_for('register'))
-
 
 @app.route('/manage_roles', methods=['GET', 'POST'])
 def manage_roles():
@@ -217,6 +229,10 @@ def user_has_permission(user, permission):
         if permission in role.permissions.split(','):
             return True
     return False
+
+@app.route('/register_success')
+def register_success():
+    return render_template('register_success.html')
 
 @app.route('/restricted_page')
 def restricted_page():

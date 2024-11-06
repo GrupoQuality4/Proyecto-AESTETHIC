@@ -3,8 +3,9 @@ from . import db
 
 class Reserva(db.Model):
     __tablename__ = 'reservas'
+    
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     servicio = db.Column(db.String(255))
     fecha_reserva = db.Column(db.Date)
     fecha_uso = db.Column(db.Date)
@@ -18,5 +19,6 @@ class Reserva(db.Model):
         self.fecha_reserva = fecha_reserva
         self.fecha_uso = fecha_uso
         self.nombre_cliente = nombre_cliente
+
 
 
