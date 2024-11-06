@@ -85,9 +85,11 @@ function cargarHorarios(fecha) {
         })
         .catch(error => console.error("Error al cargar horarios:", error));
 }
+
 document.getElementById("servicio").addEventListener("change", function() {
     document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
 });
+
 document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
     document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
 });
@@ -130,7 +132,6 @@ const occupiedDates = [
 
 const daysOfWeek = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-
 function getDayClassName(date, isSecondCalendar = false) {
     const dateString = date.toDateString();
     const dayOfWeek = date.getDay();
@@ -168,6 +169,7 @@ const calendarBody2 = document.getElementById('calendarBody2');
 const currentMonthElement2 = document.getElementById('currentMonth2');
 const prevBtn2 = document.getElementById('prevBtn2');
 const nextBtn2 = document.getElementById('nextBtn2');
+
 prevBtn2.addEventListener('click', () => {
     currentMonth2--;
     renderSecondCalendar();
@@ -177,6 +179,7 @@ nextBtn2.addEventListener('click', () => {
     currentMonth2++;
     renderSecondCalendar();
 });
+
 function renderSecondCalendar() {
     const daysInMonth = new Date(currentYear2, currentMonth2 + 1, 0).getDate();
     const firstDayIndex = new Date(currentYear2, currentMonth2, 1).getDay();
@@ -201,80 +204,47 @@ function renderSecondCalendar() {
 renderCalendar();
 renderSecondCalendar();
 
-document.querySelector('.submit-button').addEventListener('click', function(event) {
-    event.preventDefault();
-    const user_id = localStorage.setItem('user_id', user_id);
-    if (!user_id) {
-        alert("Usuario no identificado. Por favor, inicie sesión para hacer una reserva.");
-        window.location.href = '/login';s
-        return;
-    }
-    const reservaData = {
-        user_id: user_id,
-        nombre_cliente: document.getElementById('nombre').value,
-        servicio: document.getElementById('servicio').value,
-        fecha_reserva: document.getElementById('fecha').value,
-        fecha_uso: document.getElementById('fecha').value,
-    };
-
-    console.log("Datos de reserva enviados:", reservaData);
-
-    fetch('/api/reserva', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reservaData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            document.getElementById('confirmationModal').style.display = 'flex';
-        } else {
-            alert(data.error || 'Hubo un problema con la reserva. Intente nuevamente.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
-    });
-});
-
-document.querySelector('#login-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const formData = new FormData(document.querySelector('#login-form'));
-    fetch('/login', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem('user_id', data.user_id);
-            const nextUrl = new URLSearchParams(window.location.search).get('next') || '/';
-            window.location.href = nextUrl;
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Ocurrió un error al iniciar sesión. Intente nuevamente más tarde.');
-    });
-});
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.querySelector('.submit-button');
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const reservaData = {
+                nombre_cliente: document.getElementById('nombre').value,
+                servicio: document.getElementById('servicio').value,
+                fecha_reserva: document.getElementById('fecha').value,
+                fecha_uso: document.getElementById('fecha').value
+            };
+
+            console.log("Datos de reserva enviados:", reservaData);
+
+            fetch('/api/reserva', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reservaData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    document.getElementById('confirmationModal').style.display = 'flex';
+                } else {
+                    alert(data.error || 'Hubo un problema con la reserva. Intente nuevamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al procesar su reserva. Intente nuevamente más tarde.');
+            });
         });
     } else {
         console.error("El botón con clase 'submit-button' no se encontró en el DOM.");
     }
 });
 
-
 function cerrarConfirmacion() {
-
     document.getElementById('confirmationModal').style.display = 'none';
     window.location.reload();
 }
