@@ -97,23 +97,20 @@ def login():
                 flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
                 return redirect(url_for('register'))
 
+            # Guardar el user_id y otros detalles en la sesión
             session['user_id'] = user.user_id
             session['user_name'] = user.nombre
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-            response = jsonify(success=True, user_id=user.user_id)
-            response.set_cookie('user_id', str(user.user_id))
-
             flash('Inicio de sesión exitoso', 'success')
+            
+            # Redirigir a la página de inicio o a la URL que venía en 'next'
             next_url = request.args.get('next')
-            return redirect(url_for('home'))
+            return redirect(next_url or url_for('home'))
 
         flash('Correo o contraseña incorrectos', 'danger')
-        
-    if request.args.get('next') == '/reservas':
-        flash("Inicia sesión para continuar con la reserva. Si no tienes una cuenta, regístrate.", "danger")
-    return render_template('Login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
+    return render_template('login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -333,14 +330,18 @@ def obtener_dia_semana(fecha):
 def guardar_reserva():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')
+        # Obtener user_id directamente de la sesión
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "Usuario no identificado. Por favor, inicie sesión para hacer una reserva."}), 403
+
         servicio = data.get('servicio')
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
         nombre_cliente = data.get('nombre_cliente')
 
         # Validación de todos los campos
-        if not all([user_id, servicio, fecha_reserva, fecha_uso, nombre_cliente]):
+        if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
         # Validación del formato de fecha
@@ -350,7 +351,7 @@ def guardar_reserva():
         except ValueError:
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
-        # Verificación de usuario existente
+        # Verificación de usuario existente en la base de datos
         usuario = db.session.get(User, user_id)
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
@@ -378,6 +379,7 @@ def guardar_reserva():
     except Exception as e:
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
+
 
 
 def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
