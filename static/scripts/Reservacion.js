@@ -1,4 +1,4 @@
-function cargarSubservicios() {
+async function cargarSubserviciosAsync() {
     const categorias = document.getElementById("servicio").value;
     if (!categorias) {
         console.error("No se seleccionó ninguna categoría.");
@@ -7,40 +7,56 @@ function cargarSubservicios() {
 
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
 
-    fetch(`/api/obtener_subservicios?categorias=${categorias}`)
-        .then(response => response.json())
-        .then(data => {
-            subservicioSelect.innerHTML = '<option value="">Seleccione un tratamiento</option>';
-            data.forEach(subservicio => {
-                const option = document.createElement("option");
-                option.value = subservicio.id;
-                option.textContent = subservicio.nombre;
-                subservicioSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error al cargar subservicios:", error));
+    try {
+        const response = await fetch(`/api/obtener_subservicios?categorias=${categorias}`);
+        const data = await response.json();
+
+        subservicioSelect.innerHTML = '<option value="">Seleccione un tratamiento</option>';
+        data.forEach(subservicio => {
+            const option = document.createElement("option");
+            option.value = subservicio.id;
+            option.textContent = subservicio.nombre;
+            subservicioSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error al cargar subservicios:", error);
+    }
 }
 
-function seleccionarServicio(categoria, servicio) {
+async function seleccionarServicioAsync(categoria, servicio) {
     const categoriaSelect = document.getElementById("servicio");
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
 
+    // Selección de la categoría
     for (let i = 0; i < categoriaSelect.options.length; i++) {
         if (categoriaSelect.options[i].text === categoria) {
             categoriaSelect.selectedIndex = i;
             break;
         }
     }
-    cargarSubservicios();
-    setTimeout(() => {
-        for (let i = 0; i < subservicioSelect.options.length; i++) {
-            if (subservicioSelect.options[i].text === servicio) {
-                subservicioSelect.selectedIndex = i;
-                break;
-            }
+    await cargarSubserviciosAsync();
+    for (let i = 0; i < subservicioSelect.options.length; i++) {
+        if (subservicioSelect.options[i].text === servicio) {
+            subservicioSelect.selectedIndex = i;
+            break;
         }
-    }, 500);
+    }
 }
+
+function limpiarSelector(selectorId) {
+    const selector = document.getElementById(selectorId);
+    selector.innerHTML = '<option value="">Seleccione una opción</option>';
+}
+
+// Limpiar selectores de horarios y subservicios cuando cambia la categoría o subservicio
+document.getElementById("servicio").addEventListener("change", function() {
+    limpiarSelector("hora");
+    limpiarSelector("subservicio-corporal-select");
+});
+
+document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
+    limpiarSelector("hora");
+});
 
 document.addEventListener("DOMContentLoaded", function() {
     // Inicializar el calendario usando Flatpickr
@@ -56,8 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-
-function cargarHorarios(fecha) {
+async function cargarHorariosAsync(fecha) {
     const servicioId = document.getElementById("servicio").value;
     const subservicioId = document.getElementById("subservicio-corporal-select").value;
     const horaSelect = document.getElementById("hora");
@@ -67,30 +82,28 @@ function cargarHorarios(fecha) {
         return;
     }
 
-    // Obtener el día de la semana de la fecha seleccionada
     const diaSemana = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long' });
-    
-    // Limpiar opciones previas
     horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
 
-    // Solicitar horarios para el día de la semana y el servicio seleccionado
-    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&dia_semana=${diaSemana}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.horarios && data.horarios.length > 0) {
-                data.horarios.forEach(horario => {
-                    const option = document.createElement("option");
-                    option.value = horario.id;
-                    option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
-                    horaSelect.appendChild(option);
-                });
-            } else {
-                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
-            }
-        })
-        .catch(error => console.error("Error al cargar horarios:", error));
-}
+    try {
+        const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&dia_semana=${diaSemana}`);
+        const data = await response.json();
 
+        if (data.horarios && data.horarios.length > 0) {
+            data.horarios.forEach(horario => {
+                const option = document.createElement("option");
+                option.value = horario.id;
+                option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
+                horaSelect.appendChild(option);
+            });
+        } else {
+            horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+        }
+    } catch (error) {
+        console.error("Error al cargar horarios:", error);
+        alert("No se pudo cargar los horarios. Por favor, inténtelo nuevamente.");
+    }
+}
 
 document.getElementById("servicio").addEventListener("change", function() {
     document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';

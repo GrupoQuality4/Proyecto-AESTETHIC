@@ -296,6 +296,10 @@ def obtener_subservicios():
     categorias = request.args.get('categorias')
     if not categorias:
         return jsonify({"error": "Categoría no especificada"}), 400
+    try:
+        categorias = int(categorias)  # Conversión a entero
+    except ValueError:
+        return jsonify({"error": "ID de categoría inválido"}), 400
     subservicios = Servicio.query.filter_by(categorias=categorias).all()
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
