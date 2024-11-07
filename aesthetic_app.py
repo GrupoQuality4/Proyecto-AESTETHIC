@@ -48,7 +48,6 @@ def send_email(to, subject, template):
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
 
-
 def generate_confirmation_token(email):
     return ts.dumps(email, salt='email-confirm-key')
 
