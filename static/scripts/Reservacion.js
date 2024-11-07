@@ -59,36 +59,54 @@ document.getElementById("subservicio-corporal-select").addEventListener("change"
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Inicializar el calendario usando Flatpickr
+    // Inicializa el calendario
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
         dateFormat: "Y-m-d",
         minDate: "today",
         onChange: function(selectedDates, dateStr) {
-            // Llamar a cargarHorarios con la fecha seleccionada
             cargarHorarios(dateStr);
         }
     });
+
+    // Añadir evento para el cambio de servicio
+    document.getElementById("servicio").addEventListener("change", function() {
+        const servicioId = this.value;
+        console.log("Servicio ID seleccionado:", servicioId);
+    });
 });
 
-async function cargarHorariosAsync(fecha) {
+// Función para cargar los horarios basados en la fecha y servicio seleccionado
+async function cargarHorarios(fecha) {
     const servicioId = document.getElementById("servicio").value;
-    const subservicioId = document.getElementById("subservicio-corporal-select").value;
     const horaSelect = document.getElementById("hora");
 
-    if (!servicioId || !subservicioId) {
-        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+    console.log("Servicio ID:", servicioId);
+    console.log("Fecha seleccionada:", fecha);
+
+    if (!servicioId) {
+        horaSelect.innerHTML = '<option value="">Seleccione un servicio primero</option>';
         return;
     }
 
-    const diaSemana = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long' });
-    horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+    // Limpiar las opciones actuales y mostrar mensaje de carga
+    horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
 
     try {
-        const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&dia_semana=${diaSemana}`);
-        const data = await response.json();
+        // Llamada al servidor para obtener horarios para el servicio y la fecha seleccionados
+        const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&fecha=${fecha}`);
 
+        // Verificar que la respuesta sea válida
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+        }
+
+        const data = await response.json(); // Procesar la respuesta como JSON
+        console.log(data); // Para ver la respuesta del servidor
+
+        // Limpiar y agregar las opciones de horario
+        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
         if (data.horarios && data.horarios.length > 0) {
             data.horarios.forEach(horario => {
                 const option = document.createElement("option");
@@ -101,7 +119,7 @@ async function cargarHorariosAsync(fecha) {
         }
     } catch (error) {
         console.error("Error al cargar horarios:", error);
-        alert("No se pudo cargar los horarios. Por favor, inténtelo nuevamente.");
+        horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
     }
 }
 
