@@ -9,3 +9,5 @@ from .reserva import Reserva
 from .verification_token import VerificationToken
 from .horarios import Horario
 from .categoria import Categoria
+from .dias import Dia
+from .bloque_horas import BloqueHora

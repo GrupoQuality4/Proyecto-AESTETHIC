@@ -7,7 +7,7 @@ import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'

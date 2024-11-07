@@ -1,4 +1,3 @@
-// Función para cargar subservicios desde la API
 function cargarSubservicios() {
     const categorias = document.getElementById("servicio").value;
     if (!categorias) {
@@ -22,7 +21,6 @@ function cargarSubservicios() {
         .catch(error => console.error("Error al cargar subservicios:", error));
 }
 
-// Función para seleccionar un servicio y cargar sus subservicios
 function seleccionarServicio(categoria, servicio) {
     const categoriaSelect = document.getElementById("servicio");
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
@@ -52,10 +50,12 @@ document.addEventListener("DOMContentLoaded", function() {
         dateFormat: "Y-m-d",
         minDate: "today",
         onChange: function(selectedDates, dateStr) {
+            // Llamar a cargarHorarios con la fecha seleccionada
             cargarHorarios(dateStr);
         }
     });
 });
+
 
 function cargarHorarios(fecha) {
     const servicioId = document.getElementById("servicio").value;
@@ -67,9 +67,14 @@ function cargarHorarios(fecha) {
         return;
     }
 
+    // Obtener el día de la semana de la fecha seleccionada
+    const diaSemana = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long' });
+    
+    // Limpiar opciones previas
     horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
 
-    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&fecha=${fecha}`)
+    // Solicitar horarios para el día de la semana y el servicio seleccionado
+    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&dia_semana=${diaSemana}`)
         .then(response => response.json())
         .then(data => {
             if (data.horarios && data.horarios.length > 0) {
@@ -85,6 +90,7 @@ function cargarHorarios(fecha) {
         })
         .catch(error => console.error("Error al cargar horarios:", error));
 }
+
 
 document.getElementById("servicio").addEventListener("change", function() {
     document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
