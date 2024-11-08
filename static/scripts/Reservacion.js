@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y",
         minDate: "today",
         onChange: function(selectedDates, dateStr) {
             const servicioId = document.getElementById("subservicio-corporal-select").value;
