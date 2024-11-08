@@ -53,12 +53,13 @@ async function cargarSubserviciosAsync() {
 function obtenerDiaDeLaSemana(fecha) {
     const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const date = new Date(fecha);
-    return diasSemana[date.getDay()];
+    return diasSemana[date.getUTCDay()];
 }
+
 
 // Función para cargar horarios basados en el servicio y la fecha seleccionada
 async function cargarHorarios(fecha) {
-    const servicioId = document.getElementById("subservicio-corporal-select").value; // Cambiado a subservicio
+    const servicioId = document.getElementById("subservicio-corporal-select").value;
     const horaSelect = document.getElementById("hora");
 
     console.log("Servicio ID:", servicioId);
@@ -69,25 +70,24 @@ async function cargarHorarios(fecha) {
         return;
     }
 
-    const diaSeleccionado = obtenerDiaDeLaSemana(fecha);
+    const [day, month, year] = fecha.split("-");
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const diaSeleccionado = obtenerDiaDeLaSemana(formattedDate);
     console.log("Día de la semana seleccionado:", diaSeleccionado);
 
-    // Limpiar las opciones actuales y mostrar mensaje de carga
     horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
 
     try {
-        // Llamada al servidor para obtener horarios para el servicio y el día de la semana seleccionados
         const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&dia=${diaSeleccionado}`);
 
-        // Verificar que la respuesta sea válida
         if (!response.ok) {
             throw new Error('Error en la respuesta del servidor: ' + response.statusText);
         }
 
-        const data = await response.json(); // Procesar la respuesta como JSON
-        console.log(data); // Para ver la respuesta del servidor
+        const data = await response.json();
+        console.log(data);
 
-        // Limpiar y agregar las opciones de horario
         horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
         if (data.horarios && data.horarios.length > 0) {
             data.horarios.forEach(horario => {
@@ -104,6 +104,7 @@ async function cargarHorarios(fecha) {
         horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
     }
 }
+
 
 // Función para seleccionar servicio y subservicio
 async function seleccionarServicioAsync(categoria, servicio) {
