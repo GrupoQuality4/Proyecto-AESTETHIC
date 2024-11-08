@@ -297,7 +297,7 @@ def obtener_subservicios():
     if not categorias:
         return jsonify({"error": "Categoría no especificada"}), 400
     try:
-        categorias = int(categorias)  # Conversión a entero
+        categorias = int(categorias)
     except ValueError:
         return jsonify({"error": "ID de categoría inválido"}), 400
     subservicios = Servicio.query.filter_by(categorias=categorias).all()
@@ -307,16 +307,13 @@ def obtener_subservicios():
 @app.route('/api/obtener_horarios', methods=['GET'])
 def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
-    fecha = request.args.get('fecha')
+    dia_nombre = request.args.get('dia')  # Ahora recibimos el día de la semana directamente
 
-    if not servicio_id or not fecha:
+    if not servicio_id or not dia_nombre:
         return jsonify({"error": "Faltan parámetros"}), 400
 
-    # Convertir la fecha a día de la semana
-    dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime('%A')
-
-    # Buscar el ID del día en la tabla 'dias'
-    dia = Dia.query.filter_by(nombre=dia_semana).first()
+    # Buscar el ID del día en la tabla 'dias' usando el nombre del día
+    dia = Dia.query.filter_by(nombre=dia_nombre).first()
     if not dia:
         return jsonify({"error": "Día no encontrado"}), 404
 
