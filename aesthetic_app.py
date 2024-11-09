@@ -7,7 +7,7 @@ import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -47,6 +47,7 @@ def send_email(to, subject, template):
         mail.send(msg)
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
+
 
 def generate_confirmation_token(email):
     return ts.dumps(email, salt='email-confirm-key')
@@ -102,10 +103,8 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-            print(f"User ID guardado en sesión: {session['user_id']}")  # Verifica que el user_id se guarda
-
             flash('Inicio de sesión exitoso', 'success')
-
+            
             # Redirigir a la página de inicio o a la URL que venía en 'next'
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
@@ -279,12 +278,14 @@ def gif_card():
 def contactos():
     return render_template('Contactos.html')
 
+from flask import flash
+
 @app.route('/reservas')
 def reservas():
     tratamiento = request.args.get('tratamiento', '')
     subservicio = request.args.get('subservicio', '')
-    flash('Debes iniciar sesion para hacer una reserva', 'danger')
     if 'user_id' not in session:
+        flash('Debes iniciar sesion para hacer una reserva', 'danger')
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
 
@@ -299,40 +300,29 @@ def obtener_subservicios():
     categorias = request.args.get('categorias')
     if not categorias:
         return jsonify({"error": "Categoría no especificada"}), 400
-    try:
-        categorias = int(categorias)
-    except ValueError:
-        return jsonify({"error": "ID de categoría inválido"}), 400
     subservicios = Servicio.query.filter_by(categorias=categorias).all()
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
 
-@app.route('/api/obtener_horarios', methods=['GET'])
+@app.route('/api/obtener_horarios')
 def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
-    dia_nombre = request.args.get('dia')  # Ahora recibimos el día de la semana directamente
-
-    if not servicio_id or not dia_nombre:
-        return jsonify({"error": "Faltan parámetros"}), 400
-
-    # Buscar el ID del día en la tabla 'dias' usando el nombre del día
-    dia = Dia.query.filter_by(nombre=dia_nombre).first()
-    if not dia:
-        return jsonify({"error": "Día no encontrado"}), 404
-
-    # Obtener los horarios del servicio y día especificados
-    horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_id=dia.id).all()
-    horarios_json = []
-    for horario in horarios:
-        bloque_hora = BloqueHora.query.get(horario.bloque_hora_id)
-        if bloque_hora:
-            horarios_json.append({
-                "id": horario.id,
-                "hora_inicio": bloque_hora.hora_inicio,
-                "hora_fin": bloque_hora.hora_fin
-            })
-
-    return jsonify({"horarios": horarios_json})
+    subservicio_id = request.args.get('subservicio_id')
+    fecha = request.args.get('fecha')
+    if not servicio_id or not fecha:
+        return jsonify({"error": "Parámetros incompletos"}), 400
+    dia_semana = obtener_dia_semana(fecha)
+    horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_semana=dia_semana).all()
+    horarios_disponibles = []
+    for h in horarios:
+        hora_inicio = h.hora_inicio
+        hora_fin = h.hora_fin
+        if isinstance(hora_inicio, str):
+            hora_inicio = datetime.strptime(hora_inicio, "%H:%M").time()
+        if isinstance(hora_fin, str):
+            hora_fin = datetime.strptime(hora_fin, "%H:%M").time()
+        horarios_disponibles.append({"id": h.id, "hora_inicio": hora_inicio.strftime("%H:%M"), "hora_fin": hora_fin.strftime("%H:%M")})
+    return jsonify({"horarios": horarios_disponibles})
 
 def obtener_dia_semana(fecha):
     dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
@@ -352,10 +342,9 @@ def guardar_reserva():
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
         nombre_cliente = data.get('nombre_cliente')
-        hora_turno = data.get('hora_turno')  # Captura el campo hora_turno desde los datos JSON
 
         # Validación de todos los campos
-        if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente, hora_turno]):
+        if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
         # Validación del formato de fecha
@@ -366,7 +355,7 @@ def guardar_reserva():
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
         # Verificación de usuario existente en la base de datos
-        usuario = db.session.get(User, user_id)  # Asegúrate de que usuario esté definido
+        usuario = db.session.get(User, user_id)
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
 
@@ -376,37 +365,33 @@ def guardar_reserva():
             servicio=servicio,
             fecha_reserva=fecha_reserva,
             fecha_uso=fecha_uso,
-            nombre_cliente=nombre_cliente,
-            hora_turno=hora_turno  # Guardamos el horario de inicio
+            nombre_cliente=nombre_cliente
         )
         db.session.add(nueva_reserva)
         db.session.commit()
 
         # Envío de correo de confirmación
         try:
-            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno)
+            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso)
         except Exception as e:
             print(f"Error al enviar el correo: {e}")
             return jsonify({"error": "Reserva guardada, pero ocurrió un error al enviar el correo."}), 500
         
-        # Mensaje de confirmación de reserva exitosa
         return jsonify({"message": "Reserva guardada exitosamente"}), 201
 
     except Exception as e:
-        # Captura cualquier otro error y devuelve una respuesta de error general
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
 
 
 
-def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno):
+def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
     try:
         html = render_template('reserva_confirmacion.html', 
                                nombre_cliente=nombre_cliente, 
                                servicio=servicio, 
                                fecha_reserva=fecha_reserva, 
-                               fecha_uso=fecha_uso,
-                               hora_turno=hora_turno)
+                               horario=horario)
         msg = Message(subject="Confirmación de su Reserva",
                       recipients=[email],
                       html=html,
@@ -415,6 +400,7 @@ def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_
         print("Correo enviado exitosamente.")
     except Exception as e:
         print(f"Error al enviar el correo de reserva: {e}")
+
 
 @app.route('/historial_reservas')
 def historial_reservas():
