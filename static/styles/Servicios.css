@@ -7,6 +7,12 @@ body {
     background-color: #f5f5f5;
 }
 
+#volver i{
+	font-size: 35px;
+	margin: 15px 0px;
+	color: #FCFEFE;
+}
+
 header {
 	background-color: #d08590;
 	color: #fff;
@@ -129,9 +135,7 @@ body > .footer {
 	#buscador{
 		display: none;
 	}
-	#volver{
-		display: none;		
-	}
+	
 	
 }
 
