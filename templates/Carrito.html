@@ -7,6 +7,8 @@
     <link rel="shortcut icon" type="image/x" href="../static/media/Imagenes Pag. Principal/logo_encabezado.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="../static/styles/Carrito.css" />
+    <!-- SDK de Mercado Pago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
 <body>
     <div class="top-header">
@@ -16,19 +18,15 @@
             </a>
         </div>
         <div class="title">
-            <img src="../static/media/Imagenes Pag. Principal/titulo_logo.png"
-                alt="titulo_logo" />
+            <img src="../static/media/Imagenes Pag. Principal/titulo_logo.png" alt="titulo_logo" />
         </div>
         <div class="contact-info">
-            <img src="../static/media/Imagenes Pag. Principal/contactos.png"
-                alt="contact-info" />
+            <img src="../static/media/Imagenes Pag. Principal/contactos.png" alt="contact-info" />
         </div>
     </div>
     <header>
         <input type="checkbox" id="check">
-        <label for="check" class="mostrar-menu">
-            &#8801
-        </label>
+        <label for="check" class="mostrar-menu">&#8801</label>
         <nav class="menu">
             <a href="{{ url_for('home') }}">Inicio</a>
             <a href="{{ url_for('servicios') }}">Servicios</a>
@@ -36,16 +34,13 @@
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
             <a href="{{ url_for('reservas') }}">Reserva</a>
-            <label for="check" class="esconder-menu">
-                &#215
-            </label>
+            <label for="check" class="esconder-menu">&#215</label>
         </nav>
         <div class="search-login">
             {% if user_email == 'cristianezequiel915@gmail.com' %}
             <div class="admin-buttons">
                 <button class="admin-button" onclick="window.location.href='{{ url_for('manage_roles') }}'">Adm. Rol</button>
                 <button class="admin-button" onclick="window.location.href='{{ url_for('assign_role') }}'">Asignar Rol</button>
-
                 <button class="admin-button" onclick="window.location.href='{{ url_for('create_service_category') }}'">Crear Categoría</button>
                 <button class="admin-button" onclick="window.location.href='{{ url_for('manage_service_category') }}'">Gestionar Categorías</button>
             </div>
@@ -57,13 +52,11 @@
             <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
                 <i class="fa-solid fa-share"></i> Compartir
             </button>
-            
             {% endif %}
             <button class="cart-button" onclick="window.location.href='{{ url_for('carrito') }}'">🛒</button>
             {% if user_name %}
             <div class="user-avatar">
-                <div class="avatar" style="background-color: {{ avatar_color }};">{{ user_name[0] }}{{ user_apellido[0]
-                    }}</div>
+                <div class="avatar" style="background-color: {{ avatar_color }};">{{ user_name[0] }}{{ user_apellido[0] }}</div>
                 <span class="user-name">{{ user_name }}</span>
                 <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
             </div>
@@ -74,19 +67,20 @@
         </div>
     </header>
 
-
     <main>
-        <div class= "container">
+        <div class="container">
             <div class="left-panel">
                 <img src="{{ url_for('static', filename='media/Imagenes Pag. Carrito/Bolsa.png') }}" alt="shopping-cart" />
                 <h3 class="cart-title">¡Tu carrito de compras!</h3>
-                <p> ¡Empezá a sumar Servicios a tu carro de compras!</p>
-                <button class="add-products-btn">¡Agregar productos!</button>
+                <p>¡Empezá a sumar Servicios a tu carro de compras!</p>
+                <button class="add-products-btn" onclick="window.location.href='{{ url_for('servicios') }}'">¡Agregar productos!</button>
             </div>
-             
-            <div class= "right-panel">
-                <h3 class="summary-title-btn">  Resumen  </h3>
+
+            <div class="right-panel">
+                <h3 class="summary-title-btn">Resumen</h3>
                 <p class="summary-description">Aquí verás el informe de tus compras cuando agregues productos a tu carrito</p>
+                <!-- Botón de Mercado Pago -->
+                <button id="checkout-btn">Pagar con Mercado Pago</button>
             </div>
         </div>
     </main>
@@ -107,5 +101,23 @@
             </a>
         </div>
     </footer>
+
+    <!-- Script de Mercado Pago -->
+    <script>
+        const mp = new MercadoPago('YOUR_PUBLIC_KEY', { locale: 'es-AR' });
+
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            fetch('/crear_preferencia', { method: 'POST' })
+                .then(response => response.json())
+                .then(preferencia => {
+                    mp.checkout({
+                        preference: {
+                            id: preferencia.id
+                        },
+                        autoOpen: true
+                    });
+                });
+        });
+    </script>
 </body>
 </html>

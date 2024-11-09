@@ -7,6 +7,7 @@ import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
+import mercadopago
 from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
 
 app = Flask(__name__)
@@ -15,6 +16,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# Configuración de Mercado Pago con tu clave de acceso - Acá tenemos que poner nuestro clave de acceso.
+mp = mercadopago.SDK("YOUR_ACCESS_TOKEN")
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -431,6 +435,35 @@ def carrito():
     user_email = session.get('user_email', None)
     avatar_color = session.get('avatar_color', None)
     return render_template('Carrito.html', user_name=user_name, user_apellido=user_apellido, user_email=user_email, avatar_color=avatar_color)
+
+
+@app.route('/crear_preferencia', methods=['POST'])
+def crear_preferencia():
+    # Definición de la preferencia de pago
+    preference_data = {
+        "items": [
+            {
+                "title": "Compra en Estética Aesthetic",
+                "quantity": 1,
+                "unit_price": 4000.00,  # Monto fijo de 1000 ARS
+                "currency_id": "ARS"     # Moneda en Pesos Argentinos
+            }
+        ],
+        "payer": {
+            "email": request.json.get('email', 'cliente@example.com')  # Email del cliente
+        },
+        "back_urls": {
+            "success": "https://tuweb.com/pago_exitoso",
+            "failure": "https://tuweb.com/pago_fallido",
+            "pending": "https://tuweb.com/pago_pendiente"
+        },
+        "auto_return": "approved"  # Retorno automático si el pago es aprobado
+    }
+
+    # Creación de la preferencia de pago en Mercado Pago
+    preference = mp.preference().create(preference_data)
+    return jsonify(preference['response'])  # Retorna el JSON con el enlace de pago
+
 
 if __name__ == '__main__':
     app.run(debug=True)
