@@ -283,6 +283,7 @@ def contactos():
 def reservas():
     tratamiento = request.args.get('tratamiento', '')
     subservicio = request.args.get('subservicio', '')
+    flash('Debes iniciar sesion para hacer una reserva', 'danger')
     if 'user_id' not in session:
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
@@ -405,7 +406,7 @@ def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_
                                servicio=servicio, 
                                fecha_reserva=fecha_reserva, 
                                fecha_uso=fecha_uso,
-                               hora_turno=hora_turno)  # Agregar hora_turno al contexto del correo
+                               hora_turno=hora_turno)
         msg = Message(subject="Confirmación de su Reserva",
                       recipients=[email],
                       html=html,
@@ -414,7 +415,6 @@ def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_
         print("Correo enviado exitosamente.")
     except Exception as e:
         print(f"Error al enviar el correo de reserva: {e}")
-
 
 @app.route('/historial_reservas')
 def historial_reservas():
