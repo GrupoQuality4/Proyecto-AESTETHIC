@@ -1,22 +1,20 @@
 import sqlite3
 
-# Ruta a tu archivo de base de datos SQLite
-db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
-
-# Conectar a la base de datos
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
-
-try:
-    # Cambiar el nombre de la tabla `verification_token` a `verification_tokens`
-    cursor.execute('''
-        ALTER TABLE verification_token RENAME TO verification_tokens;
-    ''')
+def eliminar_reserva(id_reserva):
+    # Ruta a tu base de datos
+    db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+    
+    # Conexión a la base de datos
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    # Consulta para eliminar el registro con el id especificado
+    cursor.execute("DELETE FROM reservas WHERE id = ?", (id_reserva,))
+    
+    # Confirmar cambios
     conn.commit()
-    print("Tabla renombrada exitosamente a 'verification_tokens'.")
+    conn.close()
+    print(f"Registro con id {id_reserva} eliminado exitosamente.")
 
-except sqlite3.OperationalError as e:
-    print(f"Error al renombrar la tabla: {e}")
-
-# Cerrar la conexión
-conn.close()
+# Llamada a la función con un id específico
+eliminar_reserva(26)  # Cambia '1' por el id que quieras eliminar

@@ -1,114 +1,166 @@
-// Función para cargar subservicios desde la API
-function cargarSubservicios() {
-    const categorias = document.getElementById("servicio").value;
-    if (!categorias) {
+// Función para cargar categorías (solo si es necesario y tienes una API para obtenerlas)
+async function cargarCategorias() {
+    try {
+        const response = await fetch('/api/obtener_categorias'); // Cambia esta URL según tu API
+        const categorias = await response.json();
+        
+        const categoriaSelect = document.getElementById("servicio");
+        categoriaSelect.innerHTML = '<option value="">Seleccione una categoría</option>';
+        
+        categorias.forEach(categoria => {
+            const option = document.createElement("option");
+            option.value = categoria.id;
+            option.textContent = categoria.nombre;
+            categoriaSelect.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+    }
+}
+
+// Función para cargar subservicios basados en la categoría seleccionada
+async function cargarSubserviciosAsync() {
+    const categoriaId = document.getElementById("servicio").value;
+    if (!categoriaId) {
         console.error("No se seleccionó ninguna categoría.");
         return;
     }
 
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
 
-    fetch(`/api/obtener_subservicios?categorias=${categorias}`)
-        .then(response => response.json())
-        .then(data => {
-            subservicioSelect.innerHTML = '<option value="">Seleccione un tratamiento</option>';
-            data.forEach(subservicio => {
-                const option = document.createElement("option");
-                option.value = subservicio.id;
-                option.textContent = subservicio.nombre;
-                subservicioSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error al cargar subservicios:", error));
+    try {
+        const response = await fetch(`/api/obtener_subservicios?categorias=${categoriaId}`);
+        const subservicios = await response.json();
+
+        subservicioSelect.innerHTML = '<option value="">Seleccione un tratamiento</option>';
+        subservicios.forEach(subservicio => {
+            const option = document.createElement("option");
+            option.value = subservicio.id;
+            option.textContent = subservicio.nombre;
+            subservicioSelect.appendChild(option);
+        });
+
+        // Muestra el contenedor del tratamiento solo si hay subservicios
+        document.getElementById("tratamiento-container").style.display = subservicios.length > 0 ? 'block' : 'none';
+        
+    } catch (error) {
+        console.error("Error al cargar subservicios:", error);
+    }
 }
 
-// Función para seleccionar un servicio y cargar sus subservicios
-function seleccionarServicio(categoria, servicio) {
+// Función para manejar el día de la semana a partir de una fecha
+function obtenerDiaDeLaSemana(fecha) {
+    const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const date = new Date(fecha);
+    return diasSemana[date.getUTCDay()];
+}
+
+
+// Función para cargar horarios basados en el servicio y la fecha seleccionada
+async function cargarHorarios(fecha) {
+    const servicioId = document.getElementById("subservicio-corporal-select").value;
+    const horaSelect = document.getElementById("hora");
+
+    if (!servicioId) {
+        horaSelect.innerHTML = '<option value="">Seleccione un servicio primero</option>';
+        return;
+    }
+
+    const [day, month, year] = fecha.split("-");
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const diaSeleccionado = obtenerDiaDeLaSemana(formattedDate);
+
+    horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
+
+    try {
+        const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&dia=${diaSeleccionado}`);
+        if (!response.ok) throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+
+        const data = await response.json();
+        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+
+        if (data.horarios && data.horarios.length > 0) {
+            data.horarios.forEach(horario => {
+                const option = document.createElement("option");
+                option.value = horario.hora_inicio;
+                option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
+                horaSelect.appendChild(option);
+            });
+        } else {
+            horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+        }
+    } catch (error) {
+        console.error("Error al cargar horarios:", error);
+        horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
+    }
+}
+
+// Función para seleccionar servicio y subservicio
+async function seleccionarServicioAsync(categoria, servicio) {
     const categoriaSelect = document.getElementById("servicio");
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
 
+    // Selección de la categoría
     for (let i = 0; i < categoriaSelect.options.length; i++) {
         if (categoriaSelect.options[i].text === categoria) {
             categoriaSelect.selectedIndex = i;
             break;
         }
     }
-    cargarSubservicios();
-    setTimeout(() => {
-        for (let i = 0; i < subservicioSelect.options.length; i++) {
-            if (subservicioSelect.options[i].text === servicio) {
-                subservicioSelect.selectedIndex = i;
-                break;
-            }
+    await cargarSubserviciosAsync();
+    for (let i = 0; i < subservicioSelect.options.length; i++) {
+        if (subservicioSelect.options[i].text === servicio) {
+            subservicioSelect.selectedIndex = i;
+            break;
         }
-    }, 500);
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Inicializar el calendario usando Flatpickr
-    flatpickr("#fecha", {
-        locale: "es",
-        enableTime: false,
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        onChange: function(selectedDates, dateStr) {
-            cargarHorarios(dateStr);
-        }
-    });
-});
-
-function cargarHorarios(fecha) {
-    const servicioId = document.getElementById("servicio").value;
-    const subservicioId = document.getElementById("subservicio-corporal-select").value;
-    const horaSelect = document.getElementById("hora");
-
-    if (!servicioId || !subservicioId) {
-        horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
-        return;
     }
-
-    horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
-
-    fetch(`/api/obtener_horarios?servicio_id=${servicioId}&subservicio_id=${subservicioId}&fecha=${fecha}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.horarios && data.horarios.length > 0) {
-                data.horarios.forEach(horario => {
-                    const option = document.createElement("option");
-                    option.value = horario.id;
-                    option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
-                    horaSelect.appendChild(option);
-                });
-            } else {
-                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
-            }
-        })
-        .catch(error => console.error("Error al cargar horarios:", error));
 }
 
+// Función para limpiar selectores
+function limpiarSelector(selectorId) {
+    const selector = document.getElementById(selectorId);
+    selector.innerHTML = '<option value="">Seleccione una opción</option>';
+}
+
+// Limpiar selectores de horarios y subservicios cuando cambia la categoría o subservicio
 document.getElementById("servicio").addEventListener("change", function() {
-    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
+    limpiarSelector("hora");
+    limpiarSelector("subservicio-corporal-select");
+    cargarSubserviciosAsync(); // Cargar subservicios al cambiar la categoría
 });
 
 document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
-    document.getElementById("hora").innerHTML = '<option value="">Seleccione un horario</option>';
+    limpiarSelector("hora");
 });
 
-document.getElementById("servicio").addEventListener("change", function() {
-    const tratamientoContainer = document.getElementById("tratamiento-container");
-    const categoriaSeleccionada = this.value;
-    if (categoriaSeleccionada) {
-        tratamientoContainer.style.display = "block";
-    } else {
-        tratamientoContainer.style.display = "none";
-    }
+// Inicializar el calendario y cargar categorías al cargar la página
+document.addEventListener("DOMContentLoaded", function() {
+    cargarCategorias(); // Llama a cargarCategorias al cargar la página
+
+    // Inicializa el calendario
+    flatpickr("#fecha", {
+        locale: "es",
+        enableTime: false,
+        dateFormat: "d-m-Y",
+        minDate: "today",
+        onChange: function(selectedDates, dateStr) {
+            const servicioId = document.getElementById("subservicio-corporal-select").value;
+            cargarHorarios(dateStr);
+        }
+    });
+
+    document.getElementById("servicio").addEventListener("change", function() {
+        const categoriaId = this.value;
+        console.log("Categoría ID seleccionada:", categoriaId);
+    });
 });
 
+// Calendario 1
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
-let currentMonth2 = currentDate.getMonth() + 1;
-let currentYear2 = currentDate.getFullYear();
 
 const calendarBody = document.getElementById('calendarBody');
 const currentMonthElement = document.getElementById('currentMonth');
@@ -165,6 +217,10 @@ function renderCalendar() {
     calendarBody.innerHTML = days;
 }
 
+// Calendario 2
+let currentMonth2 = currentDate.getMonth() + 1;
+let currentYear2 = currentDate.getFullYear();
+
 const calendarBody2 = document.getElementById('calendarBody2');
 const currentMonthElement2 = document.getElementById('currentMonth2');
 const prevBtn2 = document.getElementById('prevBtn2');
@@ -204,17 +260,26 @@ function renderSecondCalendar() {
 renderCalendar();
 renderSecondCalendar();
 
+function convertirFechaFormatoISO(fecha) {
+    const [day, month, year] = fecha.split("-");
+    return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.querySelector('.submit-button');
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
             event.preventDefault();
 
+            const fechaReserva = document.getElementById('fecha').value;
+            const fechaReservaFormatoISO = convertirFechaFormatoISO(fechaReserva); // Convierte la fecha
+
             const reservaData = {
                 nombre_cliente: document.getElementById('nombre').value,
-                servicio: document.getElementById('servicio').value,
-                fecha_reserva: document.getElementById('fecha').value,
-                fecha_uso: document.getElementById('fecha').value
+                servicio: document.getElementById('subservicio-corporal-select').value, // Cambiado a subservicio
+                fecha_reserva: fechaReservaFormatoISO, // Usa la fecha convertida
+                fecha_uso: fechaReservaFormatoISO, // Usa la fecha convertida
+                hora_turno: document.getElementById('hora').value // Esto ahora envía la hora de inicio
             };
 
             console.log("Datos de reserva enviados:", reservaData);
@@ -224,7 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(reservaData)
+                body: JSON.stringify(reservaData),
+                credentials: 'same-origin'
             })
             .then(response => response.json())
             .then(data => {
@@ -244,11 +310,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Función para cerrar el modal de confirmación de reserva
 function cerrarConfirmacion() {
     document.getElementById('confirmationModal').style.display = 'none';
     window.location.reload();
 }
-
 
 
 

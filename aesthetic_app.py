@@ -7,7 +7,7 @@ import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -278,11 +278,14 @@ def gif_card():
 def contactos():
     return render_template('Contactos.html')
 
+from flask import flash
+
 @app.route('/reservas')
 def reservas():
     tratamiento = request.args.get('tratamiento', '')
     subservicio = request.args.get('subservicio', '')
     if 'user_id' not in session:
+        flash('Debes iniciar sesion para hacer una reserva', 'danger')
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
 
@@ -301,25 +304,32 @@ def obtener_subservicios():
     subservicios_json = [{"id": sub.id, "nombre": sub.titulo} for sub in subservicios]
     return jsonify(subservicios_json)
 
-@app.route('/api/obtener_horarios')
+@app.route('/api/obtener_horarios', methods=['GET'])
 def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
-    subservicio_id = request.args.get('subservicio_id')
-    fecha = request.args.get('fecha')
-    if not servicio_id or not fecha:
-        return jsonify({"error": "Parámetros incompletos"}), 400
-    dia_semana = obtener_dia_semana(fecha)
-    horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_semana=dia_semana).all()
-    horarios_disponibles = []
-    for h in horarios:
-        hora_inicio = h.hora_inicio
-        hora_fin = h.hora_fin
-        if isinstance(hora_inicio, str):
-            hora_inicio = datetime.strptime(hora_inicio, "%H:%M").time()
-        if isinstance(hora_fin, str):
-            hora_fin = datetime.strptime(hora_fin, "%H:%M").time()
-        horarios_disponibles.append({"id": h.id, "hora_inicio": hora_inicio.strftime("%H:%M"), "hora_fin": hora_fin.strftime("%H:%M")})
-    return jsonify({"horarios": horarios_disponibles})
+    dia_nombre = request.args.get('dia')  # Ahora recibimos el día de la semana directamente
+
+    if not servicio_id or not dia_nombre:
+        return jsonify({"error": "Faltan parámetros"}), 400
+
+    # Buscar el ID del día en la tabla 'dias' usando el nombre del día
+    dia = Dia.query.filter_by(nombre=dia_nombre).first()
+    if not dia:
+        return jsonify({"error": "Día no encontrado"}), 404
+
+    # Obtener los horarios del servicio y día especificados
+    horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_id=dia.id).all()
+    horarios_json = []
+    for horario in horarios:
+        bloque_hora = BloqueHora.query.get(horario.bloque_hora_id)
+        if bloque_hora:
+            horarios_json.append({
+                "id": horario.id,
+                "hora_inicio": bloque_hora.hora_inicio,
+                "hora_fin": bloque_hora.hora_fin
+            })
+
+    return jsonify({"horarios": horarios_json})
 
 def obtener_dia_semana(fecha):
     dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
@@ -379,8 +389,6 @@ def guardar_reserva():
     except Exception as e:
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
-
-
 
 def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
     try:

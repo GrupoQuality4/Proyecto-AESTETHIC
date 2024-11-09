@@ -203,37 +203,30 @@
                 <label for="nombre">Nombre del cliente</label>
                 <input type="text" id="nombre" placeholder="Nombre del cliente" required>
                 <label for="servicio">Servicio al que asistirá</label>
-                <select id="servicio" name="servicio" onchange="cargarSubservicios()">
-                    <option value="">Selecciona una categoría</option>
-                    <option value="1">Tratamiento Corporal</option>
-                    <option value="2">Tratamiento Facial</option>
-                    <option value="3">Depilación</option>
-                    <option value="4">Spa de Manos</option>
-                    <option value="5">Masaje</option>
+                <select id="servicio" name="servicio" onchange="cargarSubserviciosAsync()">
+                    <!-- Opciones de categorías cargadas dinámicamente desde la API -->
                 </select>
                 <div id="tratamiento-container" style="display: none;">
                     <label for="subservicio-corporal-select">Seleccione el tipo de tratamiento</label>
                     <select id="subservicio-corporal-select" name="subservicio-corporal">
                         <option value="">Seleccione un tratamiento</option>
-                        <!-- Opciones dinámicas cargadas desde la API -->
+                        <!-- Opciones de subservicios cargadas dinámicamente desde la API -->
                     </select>
                 </div>
-                
-
                 <label for="fecha">Fecha de reserva</label>
-                <input type="text" id="fecha">
-
+                <input type="text" id="fecha" name="fecha" required>
                 <label for="hora">Hora de reserva</label>
-                <select id="hora">
-                    <!-- Horarios dinámicos cargados desde la API -->
+                <select id="hora" name="hora" required>
+                    <option value="">Seleccione un horario</option>
+                    <!-- Horarios cargados dinámicamente desde la API -->
                 </select>
-                <label for="forma de pago">Metodo de pago </label>
-                <select id="Pago">
-                    <option>Tarjeta</option>
-                    <option>Efectivo</option>
-                    <option>Tranferencia</option>
+                <label for="Pago">Método de pago</label>
+                <select id="Pago" name="Pago" required>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
                 </select>
-                <button class="submit-button">Reservar</button>
+                <button type="button" class="submit-button">Reservar</button>
             </form>
         </div>
     </div>
