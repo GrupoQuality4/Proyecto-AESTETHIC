@@ -313,7 +313,23 @@ body {
     background-color: #4b2672;
 }
 
+#checkout-btn {
+    background-color: #009ee3; /* Azul celeste de Mercado Pago */
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
 
+#checkout-btn:hover {
+    background-color: #007bbd; /* Un tono más oscuro al pasar el mouse */
+}
 
 
 

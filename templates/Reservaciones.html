@@ -220,13 +220,11 @@
                     <option value="">Seleccione un horario</option>
                     <!-- Horarios cargados dinámicamente desde la API -->
                 </select>
-                <label for="Pago">Método de pago</label>
-                <select id="Pago" name="Pago" required>
-                    <option value="Tarjeta">Tarjeta</option>
-                    <option value="Efectivo">Efectivo</option>
-                    <option value="Transferencia">Transferencia</option>
-                </select>
-                <button type="button" class="submit-button">Reservar</button>
+
+                <!--<button type="button" class="submit-button">Reservar</button>-->
+                <button id="checkout-btn" onclick="window.location.href='https://mpago.la/2ECFxUQ'">
+                    Reservar
+                </button>
             </form>
         </div>
     </div>
