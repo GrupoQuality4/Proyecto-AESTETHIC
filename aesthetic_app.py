@@ -7,7 +7,7 @@ import random, os, re
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import validators
-from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria
+from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -382,8 +382,6 @@ def guardar_reserva():
     except Exception as e:
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
-
-
 
 def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
     try:
