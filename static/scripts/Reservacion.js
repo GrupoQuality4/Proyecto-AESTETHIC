@@ -62,9 +62,6 @@ async function cargarHorarios(fecha) {
     const servicioId = document.getElementById("subservicio-corporal-select").value;
     const horaSelect = document.getElementById("hora");
 
-    console.log("Servicio ID:", servicioId);
-    console.log("Fecha seleccionada:", fecha);
-
     if (!servicioId) {
         horaSelect.innerHTML = '<option value="">Seleccione un servicio primero</option>';
         return;
@@ -74,25 +71,20 @@ async function cargarHorarios(fecha) {
     const formattedDate = `${year}-${month}-${day}`;
 
     const diaSeleccionado = obtenerDiaDeLaSemana(formattedDate);
-    console.log("Día de la semana seleccionado:", diaSeleccionado);
 
     horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
 
     try {
         const response = await fetch(`/api/obtener_horarios?servicio_id=${servicioId}&dia=${diaSeleccionado}`);
-
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor: ' + response.statusText);
-        }
+        if (!response.ok) throw new Error('Error en la respuesta del servidor: ' + response.statusText);
 
         const data = await response.json();
-        console.log(data);
-
         horaSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+
         if (data.horarios && data.horarios.length > 0) {
             data.horarios.forEach(horario => {
                 const option = document.createElement("option");
-                option.value = horario.id;
+                option.value = horario.hora_inicio;
                 option.textContent = `${horario.hora_inicio} - ${horario.hora_fin}`;
                 horaSelect.appendChild(option);
             });
@@ -104,7 +96,6 @@ async function cargarHorarios(fecha) {
         horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
     }
 }
-
 
 // Función para seleccionar servicio y subservicio
 async function seleccionarServicioAsync(categoria, servicio) {
@@ -269,17 +260,26 @@ function renderSecondCalendar() {
 renderCalendar();
 renderSecondCalendar();
 
+function convertirFechaFormatoISO(fecha) {
+    const [day, month, year] = fecha.split("-");
+    return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.querySelector('.submit-button');
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
             event.preventDefault();
 
+            const fechaReserva = document.getElementById('fecha').value;
+            const fechaReservaFormatoISO = convertirFechaFormatoISO(fechaReserva); // Convierte la fecha
+
             const reservaData = {
                 nombre_cliente: document.getElementById('nombre').value,
                 servicio: document.getElementById('subservicio-corporal-select').value, // Cambiado a subservicio
-                fecha_reserva: document.getElementById('fecha').value,
-                fecha_uso: document.getElementById('fecha').value
+                fecha_reserva: fechaReservaFormatoISO, // Usa la fecha convertida
+                fecha_uso: fechaReservaFormatoISO, // Usa la fecha convertida
+                hora_turno: document.getElementById('hora').value // Esto ahora envía la hora de inicio
             };
 
             console.log("Datos de reserva enviados:", reservaData);
@@ -289,7 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(reservaData)
+                body: JSON.stringify(reservaData),
+                credentials: 'same-origin'
             })
             .then(response => response.json())
             .then(data => {

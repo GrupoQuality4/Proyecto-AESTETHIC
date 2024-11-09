@@ -102,8 +102,10 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
+            print(f"User ID guardado en sesión: {session['user_id']}")  # Verifica que el user_id se guarda
+
             flash('Inicio de sesión exitoso', 'success')
-            
+
             # Redirigir a la página de inicio o a la URL que venía en 'next'
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
@@ -349,9 +351,10 @@ def guardar_reserva():
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
         nombre_cliente = data.get('nombre_cliente')
+        hora_turno = data.get('hora_turno')  # Captura el campo hora_turno desde los datos JSON
 
         # Validación de todos los campos
-        if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente]):
+        if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente, hora_turno]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
         # Validación del formato de fecha
@@ -362,7 +365,7 @@ def guardar_reserva():
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
         # Verificación de usuario existente en la base de datos
-        usuario = db.session.get(User, user_id)
+        usuario = db.session.get(User, user_id)  # Asegúrate de que usuario esté definido
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
 
@@ -372,33 +375,37 @@ def guardar_reserva():
             servicio=servicio,
             fecha_reserva=fecha_reserva,
             fecha_uso=fecha_uso,
-            nombre_cliente=nombre_cliente
+            nombre_cliente=nombre_cliente,
+            hora_turno=hora_turno  # Guardamos el horario de inicio
         )
         db.session.add(nueva_reserva)
         db.session.commit()
 
         # Envío de correo de confirmación
         try:
-            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso)
+            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno)
         except Exception as e:
             print(f"Error al enviar el correo: {e}")
             return jsonify({"error": "Reserva guardada, pero ocurrió un error al enviar el correo."}), 500
         
+        # Mensaje de confirmación de reserva exitosa
         return jsonify({"message": "Reserva guardada exitosamente"}), 201
 
     except Exception as e:
+        # Captura cualquier otro error y devuelve una respuesta de error general
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
 
 
 
-def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, horario):
+def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno):
     try:
         html = render_template('reserva_confirmacion.html', 
                                nombre_cliente=nombre_cliente, 
                                servicio=servicio, 
                                fecha_reserva=fecha_reserva, 
-                               horario=horario)
+                               fecha_uso=fecha_uso,
+                               hora_turno=hora_turno)  # Agregar hora_turno al contexto del correo
         msg = Message(subject="Confirmación de su Reserva",
                       recipients=[email],
                       html=html,
