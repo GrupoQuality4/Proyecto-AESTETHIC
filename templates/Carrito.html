@@ -103,23 +103,5 @@
             </a>
         </div>
     </footer>
-
-    <!-- Script de Mercado Pago -->
-    <script>
-        const mp = new MercadoPago('YOUR_PUBLIC_KEY', { locale: 'es-AR' });
-
-        document.getElementById('checkout-btn').addEventListener('click', () => {
-            fetch('/crear_preferencia', { method: 'POST' })
-                .then(response => response.json())
-                .then(preferencia => {
-                    mp.checkout({
-                        preference: {
-                            id: preferencia.id
-                        },
-                        autoOpen: true
-                    });
-                });
-        });
-    </script>
 </body>
 </html>
