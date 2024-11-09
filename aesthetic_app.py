@@ -278,11 +278,14 @@ def gif_card():
 def contactos():
     return render_template('Contactos.html')
 
+from flask import flash
+
 @app.route('/reservas')
 def reservas():
     tratamiento = request.args.get('tratamiento', '')
     subservicio = request.args.get('subservicio', '')
     if 'user_id' not in session:
+        flash('Debes iniciar sesion para hacer una reserva', 'danger')
         return redirect(url_for('login', next='/reservas'))
     return render_template('Reservaciones.html', tratamiento=tratamiento, subservicio=subservicio)
 
