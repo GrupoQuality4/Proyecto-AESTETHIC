@@ -36,6 +36,7 @@
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
             <a href="{{ url_for('reservas') }}">Reserva</a>
+            
             <label for="check" class="esconder-menu">
                 &#215
             </label>
@@ -81,12 +82,17 @@
                 <img src="{{ url_for('static', filename='media/Imagenes Pag. Carrito/Bolsa.png') }}" alt="shopping-cart" />
                 <h3 class="cart-title">¡Tu carrito de compras!</h3>
                 <p> ¡Empezá a sumar Servicios a tu carro de compras!</p>
-                <button class="add-products-btn">¡Agregar productos!</button>
+                <button class="add-products-btn" onclick="window.location.href='{{ url_for('servicios') }}'">¡Agregar productos!</button>
             </div>
              
             <div class= "right-panel">
-                <h3 class="summary-title-btn">  Resumen  </h3>
-                <p class="summary-description">Aquí verás el informe de tus compras cuando agregues productos a tu carrito</p>
+                <h3 class="summary-title-btn">  Has reservado un Servicio  </h3>
+                <p class="summary-description">Tu reserva se confirmará al realizar el pago</p>
+                <p id="confirmation-message" style="display: none; color: green; font-weight: bold;"></p>
+                <button id="checkout-btn" onclick="window.location.href='https://mpago.la/2ECFxUQ'">
+                    Mercado Pago
+                </button>
+                <p class="summary-description">Te recordamos que le monto restante lo abonarás el día de tu sesión</p>
             </div>
         </div>
     </main>
