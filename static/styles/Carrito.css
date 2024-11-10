@@ -266,3 +266,17 @@ button {
     display: none;
   }
 }
+
+#checkout-btn {
+  background-color: #009fe3; /* Azul similar al de la imagen */
+  color: white;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px; /* Para redondear las esquinas */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+}
