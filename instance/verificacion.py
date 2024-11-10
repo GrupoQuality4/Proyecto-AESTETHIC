@@ -1,7 +1,8 @@
 import sqlite3
 
 # Ruta a tu archivo de base de datos SQLite
-db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+db_path = 'C:\\Users\\Tecno\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
+#db_path = 'C:\\Users\\Flia Caro Sosa Veron\\OneDrive\\Desktop\\Proyecto-AESTETHIC\\instance\\Aestethic.db'
 
 # IDs de los tokens que deseas marcar como verificados
 ids_a_verificar = input("Ingrese los IDs de los tokens que desea marcar como verificados, separados por comas: ")
