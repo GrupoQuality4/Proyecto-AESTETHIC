@@ -129,7 +129,9 @@ def register():
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
-            password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
+            
+            # Nueva expresión regular para la contraseña
+            password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
