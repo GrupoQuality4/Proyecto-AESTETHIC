@@ -14,15 +14,24 @@
                 <tr>
                     <th>Servicio</th>
                     <th>Fecha de Reserva</th>
-                    <th>Fecha de Uso</th>
+                    <th>Hora de Inicio</th>
+                    <th>Nombre del Cliente</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for reserva in reservas %}
                     <tr>
-                        <td>{{ reserva.servicio }}</td>
-                        <td>{{ reserva.fecha_reserva.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>{{ reserva.fecha_uso.strftime('%Y-%m-%d %H:%M') if reserva.fecha_uso else 'No especificada' }}</td>
+                        <td>{{ reserva.servicio_nombre }}</td>
+                        <td>{{ reserva.Reserva.fecha_reserva.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ reserva.Reserva.hora_turno.strftime('%H:%M') }}</td>
+                        <td>{{ reserva.nombre_cliente }}</td>
+                        <td>
+                            <form action="{{ url_for('historial_reservas') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="reserva_id" value="{{ reserva.Reserva.id }}">
+                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?')">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -32,4 +41,5 @@
     {% endif %}
 </body>
 </html>
+
 

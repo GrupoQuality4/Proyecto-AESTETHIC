@@ -129,7 +129,9 @@ def register():
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
-            password_regex = r'^[A-Z][A-Za-z\d@$!%*#?&]{7,11}$'
+            
+            # Nueva expresión regular para la contraseña
+            password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
@@ -340,7 +342,6 @@ def obtener_dia_semana(fecha):
 def guardar_reserva():
     try:
         data = request.get_json()
-        # Obtener user_id directamente de la sesión
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "Usuario no identificado. Por favor, inicie sesión para hacer una reserva."}), 403
@@ -349,61 +350,55 @@ def guardar_reserva():
         fecha_reserva = data.get('fecha_reserva')
         fecha_uso = data.get('fecha_uso')
         nombre_cliente = data.get('nombre_cliente')
-        hora_turno = data.get('hora_turno')  # Captura el campo hora_turno desde los datos JSON
+        hora_turno = data.get('hora_turno')
 
-        # Validación de todos los campos
         if not all([servicio, fecha_reserva, fecha_uso, nombre_cliente, hora_turno]):
             return jsonify({"error": "Todos los campos son requeridos"}), 400
 
-        # Validación del formato de fecha
         try:
             fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d').date()
             fecha_uso = datetime.strptime(fecha_uso, '%Y-%m-%d').date()
         except ValueError:
             return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
 
-        # Verificación de usuario existente en la base de datos
-        usuario = db.session.get(User, user_id)  # Asegúrate de que usuario esté definido
+        usuario = db.session.get(User, user_id)
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
 
-        # Creación de la reserva
         nueva_reserva = Reserva(
             user_id=user_id,
             servicio=servicio,
             fecha_reserva=fecha_reserva,
             fecha_uso=fecha_uso,
             nombre_cliente=nombre_cliente,
-            hora_turno=hora_turno  # Guardamos el horario de inicio
+            hora_turno=hora_turno
         )
         db.session.add(nueva_reserva)
         db.session.commit()
 
-        # Envío de correo de confirmación
         try:
-            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno)
+            enviar_correo_reserva(usuario.email, nombre_cliente, servicio, fecha_reserva, hora_turno)
         except Exception as e:
             print(f"Error al enviar el correo: {e}")
             return jsonify({"error": "Reserva guardada, pero ocurrió un error al enviar el correo."}), 500
-        
-        # Mensaje de confirmación de reserva exitosa
+
         return jsonify({"message": "Reserva guardada exitosamente"}), 201
 
     except Exception as e:
-        # Captura cualquier otro error y devuelve una respuesta de error general
         print(f"Error al guardar la reserva: {e}")
         return jsonify({"error": f"Ocurrió un error en el servidor: {e}"}), 500
 
-
-
-def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_uso, hora_turno):
+def enviar_correo_reserva(email, nombre_cliente, servicio_id, fecha_reserva, hora_inicio):
     try:
-        html = render_template('reserva_confirmacion.html', 
-                               nombre_cliente=nombre_cliente, 
-                               servicio=servicio, 
-                               fecha_reserva=fecha_reserva, 
-                               fecha_uso=fecha_uso,
-                               hora_turno=hora_turno)
+        servicio = Servicio.query.filter_by(id=servicio_id).first()
+        if servicio is None:
+            print(f"Error: No se encontró un servicio con ID {servicio_id}")
+            return
+        html = render_template('reserva_confirmacion.html',
+                               nombre_cliente=nombre_cliente,
+                               servicio=servicio.titulo,
+                               fecha_reserva=fecha_reserva,
+                               hora_inicio=hora_inicio)
         msg = Message(subject="Confirmación de su Reserva",
                       recipients=[email],
                       html=html,
@@ -413,12 +408,42 @@ def enviar_correo_reserva(email, nombre_cliente, servicio, fecha_reserva, fecha_
     except Exception as e:
         print(f"Error al enviar el correo de reserva: {e}")
 
-@app.route('/historial_reservas')
+@app.route('/historial_reservas', methods=['GET', 'POST'])
 def historial_reservas():
     if 'user_id' not in session:
         return redirect(url_for('login', next=url_for('historial_reservas')))
     user_id = session['user_id']
-    reservas = Reserva.query.filter_by(user_id=user_id).order_by(Reserva.fecha_reserva.desc()).all()
+    if request.method == 'POST':
+        reserva_id = request.form.get('reserva_id')
+        reserva = Reserva.query.get(reserva_id)
+        if reserva and reserva.user_id == user_id:
+            db.session.delete(reserva)
+            db.session.commit()
+            flash('Reserva eliminada correctamente.', 'success')
+        else:
+            flash('No se encontró la reserva o no tienes permiso para eliminarla.', 'danger')
+        return redirect(url_for('historial_reservas'))
+    reservas = (
+        db.session.query(
+            Reserva,
+            Servicio.titulo.label("servicio_nombre"),
+            User.nombre.label("nombre_cliente")
+        )
+        .join(Servicio, Reserva.servicio == Servicio.id)
+        .join(User, Reserva.user_id == User.user_id)
+        .filter(Reserva.user_id == user_id)
+        .order_by(Reserva.fecha_reserva.desc())
+        .all()
+    )
+    for reserva in reservas:
+        if isinstance(reserva.Reserva.fecha_reserva, str):
+            reserva.Reserva.fecha_reserva = datetime.strptime(reserva.Reserva.fecha_reserva, '%Y-%m-%d %H:%M:%S')
+        if isinstance(reserva.Reserva.hora_turno, str):
+            try:
+                reserva.Reserva.hora_turno = datetime.strptime(reserva.Reserva.hora_turno, '%H:%M:%S').time()
+            except ValueError:
+                reserva.Reserva.hora_turno = datetime.strptime(reserva.Reserva.hora_turno, '%H:%M').time()
+
     return render_template('historial_reservas.html', reservas=reservas)
 
 @app.route('/carrito')
