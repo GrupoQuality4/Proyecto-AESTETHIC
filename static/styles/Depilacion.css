@@ -129,7 +129,6 @@ a:hover {
     margin-right: 200px;
 }
 
-/* Footer Card Product: Precio, Íconos y Estrellas */
 .footer-card-product {
     display: flex;
     align-items: center;
@@ -145,7 +144,6 @@ a:hover {
     color: #555;
 }
 
-/* Botones en círculo: Favorito, Carrito, Compartir */
 .container-buttons-card {
     display: flex;
     gap: 10px;
@@ -341,7 +339,6 @@ a:hover {
     font-size: 22px;
 }
 
-/* Corazón vacío y lleno (Favorito) */
 .favorite .fa-heart {
     color: black;
 }
@@ -351,6 +348,7 @@ a:hover {
 }
 
 /* Calificación con estrellas */
+
 .rating {
     display: flex;
     gap: 5px;

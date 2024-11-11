@@ -253,11 +253,11 @@ button:hover {
     margin-right: auto;
 }
 .flash-message.success {
-    background-color: #4caf50; /* Verde para éxito */
+    background-color: #4caf50;
     color: white;
 }
 .flash-message.danger {
-    background-color: #f44336; /* Rojo para error */
+    background-color: #f44336;
     color: white;
 }
 
