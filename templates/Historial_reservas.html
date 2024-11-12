@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Reservas</title>
+    <link rel="stylesheet" href="../static/styles/historial_reservas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container">
+        <div id="atras">
+            <a href="{{ url_for('home') }}">
+                <i class="fa-solid fa-arrow-circle-left"></i>
+            </a>
+        </div>
+        <h2>Historial de Reservas</h2>
+
+        {% if reservas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>Fecha de Reserva</th>
+                        <th>Hora de Inicio</th>
+                        <th>Nombre del Cliente</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                        <tr>
+                            <td>{{ reserva.servicio_nombre }}</td>
+                            <td>{{ reserva.Reserva.fecha_reserva.strftime('%d/%m/%Y') }}</td>
+                            <td>{{ reserva.Reserva.hora_turno.strftime('%H:%M') }}</td>
+                            <td>{{ reserva.nombre_cliente }}</td>
+                            <td>
+                                <form action="{{ url_for('historial_reservas') }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="reserva_id" value="{{ reserva.Reserva.id }}">
+                                    <button type="submit" class="btn-eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?')">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-reservas">No tienes reservas anteriores.</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>
