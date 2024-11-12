@@ -6,32 +6,47 @@
     <title>Gift Card - Estética Aesthetic</title>
     <link rel="shortcut icon" type="image/x" href="../static/media/Imagenes Pag. Principal/logo_encabezado.png">
     <link rel="stylesheet" href="../static/styles/Gif_card.css">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+/>
 </head>
 <body>
     <div class="container">
         <div class="left-section">
-            <h1>Gift card</h1>
+            <div id="atras">
+                <a href="{{ url_for('home') }}">
+                    <i class="fa-solid fa-arrow-circle-left"></i>
+                </a>
+            </div>
+
+            <h1>Gift Card</h1>
             <a href="{{ url_for('home') }}">
                 <img src="../static/media/Imagenes Pag. Gif_card/logo_encabezado.png" alt="Aesthetic Estética Integral" class="logo">
             </a>
         </div>
         <div class="right-section">
-            <h2>Gift Card</h2>
+            
             <div class="gift-cards">
+                <h2>Gift Card</h2>
                 <div class="gift-card brown">
                     <p>GIFT CARD</p>
-                    <p>DELICADEZ</p>
+                    <p></p>
                 </div>
                 <div class="gift-card white">
                     <p>GIFT CARD</p>
-                    <p>picot</p>
+                    <p></p>
                 </div>
+                <p class="description">
+                    Las gift cards para servicios de estéticas son una opción de regalo ideal que ofrece belleza, relajación y bienestar. Estas tarjetas permiten a los destinatarios disfrutar de una variedad de tratamientos y servicios en salones y spas de alta calidad, proporcionando una experiencia de autocuidado personalizada.
+                </p>
+                <button class="add-to-cart">Agregar al carrito</button>
             </div>
-            <p class="description">
-                Las gift cards para servicios de estéticas son una opción de regalo ideal que ofrece belleza, relajación y bienestar. Estas tarjetas permiten a los destinatarios disfrutar de una variedad de tratamientos y servicios en salones y spas de alta calidad, proporcionando una experiencia de autocuidado personalizada.
-            </p>
-            <button class="add-to-cart">Agregar al carrito</button>
-        </div>
+            </div>
+            
     </div>
     <footer class="footer">
         <div class="footer-content">
@@ -56,4 +71,3 @@
     </footer>
 </body>
 </html>
-
