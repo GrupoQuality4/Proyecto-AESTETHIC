@@ -139,7 +139,6 @@ a:hover {
     margin-left: 10px;
 }
 
-/* Estilos para el contenedor del mensaje de éxito */
 #successMessage {
     display: flex;
     flex-direction: column;
@@ -153,21 +152,18 @@ a:hover {
     margin-top: 20px;
 }
 
-/* Estilo del título del mensaje */
 #successMessage h1 {
     color: #D08590;
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-/* Estilo del párrafo del mensaje */
 #successMessage p {
     font-size: 18px;
     color: #333;
     margin-bottom: 20px;
 }
 
-/* Estilo del enlace al login */
 #successMessage a {
     color: #FFFFFF;
     text-decoration: none;
@@ -233,7 +229,7 @@ a:hover {
 .password-container input[type="password"],
 .password-container input[type="text"] {
     width: 100%;
-    padding-right: 30px; /* Espacio para el ícono */
+    padding-right: 30px;
 }
 
 .toggle-password {
@@ -251,7 +247,7 @@ a:hover {
 }
 
 .login-link a {
-    color: #d17b8f; /* Ajusta el color según tu paleta */
+    color: #d17b8f;
     text-decoration: none;
     font-weight: bold;
 }
@@ -271,7 +267,7 @@ a:hover {
     margin-right: auto;
 }
 .flash-message.danger {
-    background-color: #f44336; /* Rojo */
+    background-color: #d08590;
     color: white;
 }
 

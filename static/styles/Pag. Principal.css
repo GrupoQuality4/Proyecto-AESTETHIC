@@ -400,7 +400,7 @@ button:hover {
 
 .search-container {
   position: relative;
-  width: 300px; /* Ajusta el ancho según el diseño que desees */
+  width: 300px;
 }
 
 #search-input {
@@ -514,7 +514,8 @@ button:hover {
 }
 
 .flash-success {
-  background-color: #4CAF50;
+  background-color: #FFE8ED;
+  color: #000;
 }
 
 .flash-info {
@@ -522,11 +523,8 @@ button:hover {
 }
 
 .flash-danger {
-  background-color: #f44336;
+  background-color: #d08590;
 }
-
-
-
 
 /*Formulario*/
 #contacto{
@@ -534,7 +532,6 @@ button:hover {
   padding: 0px 10px;
   color: #000;
 }
-
 
 #contacto form{
   max-width: 80%;
@@ -575,8 +572,6 @@ form textarea{
   text-align: center;
   transition: 0.4s;
 }
-
-
 /*Responsive*/
 
 @media screen and (width <= 927px){

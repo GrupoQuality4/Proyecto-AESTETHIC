@@ -78,9 +78,9 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     mensaje_login = None
-
-    # Verificar si hay un mensaje de registro exitoso en la sesión
     registro_exitoso = session.pop('registro_exitoso', None)
+    if registro_exitoso:
+        flash("Revisa tu correo electrónico para verificar tu cuenta.", 'success')
 
     if request.method == 'POST':
         email = request.form['usuario']
@@ -95,15 +95,12 @@ def login():
                 flash('La cuenta no fue verificada y ha sido eliminada. Regístrate de nuevo.', 'danger')
                 return redirect(url_for('register'))
 
-            # Guardar el user_id y otros detalles en la sesión
             session['user_id'] = user.user_id
             session['user_name'] = user.nombre
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
             flash('Inicio de sesión exitoso', 'success')
-            
-            # Redirigir a la página de inicio o a la URL que venía en 'next'
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
 
@@ -120,21 +117,17 @@ def register():
             email = data.get('email')
             password = data.get('contrasena')
 
-            # Validaciones de entrada
             if not nombre.isalpha() or not apellido.isalpha():
                 return jsonify(success=False, message='El nombre y apellido deben contener solo letras.')
             if not re.match(r'^[a-zA-Z0-9_.+-]+@gmail\.com$', email):
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
-            
-            # Nueva expresión regular para la contraseña
             password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
             try:
-                # Hash de la contraseña y creación del nuevo usuario
                 hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
                 new_user = User(nombre=nombre, apellido=apellido, email=email, password=hashed_password)
                 db.session.add(new_user)
@@ -145,7 +138,6 @@ def register():
                 return jsonify(success=False, message="Error al crear el usuario en la base de datos."), 500
 
             try:
-                # Generación del token de verificación y envío del correo
                 token = generate_confirmation_token(new_user.email)
                 expires_at = datetime.utcnow() + timedelta(hours=24)
                 verification_token = VerificationToken(token=token, user_id=new_user.user_id, expires_at=expires_at)
@@ -157,7 +149,6 @@ def register():
                 subject = "Por favor confirma tu correo"
                 send_email(new_user.email, subject, html)
 
-                # Enviar respuesta JSON en lugar de redirigir
                 return jsonify(success=True, message="¡Se ha registrado con éxito! Revisa tu correo para verificar tu cuenta.")
             except Exception as e:
                 print(f"Error al generar o almacenar el token o al enviar el correo: {e}")
@@ -170,12 +161,9 @@ def register():
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
     try:
-        # Busca el token en la base de datos
         verification_token = VerificationToken.query.filter_by(token=token).first_or_404()
 
-        # Verifica si el token ha expirado
         if verification_token.expires_at < datetime.utcnow():
-            # Si el token expiró, eliminar el token y el usuario
             user = verification_token.user
             db.session.delete(verification_token)
             db.session.delete(user)
@@ -183,11 +171,10 @@ def confirm_email(token):
             flash('El enlace de confirmación ha expirado. Por favor, regístrate de nuevo.', 'danger')
             return redirect(url_for('register'))
 
-        # Si el token es válido y no ha expirado, verificar al usuario y marcar el token como usado
         user = verification_token.user
-        user.is_verified = True  # Marcar al usuario como verificado
-        verification_token.is_used = True  # Marcar el token como usado
-        db.session.commit()  # Guardar los cambios sin eliminar el token
+        user.is_verified = True
+        verification_token.is_used = True
+        db.session.commit()
 
         flash('Has confirmado tu correo electrónico. Gracias! Ahora puedes iniciar sesión.', 'success')
         return redirect(url_for('login'))
@@ -307,17 +294,15 @@ def obtener_subservicios():
 @app.route('/api/obtener_horarios', methods=['GET'])
 def obtener_horarios():
     servicio_id = request.args.get('servicio_id')
-    dia_nombre = request.args.get('dia')  # Ahora recibimos el día de la semana directamente
+    dia_nombre = request.args.get('dia')
 
     if not servicio_id or not dia_nombre:
         return jsonify({"error": "Faltan parámetros"}), 400
 
-    # Buscar el ID del día en la tabla 'dias' usando el nombre del día
     dia = Dia.query.filter_by(nombre=dia_nombre).first()
     if not dia:
         return jsonify({"error": "Día no encontrado"}), 404
 
-    # Obtener los horarios del servicio y día especificados
     horarios = Horario.query.filter_by(servicio_id=servicio_id, dia_id=dia.id).all()
     horarios_json = []
     for horario in horarios:
