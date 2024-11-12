@@ -271,11 +271,7 @@ button {
 }
 
 #checkout-btn {
-<<<<<<< HEAD
-  background-color: #009fe3;
-=======
   background-color: #007affa3;
->>>>>>> las-mejor-rama
   color: white;
   border: none;
   padding: 0px 0px;
@@ -286,11 +282,6 @@ button {
   display: inline-block;
   font-size: 90px;
   cursor: pointer;
-<<<<<<< HEAD
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-=======
   border-radius: 35px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -301,4 +292,3 @@ display: block;
 margin: 0 auto;
 
 }
->>>>>>> las-mejor-rama

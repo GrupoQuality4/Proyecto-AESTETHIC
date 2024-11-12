@@ -100,13 +100,9 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-<<<<<<< HEAD
-            flash('Inicio de sesión exitoso', 'success')
-=======
             flash('¡INICIO DE SESIÓN EXITOSO!', 'success')
             
             # Redirigir a la página de inicio o a la URL que venía en 'next'
->>>>>>> las-mejor-rama
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
 
