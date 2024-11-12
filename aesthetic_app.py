@@ -74,7 +74,7 @@ def logout():
     session.pop('user_apellido', None)
     session.pop('user_email', None)
     session.pop('avatar_color', None)
-    flash('Has cerrado sesión', 'success')
+    flash('¡SESIÓN CERRADA CON EXITO!', 'success')
     return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,13 +103,13 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-            flash('Inicio de sesión exitoso', 'success')
+            flash('¡INICIO DE SESIÓN EXITOSO!', 'success')
             
             # Redirigir a la página de inicio o a la URL que venía en 'next'
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
 
-        flash('Correo o contraseña incorrectos', 'danger')
+        flash('CORREO/CONTRASEÑA INVALIDAS', 'danger')
     return render_template('login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -140,7 +140,7 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as e:
-                print(f"Error al crear el usuario: {e}")
+                print(f"ERROR AL CREAR USUARIO: {e}")
                 db.session.rollback()
                 return jsonify(success=False, message="Error al crear el usuario en la base de datos."), 500
 
@@ -365,7 +365,7 @@ def guardar_reserva():
         # Verificación de usuario existente en la base de datos
         usuario = db.session.get(User, user_id)  # Asegúrate de que usuario esté definido
         if not usuario:
-            return jsonify({"error": "Usuario no encontrado"}), 404
+            return jsonify({"ERROR": "USUARIO NO ENCONTRADO"}), 404
 
         # Creación de la reserva
         nueva_reserva = Reserva(

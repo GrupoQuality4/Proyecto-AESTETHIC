@@ -6,10 +6,19 @@
     <link rel="stylesheet" href="../static/styles/Novedades.css">
     <title>Novedades</title>
     <link rel="shortcut icon" type="image/x" href="../static/media/Imagenes Pag. Principal/logo_encabezado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="contenedor">
         <div class="panel-izquierdo">
+            <div id="atras">
+                <a href="{{ url_for('home') }}">
+                    <i class="fa-solid fa-arrow-circle-left"></i>
+                </a>
+            </div>
+
             <h1>Novedades</h1>
             <a href="{{ url_for('home') }}">
                 <img src="../static/media/Imagenes Pag. Novedades/logo_encabezado.png" alt="Logo Aesthetic" class="logo">
@@ -24,14 +33,12 @@
 
             <div class="novedades-items">
                 <div class="novedad">
-                    <img src="promocion.jpg" alt="Promociones">
-                    <h3>Promociones</h3>
-                    <p>¡Celebra el mes con nosotros en nuestra estética! Disfruta de un 20% de descuento en todos nuestros tratamientos faciales y corporales...</p>
+                    <img src="../static/media/imagenes Pag. Novedades/novedades1.png" alt="Promociones">
+                   
                 </div>
                 <div class="novedad">
-                    <img src="nuevos_servicios.jpg" alt="Nuevos servicios">
-                    <h3>Nuevos servicios</h3>
-                    <p>En el mes de julio, estamos emocionados de anunciar que hemos añadido nuevos servicios a nuestro centro de estética, incluyendo podología y psicología...</p>
+                    <img src="../static/media/imagenes Pag. Novedades/novedades2.png" alt="Nuevos servicios">
+                   
                 </div>
             </div>
         </div>

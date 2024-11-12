@@ -1,6 +1,6 @@
 *{
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  margin: auto;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .avatar {
@@ -68,15 +68,16 @@
 header {
   background: #d08590;
   color: #fff;
-  padding: 5px 40px;
+  padding: 5px 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 }
 
 .menu a {
   color: #5c273f;
-  padding: 0 10px;
+  padding: 0 7px;
   text-decoration: none;
   font-weight: bold;
   font-size: 20px;
@@ -107,19 +108,19 @@ header {
   padding: 3px;
   margin-right: 10px;
   border: 1px solid #ffe8ed;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 18px;
 }
 
 .search-login a {
-  margin: 0 5px;
-  padding: 3px 0px;
+  margin: 4px;
+  padding: 5px;
   text-align: center;
   background-color: #ffe8ed;
   color: rgba(96, 43, 67, 1);
   text-decoration: none;
-  border-radius: 5px;
-  font-size: 18px;
+  border-radius: 15px;
+  font-size: 19px;
 }
 
 .search-login .user-avatar {
@@ -330,6 +331,7 @@ h2{
   padding: 5px 10px;
   display: flex;
   color: #fff;
+  width: 100%;
 }
 
 .footer-content {
@@ -408,7 +410,7 @@ button:hover {
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 .suggestions-list {
@@ -443,13 +445,13 @@ h2 {
 }
 
 .map {
-  text-align: left;
-  margin: 20px 0;
+  text-align: center;
+  margin: 50px 0;
 }
 
 .map img {
   width: 5%;
-  height: auto;
+  height: 100%;
 }
 
 /* COMPARTTIR */
@@ -489,7 +491,7 @@ button {
   background-color: #ffe8ed;
   color: rgba(96, 43, 67, 1);
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 18px;
 }
 
@@ -514,7 +516,9 @@ button:hover {
 }
 
 .flash-success {
-  background-color: #4CAF50;
+  background-color: #ffffff;
+  color: #4CAF50;
+  border-radius: 15px;
 }
 
 .flash-info {
@@ -523,6 +527,7 @@ button:hover {
 
 .flash-danger {
   background-color: #f44336;
+
 }
 
 
@@ -530,7 +535,7 @@ button:hover {
 
 /*Formulario*/
 #contacto{
-  display: flex;
+  display: block;
   padding: 0px 10px;
   color: #000;
 }

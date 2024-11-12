@@ -7,6 +7,7 @@
     <link rel="shortcut icon" type="image/x" href="../static/media/Imagenes Pag. Principal/logo_encabezado.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="../static/styles/Carrito.css" />
+    
 </head>
 <body>
     <div class="top-header">
@@ -35,7 +36,7 @@
             <a href="{{ url_for('gif_card') }}">Gift Card</a>
             <a href="{{ url_for('novedades') }}">Novedades</a>
             <a href="{{ url_for('contactos') }}">Contáctanos</a>
-            <a href="{{ url_for('reservas') }}">Reserva</a>
+            <a href="{{ url_for('reservas') }}">Reservas</a>
             
             <label for="check" class="esconder-menu">
                 &#215
@@ -90,7 +91,7 @@
                 <p class="summary-description">Tu reserva se confirmará al realizar el pago</p>
                 <p id="confirmation-message" style="display: none; color: green; font-weight: bold;"></p>
                 <button id="checkout-btn" onclick="window.open('https://mpago.la/2ECFxUQ', '_blank')">
-                    Mercado Pago
+                    <img src="../static/media/Imagenes Pag. Carrito/mercado.png">
                 </button>
                 <p class="summary-description">Te recordamos que le monto restante lo abonarás el día de tu sesión</p>
             </div>
