@@ -72,7 +72,7 @@ def logout():
     session.pop('user_apellido', None)
     session.pop('user_email', None)
     session.pop('avatar_color', None)
-    flash('Has cerrado sesión', 'success')
+    flash('¡HAS CERRADO SESIÓN!', 'success')
     return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -100,11 +100,11 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-            flash('Inicio de sesión exitoso', 'success')
+            flash('¡INICIO DE SESIÓN EXITOSÓ!', 'success')
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
 
-        flash('Correo o contraseña incorrectos', 'danger')
+        flash('CORREO/CONTRASEÑA INVALIDOS', 'danger')
     return render_template('login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -264,8 +264,6 @@ def gif_card():
 @app.route('/contactos')
 def contactos():
     return render_template('Contactos.html')
-
-from flask import flash
 
 @app.route('/reservas')
 def reservas():

@@ -90,174 +90,45 @@ async function cargarHorarios(fecha) {
     }
 }
 
-async function seleccionarServicioAsync(categoria, servicio) {
-    const categoriaSelect = document.getElementById("servicio");
-    const subservicioSelect = document.getElementById("subservicio-corporal-select");
-
-    for (let i = 0; i < categoriaSelect.options.length; i++) {
-        if (categoriaSelect.options[i].text === categoria) {
-            categoriaSelect.selectedIndex = i;
-            break;
-        }
-    }
-    await cargarSubserviciosAsync();
-    for (let i = 0; i < subservicioSelect.options.length; i++) {
-        if (subservicioSelect.options[i].text === servicio) {
-            subservicioSelect.selectedIndex = i;
-            break;
-        }
-    }
-}
-
 function limpiarSelector(selectorId) {
     const selector = document.getElementById(selectorId);
     selector.innerHTML = '<option value="">Seleccione una opción</option>';
 }
 
-document.getElementById("servicio").addEventListener("change", function() {
-    limpiarSelector("hora");
-    limpiarSelector("subservicio-corporal-select");
-    cargarSubserviciosAsync();
-});
-
-document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
-    limpiarSelector("hora");
-});
-
 document.addEventListener("DOMContentLoaded", function() {
     cargarCategorias();
 
+    // Configuración de flatpickr para el campo de fecha
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
         dateFormat: "d-m-Y",
         minDate: "today",
         onChange: function(selectedDates, dateStr) {
-            const servicioId = document.getElementById("subservicio-corporal-select").value;
             cargarHorarios(dateStr);
         }
     });
 
     document.getElementById("servicio").addEventListener("change", function() {
-        const categoriaId = this.value;
-        console.log("Categoría ID seleccionada:", categoriaId);
+        limpiarSelector("hora");
+        limpiarSelector("subservicio-corporal-select");
+        cargarSubserviciosAsync();
+        console.log("Categoría ID seleccionada:", this.value);
     });
-});
 
-const currentDate = new Date();
-let currentMonth = currentDate.getMonth();
-let currentYear = currentDate.getFullYear();
+    document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
+        limpiarSelector("hora");
+    });
 
-const calendarBody = document.getElementById('calendarBody');
-const currentMonthElement = document.getElementById('currentMonth');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-
-prevBtn.addEventListener('click', () => {
-    currentMonth--;
-    renderCalendar();
-});
-nextBtn.addEventListener('click', () => {
-    currentMonth++;
-    renderCalendar();
-});
-
-const occupiedDates = [
-    new Date(currentYear, currentMonth, 5).toDateString(),
-    new Date(currentYear, currentMonth, 12).toDateString(),
-    new Date(currentYear, currentMonth, 20).toDateString(),
-];
-
-const daysOfWeek = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-
-function getDayClassName(date, isSecondCalendar = false) {
-    const dateString = date.toDateString();
-    const dayOfWeek = date.getDay();
-    if (dayOfWeek === 0) {
-        return 'sunday';
-    }
-    if (isSecondCalendar || occupiedDates.includes(dateString)) {
-        return 'occupied';
-    }
-    return 'available';
-}
-
-function renderCalendar() {
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-
-    currentMonthElement.textContent = new Date(currentYear, currentMonth).toLocaleDateString('default', { month: 'long', year: 'numeric' });
-
-    let days = daysOfWeek.map(day => `<div class="day-header">${day}</div>`).join('');
-
-    for (let i = 0; i < firstDayIndex; i++) {
-        days += `<div class="calendar-day"></div>`;
-    }
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(currentYear, currentMonth, i);
-        const className = getDayClassName(date);
-        days += `<div class="calendar-day ${className}">${i}</div>`;
-    }
-
-    calendarBody.innerHTML = days;
-}
-
-let currentMonth2 = currentDate.getMonth() + 1;
-let currentYear2 = currentDate.getFullYear();
-
-const calendarBody2 = document.getElementById('calendarBody2');
-const currentMonthElement2 = document.getElementById('currentMonth2');
-const prevBtn2 = document.getElementById('prevBtn2');
-const nextBtn2 = document.getElementById('nextBtn2');
-
-prevBtn2.addEventListener('click', () => {
-    currentMonth2--;
-    renderSecondCalendar();
-});
-
-nextBtn2.addEventListener('click', () => {
-    currentMonth2++;
-    renderSecondCalendar();
-});
-
-function renderSecondCalendar() {
-    const daysInMonth = new Date(currentYear2, currentMonth2 + 1, 0).getDate();
-    const firstDayIndex = new Date(currentYear2, currentMonth2, 1).getDay();
-
-    currentMonthElement2.textContent = new Date(currentYear2, currentMonth2).toLocaleDateString('default', { month: 'long', year: 'numeric' });
-
-    let days = daysOfWeek.map(day => `<div class="day-header">${day}</div>`).join('');
-
-    for (let i = 0; i < firstDayIndex; i++) {
-        days += `<div class="calendar-day"></div>`;
-    }
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(currentYear2, currentMonth2, i);
-        const className = getDayClassName(date, true);
-        days += `<div class="calendar-day ${className}">${i}</div>`;
-    }
-
-    calendarBody2.innerHTML = days;
-}
-
-renderCalendar();
-renderSecondCalendar();
-
-function convertirFechaFormatoISO(fecha) {
-    const [day, month, year] = fecha.split("-");
-    return `${year}-${month}-${day}`;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.querySelector('.submit-button');
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
             event.preventDefault();
 
+            // Convertir la fecha a formato ISO antes de enviar al backend
             const fechaReserva = document.getElementById('fecha').value;
-            const fechaReservaFormatoISO = convertirFechaFormatoISO(fechaReserva);
+            const [day, month, year] = fechaReserva.split("-");
+            const fechaReservaFormatoISO = `${year}-${month}-${day}`;
 
             const reservaData = {
                 nombre_cliente: document.getElementById('nombre').value,
@@ -301,5 +172,5 @@ function mostrarConfirmacion() {
 
 function cerrarConfirmacion() {
     document.getElementById("confirmationModal").classList.remove("show");
-    window.location.href = "{{ url_for('carrito') }}";
+    window.location.href = carritoUrl;
 }

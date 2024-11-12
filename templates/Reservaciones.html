@@ -7,55 +7,33 @@
     <title>Reserva - Aesthetic Estética Integral</title>
     <link rel="stylesheet" href="../static/styles/Reservaciones.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
+  
     <div class="container">
+        
         <div class="left-panel">
-            <h2>Inicia tu reserva</h2>
-            <a href="{{ url_for('servicios') }}">
-                <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral" class="logo">
-            </a>
-            <div class="calendar-container">
-                <div class="calendar">
-                    <h4>Turnos disponibles</h4>
-                    <button id="prevBtn">◄</button>
-                    <span id="currentMonth">octubre de 2024</span>
-                    <button id="nextBtn">►</button>
-                    <div id="calendarBody"></div>
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-color available-color"></div>
-                            <span>Disponible</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color sunday-color"></div>
-                            <span>Día no laborable</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="calendar grey-calendar">
-                    <h4>Turnos ocupados</h4>
-                    <button id="prevBtn2">◄</button>
-                    <span id="currentMonth2">diciembre de 2024</span>
-                    <button id="nextBtn2">►</button>
-                    <div id="calendarBody2"></div>
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-color occupied-color"></div>
-                            <span>Ocupado</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color sunday-color"></div>
-                            <span>Día no laborable</span>
-                        </div>
-                    </div>
-                </div>
+            <div id="atras">
+                <a href="{{ url_for('servicios') }}">
+                    <i class="fa-solid fa-arrow-circle-left"></i>
+                </a>
             </div>
+         
+            <h2>Reservar</h2>
+            <a href="{{ url_for('servicios') }}">
+                <img src="../static/media/Imagenes Pag. Registro/logo_encabezado.png" alt="Aesthetic Estética Integral"
+                    class="logo">
+            </a>
+           
         </div>
         <div class="right-panel">
             <div class="services-gallery">
                 <h3>Servicios Disponibles</h3>
+                
                 <div class="service-row">
                     <h4>Tratamientos Corporales</h4>
                     <div class="service-card">
@@ -66,146 +44,156 @@
                     </div>
                     <div class="service-card">
                         <h5>Envoltura de Algas o Barro</h5>
-                        <p>Lunes: 10:00 - 11:00</p>
-                        <p>Jueves: 11:00 - 12:00</p>
+                        <p>Lunes: 16:00 - 17:00</p>
+                        <p>Jueves: 17:00 - 18:00</p>
                         <p><strong>$129.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Masaje Reafirmante</h5>
-                        <p>Lunes: 11:00 - 12:00</p>
-                        <p>Jueves: 15:00 - 16:00</p>
+                        <p>Martes: 10:00 - 11:00</p>
+                        <p>Viernes: 15:00 - 16:00</p>
                         <p><strong>$99.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Tratamiento de Drenaje Linfático</h5>
-                        <p>Lunes: 15:00 - 16:00</p>
-                        <p>Jueves: 16:00 - 17:00</p>
-                        <p><strong>$49.99</strong></p>
-                    </div>
-                </div>
-                <div class="service-row">
-                    <h4>Tratamientos Faciales</h4>
-                    <div class="service-card">
-                        <h5>Limpieza Facial Profunda</h5>
-                        <p>Lunes: 16:00 - 17:00</p>
-                        <p>Jueves: 17:00 - 18:00</p>
-                        <p><strong>$79.99</strong></p>
-                    </div>
-                    <div class="service-card">
-                        <h5>Microdermoabrasión</h5>
-                        <p>Lunes: 17:00 - 18:00</p>
-                        <p>Viernes: 09:00 - 10:00</p>
-                        <p><strong>$199.99</strong></p>
-                    </div>
-                    <div class="service-card">
-                        <h5>Peeling Químico</h5>
-                        <p>Martes: 09:00 - 10:00</p>
-                        <p>Viernes: 10:00 - 11:00</p>
-                        <p><strong>$129.99</strong></p>
-                    </div>
-                    <div class="service-card">
-                        <h5>Tratamiento con Ácido Hialurónico</h5>
-                        <p>Martes: 10:00 - 11:00</p>
-                        <p>Viernes: 11:00 - 12:00</p>
-                        <p><strong>$249.99</strong></p>
-                    </div>
-                </div>
-                <div class="service-row">
-                    <h4>Depilación</h4>
-                    <div class="service-card">
-                        <h5>Depilación con Cera</h5>
-                        <p>Martes: 11:00 - 12:00</p>
-                        <p>Viernes: 15:00 - 16:00</p>
-                        <p><strong>$49.99</strong></p>
-                    </div>
-                    <div class="service-card">
-                        <h5>Depilación Láser</h5>
-                        <p>Martes: 15:00 - 16:00</p>
-                        <p>Viernes: 16:00 - 17:00</p>
-                        <p><strong>$199.99</strong></p>
-                    </div>
-                    <div class="service-card">
-                        <h5>Depilación con Hilo</h5>
                         <p>Martes: 16:00 - 17:00</p>
                         <p>Viernes: 17:00 - 18:00</p>
                         <p><strong>$49.99</strong></p>
                     </div>
+                </div>
+            
+                <div class="service-row">
+                    <h4>Tratamientos Faciales</h4>
+                    <div class="service-card">
+                        <h5>Limpieza Facial Profunda</h5>
+                        <p>Lunes: 10:00 - 11:00</p>
+                        <p>Jueves: 11:00 - 12:00</p>
+                        <p><strong>$79.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h5>Peeling Químico</h5>
+                        <p>Lunes: 17:00 - 18:00</p>
+                        <p>Viernes: 09:00 - 10:00</p>
+                        <p><strong>$129.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h5>Microdermoabrasión</h5>
+                        <p>Martes: 11:00 - 12:00</p>
+                        <p>Viernes: 15:00 - 16:00</p>
+                        <p><strong>$199.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h5>Tratamiento con Ácido Hialurónico</h5>
+                        <p>Martes: 17:00 - 18:00</p>
+                        <p>Sábado: 09:00 - 10:00</p>
+                        <p><strong>$249.99</strong></p>
+                    </div>
+                </div>
+            
+                <div class="service-row">
+                    <h4>Depilación</h4>
+                    <div class="service-card">
+                        <h5>Depilación con Cera</h5>
+                        <p>Lunes: 11:00 - 12:00</p>
+                        <p>Jueves: 15:00 - 16:00</p>
+                        <p><strong>$49.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h5>Depilación con Hilo</h5>
+                        <p>Miércoles: 10:00 - 11:00</p>
+                        <p>Viernes: 11:00 - 12:00</p>
+                        <p><strong>$49.99</strong></p>
+                    </div>
+                    <div class="service-card">
+                        <h5>Depilación Láser</h5>
+                        <p>Martes: 09:00 - 10:00</p>
+                        <p>Viernes: 10:00 - 11:00</p>
+                        <p><strong>$199.99</strong></p>
+                    </div>
                     <div class="service-card">
                         <h5>Depilación con Crema Depilatoria</h5>
-                        <p>Martes: 17:00 - 18:00</p>
+                        <p>Miércoles: 11:00 - 12:00</p>
+                        <p>Sábado: 11:00 - 12:00</p>
                         <p><strong>$29.99</strong></p>
                     </div>
                 </div>
+            
                 <div class="service-row">
                     <h4>Spa de Manos</h4>
                     <div class="service-card">
                         <h5>Exfoliación e Hidratación Profunda de Manos</h5>
-                        <p>Sábado: 09:00 - 10:00</p>
-                        <p>Miércoles: 09:00 - 10:00</p>
+                        <p>Miércoles: 11:00 - 12:00</p>
+                        <p>Sábado: 15:00 - 16:00</p>
                         <p><strong>$79.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Masaje Relajante de Manos</h5>
-                        <p>Miércoles: 10:00 - 11:00</p>
-                        <p>Sábado: 11:00 - 12:00</p>
+                        <p>Miércoles: 15:00 - 16:00</p>
+                        <p>Sábado: 16:00 - 17:00</p>
                         <p><strong>$49.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Tratamiento de Parafina</h5>
-                        <p>Miércoles: 11:00 - 12:00</p>
-                        <p>Sábado: 15:00 - 16:00</p>
+                        <p>Miércoles: 16:00 - 17:00</p>
+                        <p>Sábado: 17:00 - 18:00</p>
                         <p><strong>$49.99</strong></p>
                     </div>
                     <div class="service-card">
-                        <h5>Manicura Completa</h5>
-                        <p>Miércoles: 15:00 - 16:00</p>
-                        <p>Sábado: 16:00 - 17:00</p>
+                        <h5>Manicura SPA Completa</h5>
+                        <p>Miércoles: 17:00 - 18:00</p>
+                        <p>Viernes: 11:00 - 12:00</p>
                         <p><strong>$79.99</strong></p>
                     </div>
                 </div>
+            
                 <div class="service-row">
                     <h4>Masajes</h4>
                     <div class="service-card">
                         <h5>Masaje Relajante con Aromaterapia</h5>
-                        <p>Miércoles: 16:00 - 17:00</p>
-                        <p>Sábado: 17:00 - 18:00</p>
+                        <p>Lunes: 15:00 - 16:00</p>
+                        <p>Jueves: 16:00 - 17:00</p>
                         <p><strong>$79.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Masaje Descontracturante</h5>
-                        <p>Miércoles: 17:00 - 18:00</p>
+                        <p>Martes: 10:00 - 11:00</p>
+                        <p>Viernes: 11:00 - 12:00</p>
                         <p><strong>$99.99</strong></p>
                     </div>
                     <div class="service-card">
                         <h5>Masaje con Piedras Calientes</h5>
-                        <p>Jueves: 09:00 - 10:00</p>
-                        <p>Sábado: 17:00 - 18:00</p>
+                        <p>Martes: 15:00 - 16:00</p>
+                        <p>Viernes: 16:00 - 17:00</p>
                         <p><strong>$99.99</strong></p>
                     </div>
                     <div class="service-card">
-                        <h5>Masaje de Reflexología (Pies, Manos, etc.)</h5>
-                        <p>Miércoles: 15:00 - 16:00</p>
-                        <p>Viernes: 17:00 - 18:00</p>
+                        <h5>Masaje de Reflexología de Pies</h5>
+                        <p>Jueves: 09:00 - 10:00</p>
+                        <p>Sábado: 17:00 - 18:00</p>
                         <p><strong>$49.99</strong></p>
                     </div>
                 </div>
             </div>
             <form class="reservation-form">
-                <label for="nombre">Nombre del cliente</label>
+                <label for="nombre"></label>
                 <input type="text" id="nombre" placeholder="Nombre del cliente" required>
-                <label for="servicio">Servicio al que asistirá</label>
-                <select id="servicio" name="servicio" onchange="cargarSubserviciosAsync()"></select>
+                <label for="servicio"></label>
+                <select id="servicio" name="servicio" onchange="cargarSubserviciosAsync()">
+                    <!-- Opciones de categorías cargadas dinámicamente desde la API -->
+                </select>
                 <div id="tratamiento-container" style="display: none;">
-                    <label for="subservicio-corporal-select">Seleccione el tipo de tratamiento</label>
+                    <label for="subservicio-corporal-select"></label>
                     <select id="subservicio-corporal-select" name="subservicio-corporal">
                         <option value="">Seleccione un tratamiento</option>
+                        <!-- Opciones de subservicios cargadas dinámicamente desde la API -->
                     </select>
                 </div>
-                <label for="fecha">Fecha de reserva</label>
-                <input type="text" id="fecha" name="fecha" required>
-                <label for="hora">Hora de reserva</label>
-                <select id="hora" name="hora" required>
+                <label for="fecha"></label>
+                <input type="text" id="fecha" name="fecha" placeholder="Fechas de reservas" required>
+                <label for="hora"></label>
+                <select id="hora" name="hora" placeholder="Horas disponibles"required>
                     <option value="">Seleccione un horario</option>
+                    <!-- Horarios cargados dinámicamente desde la API -->
                 </select>
                 <button type="button" class="submit-button" onclick="mostrarConfirmacion()">Reservar</button>
             </form>
@@ -226,7 +214,8 @@
             <a href="https://www.facebook.com/profile.php?id=61563739507826" target="_blank" class="iconofacebook">
                 <img src="../static/media/Imagenes Pag. Principal/facebook.png" alt="logofacebook" />
             </a>
-            <a href="https://www.instagram.com/aesthetic2024_ok?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="iconoinstagram">
+            <a href="https://www.instagram.com/aesthetic2024_ok?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                target="_blank" class="iconoinstagram">
                 <img src="../static/media/Imagenes Pag. Principal/instagram.png" alt="logoinstagram" />
             </a>
             <a href="https://www.linkedin.com/in/aesthetic-estetica-163b4b330/" target="_blank" class="iconolinkedin">
@@ -234,6 +223,9 @@
             </a>
         </div>
     </footer>
+    <script type="text/javascript">
+        const carritoUrl = "/carrito";  <!-- Coloca la ruta completa aquí si es diferente -->
+    </script>
     <script src="../static/scripts/Reservacion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>

@@ -59,14 +59,15 @@ body {
 }
 
 .contact-form {
-    width: 45%;
+    width: 100%;
 }
 
 .contact-form h3 {
     font-size: 3em;
     color: #b36a70;
     margin-left: 110px;
-    margin: 70px;
+    margin: 30px;
+    text-align: center;
 }
 
 .contact-form .form-group {
@@ -90,7 +91,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #ffe6eb;
-    width: 250px;
+    width: 160px;
 }
 
 .contact-form input[type="text"]#subject {
@@ -100,12 +101,12 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #ffe6eb;
-    width: 150px;
+    width: 135px;
 }
 
 .contact-form textarea {
-    width: 100%;
-    padding: 10px;
+    width: 90%;
+    padding: 25px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -113,16 +114,16 @@ body {
 }
 
 .contact-form button {
-    padding: 10px;
+    padding: 15px;
     background-color: #bc7395;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     font-size: 16px;
     width: 100px;
     height: 50px;
-    margin-left: 120px;
+    margin-left: 40%;
 }
 
 .contact-form button:hover {
@@ -133,54 +134,13 @@ body {
     width: 35%;
 }
 
-.detail-box1 {
-    background-color: #FFE8ED;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 10px;
+.contact-details img{
+    font-size: 16px;
+    width: 220%;
+    margin: 30%;
 }
 
-.detail-box2 {
-    background-color: #BC7395;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 10px;
-}
 
-.detail-box3 {
-    background-color: #FFE8ED;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 10px;
-
-}
-
-.detail-box4 {
-    background-color: #BC7395;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 10px;
-}
-
-.detail-box h2 {
-    margin: 0;
-    color: #FFE8ED;
-}
-
-.detail-box h3 {
-    margin: 0;
-    color: #5a2a34;
-}
-
-.detail-box p2 {
-    margin: 5px 0 0 0;
-    color: #FFE8ED;
-}
-
-.detail-box p {
-    margin: 5px 0 0 0;
-    color: #5a2a34;
-}
 
 .footer {
     background-color: #d08590;
@@ -200,4 +160,22 @@ body {
 
 .social-icons a {
     margin-left: 10px;
+}
+
+#atras{
+    position: absolute;
+    top: 0;
+    left: 10px;
+    margin: 0;
+}
+
+#atras i{
+	font-size: 35px;
+	margin: 15px 0px;
+	color: #ffffff;
+}
+
+.fa-arrow-circle-left{
+    position: relative;
+    color: #fff;
 }
