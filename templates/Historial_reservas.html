@@ -17,32 +17,6 @@
         </div>
         <h2>Historial de Reservas</h2>
 
-<<<<<<< HEAD
-    {% if reservas %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Servicio</th>
-                    <th>Fecha de Reserva</th>
-                    <th>Hora de Inicio</th>
-                    <th>Nombre del Cliente</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reserva in reservas %}
-                    <tr>
-                        <td>{{ reserva.servicio_nombre }}</td>
-                        <td>{{ reserva.Reserva.fecha_reserva.strftime('%d/%m/%Y') }}</td>
-                        <td>{{ reserva.Reserva.hora_turno.strftime('%H:%M') }}</td>
-                        <td>{{ reserva.nombre_cliente }}</td>
-                        <td>
-                            <form action="{{ url_for('historial_reservas') }}" method="post" style="display:inline;">
-                                <input type="hidden" name="reserva_id" value="{{ reserva.Reserva.id }}">
-                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?')">Eliminar</button>
-                            </form>
-                        </td>
-=======
         {% if reservas %}
             <table>
                 <thead>
@@ -50,7 +24,6 @@
                         <th>Servicio</th>
                         <th>Fecha de Reserva</th>
                         <th>Fecha de Uso</th>
->>>>>>> las-mejor-rama
                     </tr>
                 </thead>
                 <tbody>
@@ -69,8 +42,3 @@
     </div>
 </body>
 </html>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> las-mejor-rama
