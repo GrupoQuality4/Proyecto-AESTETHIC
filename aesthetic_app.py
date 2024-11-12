@@ -72,11 +72,7 @@ def logout():
     session.pop('user_apellido', None)
     session.pop('user_email', None)
     session.pop('avatar_color', None)
-<<<<<<< HEAD
     flash('¡SESIÓN CERRADA CON EXITO!', 'success')
-=======
-    flash('¡HAS CERRADO SESIÓN!', 'success')
->>>>>>> Etapa-Final-0.4
     return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -104,21 +100,11 @@ def login():
             session['user_apellido'] = user.apellido
             session['user_email'] = user.email
             session['avatar_color'] = generate_random_color()
-<<<<<<< HEAD
-            flash('¡INICIO DE SESIÓN EXITOSO!', 'success')
-            
-            # Redirigir a la página de inicio o a la URL que venía en 'next'
-            next_url = request.args.get('next')
-            return redirect(next_url or url_for('home'))
-
-        flash('CORREO/CONTRASEÑA INVALIDAS', 'danger')
-=======
             flash('¡INICIO DE SESIÓN EXITOSÓ!', 'success')
             next_url = request.args.get('next')
             return redirect(next_url or url_for('home'))
 
         flash('CORREO/CONTRASEÑA INVALIDOS', 'danger')
->>>>>>> Etapa-Final-0.4
     return render_template('login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
 @app.route('/register', methods=['GET', 'POST'])
