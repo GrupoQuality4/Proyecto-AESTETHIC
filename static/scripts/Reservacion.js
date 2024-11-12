@@ -1,7 +1,6 @@
-// Función para cargar categorías (solo si es necesario y tienes una API para obtenerlas)
 async function cargarCategorias() {
     try {
-        const response = await fetch('/api/obtener_categorias'); // Cambia esta URL según tu API
+        const response = await fetch('/api/obtener_categorias');
         const categorias = await response.json();
         
         const categoriaSelect = document.getElementById("servicio");
@@ -19,7 +18,6 @@ async function cargarCategorias() {
     }
 }
 
-// Función para cargar subservicios basados en la categoría seleccionada
 async function cargarSubserviciosAsync() {
     const categoriaId = document.getElementById("servicio").value;
     if (!categoriaId) {
@@ -41,7 +39,6 @@ async function cargarSubserviciosAsync() {
             subservicioSelect.appendChild(option);
         });
 
-        // Muestra el contenedor del tratamiento solo si hay subservicios
         document.getElementById("tratamiento-container").style.display = subservicios.length > 0 ? 'block' : 'none';
         
     } catch (error) {
@@ -49,15 +46,12 @@ async function cargarSubserviciosAsync() {
     }
 }
 
-// Función para manejar el día de la semana a partir de una fecha
 function obtenerDiaDeLaSemana(fecha) {
     const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const date = new Date(fecha);
     return diasSemana[date.getUTCDay()];
 }
 
-
-// Función para cargar horarios basados en el servicio y la fecha seleccionada
 async function cargarHorarios(fecha) {
     const servicioId = document.getElementById("subservicio-corporal-select").value;
     const horaSelect = document.getElementById("hora");
@@ -69,7 +63,6 @@ async function cargarHorarios(fecha) {
 
     const [day, month, year] = fecha.split("-");
     const formattedDate = `${year}-${month}-${day}`;
-
     const diaSeleccionado = obtenerDiaDeLaSemana(formattedDate);
 
     horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
@@ -97,12 +90,10 @@ async function cargarHorarios(fecha) {
     }
 }
 
-// Función para seleccionar servicio y subservicio
 async function seleccionarServicioAsync(categoria, servicio) {
     const categoriaSelect = document.getElementById("servicio");
     const subservicioSelect = document.getElementById("subservicio-corporal-select");
 
-    // Selección de la categoría
     for (let i = 0; i < categoriaSelect.options.length; i++) {
         if (categoriaSelect.options[i].text === categoria) {
             categoriaSelect.selectedIndex = i;
@@ -118,28 +109,24 @@ async function seleccionarServicioAsync(categoria, servicio) {
     }
 }
 
-// Función para limpiar selectores
 function limpiarSelector(selectorId) {
     const selector = document.getElementById(selectorId);
     selector.innerHTML = '<option value="">Seleccione una opción</option>';
 }
 
-// Limpiar selectores de horarios y subservicios cuando cambia la categoría o subservicio
 document.getElementById("servicio").addEventListener("change", function() {
     limpiarSelector("hora");
     limpiarSelector("subservicio-corporal-select");
-    cargarSubserviciosAsync(); // Cargar subservicios al cambiar la categoría
+    cargarSubserviciosAsync();
 });
 
 document.getElementById("subservicio-corporal-select").addEventListener("change", function() {
     limpiarSelector("hora");
 });
 
-// Inicializar el calendario y cargar categorías al cargar la página
 document.addEventListener("DOMContentLoaded", function() {
-    cargarCategorias(); // Llama a cargarCategorias al cargar la página
+    cargarCategorias();
 
-    // Inicializa el calendario
     flatpickr("#fecha", {
         locale: "es",
         enableTime: false,
@@ -157,7 +144,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Calendario 1
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
@@ -217,7 +203,6 @@ function renderCalendar() {
     calendarBody.innerHTML = days;
 }
 
-// Calendario 2
 let currentMonth2 = currentDate.getMonth() + 1;
 let currentYear2 = currentDate.getFullYear();
 
@@ -262,7 +247,7 @@ renderSecondCalendar();
 
 function convertirFechaFormatoISO(fecha) {
     const [day, month, year] = fecha.split("-");
-    return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+    return `${year}-${month}-${day}`;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -272,14 +257,14 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
 
             const fechaReserva = document.getElementById('fecha').value;
-            const fechaReservaFormatoISO = convertirFechaFormatoISO(fechaReserva); // Convierte la fecha
+            const fechaReservaFormatoISO = convertirFechaFormatoISO(fechaReserva);
 
             const reservaData = {
                 nombre_cliente: document.getElementById('nombre').value,
-                servicio: document.getElementById('subservicio-corporal-select').value, // Cambiado a subservicio
-                fecha_reserva: fechaReservaFormatoISO, // Usa la fecha convertida
-                fecha_uso: fechaReservaFormatoISO, // Usa la fecha convertida
-                hora_turno: document.getElementById('hora').value // Esto ahora envía la hora de inicio
+                servicio: document.getElementById('subservicio-corporal-select').value,
+                fecha_reserva: fechaReservaFormatoISO,
+                fecha_uso: fechaReservaFormatoISO,
+                hora_turno: document.getElementById('hora').value
             };
 
             console.log("Datos de reserva enviados:", reservaData);
@@ -310,16 +295,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Función para cerrar el modal de confirmación de reserva
-function cerrarConfirmacion() {
-    document.getElementById('confirmationModal').style.display = 'none';
-    window.location.reload();
+function mostrarConfirmacion() {
+    document.getElementById("confirmationModal").classList.add("show");
 }
 
-
-
-
-
-
-
-
+function cerrarConfirmacion() {
+    document.getElementById("confirmationModal").classList.remove("show");
+    window.location.href = "{{ url_for('carrito') }}";
+}

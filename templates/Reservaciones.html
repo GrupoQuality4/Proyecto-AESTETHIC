@@ -207,15 +207,15 @@
                 <select id="hora" name="hora" required>
                     <option value="">Seleccione un horario</option>
                 </select>
-                <button type="button" class="submit-button" onclick="window.location.href='{{ url_for('carrito') }}'">Reservar</button>
+                <button type="button" class="submit-button" onclick="mostrarConfirmacion()">Reservar</button>
             </form>
         </div>
     </div>
     <div class="confirmation-modal" id="confirmationModal" style="display: none;">
         <div class="confirmation-content">
             <h2>¡Muchas gracias!</h2>
-            <p>Su reserva se ha realizado con éxito.</p>
-            <button onclick="cerrarConfirmacion()">OK</button>
+            <p>Su reserva se ha realizado con éxito!!! Se le envio un correo de la confimacion de la reserva, has click en Ir al pago para pagar el servicio.</p>
+            <button onclick="cerrarConfirmacion()">IR AL PAGO</button>
         </div>
     </div>
     <footer class="footer">
