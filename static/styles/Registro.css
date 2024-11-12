@@ -267,8 +267,13 @@ a:hover {
     margin-right: auto;
 }
 .flash-message.danger {
+<<<<<<< HEAD
     background-color: #d08590;
     color: white;
+=======
+    background-color: #ffffffcf; /* Rojo */
+    color: rgb(255, 0, 0);
+>>>>>>> las-mejor-rama
 }
 
 #successMessageRegistro {
@@ -288,7 +293,7 @@ a:hover {
 }
 
 #successMessageRegistro h1 {
-    color: #b565a7;
+    color: rgb(94, 48, 48);;
     font-size: 22px;
     margin-bottom: 10px;
 }
@@ -304,7 +309,7 @@ a:hover {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #b565a7;
+    background-color: rgba(0, 0, 0, 0.1);
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -314,5 +319,5 @@ a:hover {
 }
 
 #successMessageRegistro .button:hover {
-    background-color: #8e478d;
+    background-color: rgba(0, 0, 0, 0.1);
 }

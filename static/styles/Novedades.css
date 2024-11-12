@@ -50,13 +50,11 @@ body {
 .panel-derecho h2 {
     font-size: 36px;
     color: #6a2e39;
-    margin-bottom: 100px;
     text-align: center;
 }
 
 .novedades-links {
     text-align: center;
-    margin-bottom: 300px;
 }
 
 .novedades-links a {
@@ -128,5 +126,21 @@ body > .footer {
 }
 
 
+#atras{
+    position: absolute;
+    top: 0;
+    left: 10px;
+    margin: 0;
+}
 
+#atras i{
+	font-size: 35px;
+	margin: 15px 0px;
+	color: #ffffff;
+}
+
+.fa-arrow-circle-left{
+    position: relative;
+    color: #fff;
+}
 

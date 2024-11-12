@@ -81,7 +81,7 @@ header {
 
 .menu a {
   color: #5c273f;
-  padding: 0 10px;
+  padding: 0px;
   text-decoration: none;
   font-weight: bold;
   font-size: 20px;
@@ -130,9 +130,11 @@ header nav a {
   background-color: #ffe8ed;
   color: rgba(96, 43, 67, 1);
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 18px;
+  text-align: center;
 }
+
 
 .search-login .user-avatar {
   display: flex;
@@ -202,11 +204,12 @@ header nav a {
 }
 
 button {
-  padding: 10px 15px;
+  padding: 11px 11px;
+  margin: 2px;
   border: none;
-  border-radius: 5px;
-  background-color: #d08590;
-  color: #fff;
+  border-radius: 205px;
+  background-color: #ffe8ed;
+  color: rgba(96, 43, 67, 1);
   cursor: pointer;
 }
 
@@ -242,7 +245,7 @@ button {
   .menu a{
     display: block;
     font-size: 30px;
-    padding: 20px;
+    padding: 0px;
   }
   .esconder-menu{
     position: absolute;
@@ -268,15 +271,34 @@ button {
 }
 
 #checkout-btn {
+<<<<<<< HEAD
   background-color: #009fe3;
+=======
+  background-color: #007affa3;
+>>>>>>> las-mejor-rama
   color: white;
   border: none;
-  padding: 15px 32px;
+  padding: 0px 0px;
+  width: 40%;
+  height: 16%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 90px;
   cursor: pointer;
+<<<<<<< HEAD
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+=======
+  border-radius: 35px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+#checkout-btn img {
+  width: 50%; /* Ajusta el tamaño de la imagen */
+height: 70%;
+display: block;
+margin: 0 auto;
+
+}
+>>>>>>> las-mejor-rama
