@@ -267,13 +267,8 @@ a:hover {
     margin-right: auto;
 }
 .flash-message.danger {
-<<<<<<< HEAD
-    background-color: #d08590;
-    color: white;
-=======
-    background-color: #ffffffcf; /* Rojo */
+    background-color: #ffffffcf;
     color: rgb(255, 0, 0);
->>>>>>> las-mejor-rama
 }
 
 #successMessageRegistro {

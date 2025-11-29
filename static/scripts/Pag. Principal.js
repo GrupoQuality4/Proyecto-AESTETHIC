@@ -114,6 +114,33 @@ setTimeout(function () {
     setTimeout(() => { message.remove(); }, 500);
   });
 }, 3000);
+function showFlash(messageText, type = 'info', duration = 3000) {
+  const flashContainer = document.querySelector('.flash-container') || document.body;
+  const container = document.createElement('div');
+  container.className = `flash-message flash-${type}`;
+  container.innerText = messageText;
+  flashContainer.appendChild(container);
+  container.style.opacity = '1';
+  setTimeout(() => {
+    container.style.opacity = '0';
+    setTimeout(() => container.remove(), 500);
+  }, duration);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.flash-message').forEach(msg => {
+    setTimeout(() => {
+      msg.style.opacity = '0';
+      setTimeout(() => msg.remove(), 500);
+    }, 3000);
+  });
+  const sessionTimeout = 3 * 60 * 1000;
+  setTimeout(() => {
+    showFlash('¡Tu sesión ha expirado!', 'expire');
+  }, sessionTimeout);
+});
+
+
+
 
 
 

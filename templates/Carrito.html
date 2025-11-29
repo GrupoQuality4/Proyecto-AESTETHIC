@@ -26,57 +26,63 @@
         </div>
     </div>
     <header>
-        <input type="checkbox" id="check">
-        <label for="check" class="mostrar-menu">
-            &#8801
+    <input type="checkbox" id="check">
+    <label for="check" class="mostrar-menu">
+        &#8801
+    </label>
+    <nav class="menu">
+        <a href="{{ url_for('home') }}">Inicio</a>
+        <a href="{{ url_for('servicios') }}">Servicios</a>
+        <a href="{{ url_for('gif_card') }}">Gift Card</a>
+        <a href="{{ url_for('novedades') }}">Novedades</a>
+        <a href="{{ url_for('contactos') }}">Contáctanos</a>
+        <a href="{{ url_for('reservas') }}">Reservas</a>
+        
+        <label for="check" class="esconder-menu">
+            &#215
         </label>
-        <nav class="menu">
-            <a href="{{ url_for('home') }}">Inicio</a>
-            <a href="{{ url_for('servicios') }}">Servicios</a>
-            <a href="{{ url_for('gif_card') }}">Gift Card</a>
-            <a href="{{ url_for('novedades') }}">Novedades</a>
-            <a href="{{ url_for('contactos') }}">Contáctanos</a>
-            <a href="{{ url_for('reservas') }}">Reservas</a>
-            
-            <label for="check" class="esconder-menu">
-                &#215
-            </label>
-        </nav>
-        <div class="search-login">
-            {% if user_email == 'aestethicestetica22@gmail' %}
-            <div class="admin-buttons">
-                <button class="admin-button" onclick="window.location.href='{{ url_for('manage_roles') }}'">Adm. Rol</button>
-                <button class="admin-button" onclick="window.location.href='{{ url_for('assign_role') }}'">Asignar Rol</button>
+    </nav>
 
-                <button class="admin-button" onclick="window.location.href='{{ url_for('create_service_category') }}'">Crear Categoría</button>
-                <button class="admin-button" onclick="window.location.href='{{ url_for('manage_service_category') }}'">Gestionar Categorías</button>
-            </div>
-            {% else %}
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Buscar..." oninput="showSuggestions(this.value)" onkeydown="searchService(event)" autocomplete="off" />
-                <div id="suggestions" class="suggestions-list"></div>
-            </div>
+    <div class="search-login">
+        {% if user_email == 'aestethicestetica22@gmail' %}
+        <div class="admin-buttons">
+            <button class="admin-button" onclick="window.location.href='{{ url_for('manage_roles') }}'">Adm. Rol</button>
+            <button class="admin-button" onclick="window.location.href='{{ url_for('assign_role') }}'">Asignar Rol</button>
+
+            <button class="admin-button" onclick="window.location.href='{{ url_for('create_service_category') }}'">Crear Categoría</button>
+            <button class="admin-button" onclick="window.location.href='{{ url_for('manage_service_category') }}'">Gestionar Categorías</button>
+        </div>
+        {% else %}
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Buscar..." oninput="showSuggestions(this.value)" onkeydown="searchService(event)" autocomplete="off" />
+            <div id="suggestions" class="suggestions-list"></div>
+        </div>
+
+        <!-- ✔ NO ELIMINÉ NADA: SOLO ENVOLVÍ ESTOS BOTONES EN UNA CONDICIÓN -->
+        {% if request.endpoint != 'carrito' %}
             <button class="share-button" onclick="openShareModal('Página Principal', 'Visítanos en nuestro centro de estética Aesthetic', 'https://tuweb.com', '/static/media/Imagenes Pag. Principal/logo_encabezado.png')">
                 <i class="fa-solid fa-share"></i> Compartir
             </button>
-            
-            {% endif %}
+
             <button class="cart-button" onclick="window.location.href='{{ url_for('carrito') }}'">🛒</button>
-            {% if user_name %}
-            <div class="user-avatar">
-                <div class="avatar" style="background-color: {{ avatar_color }};">{{ user_name[0] }}{{ user_apellido[0]
-                    }}</div>
-                <span class="user-name">{{ user_name }}</span>
-                <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
+        {% endif %}
+
+        {% endif %}
+
+        {% if user_name %}
+        <div class="user-avatar">
+            <div class="avatar" style="background-color: {{ avatar_color }};">
+                {{ user_name[0] }}{{ user_apellido[0] }}
             </div>
-            {% else %}
-            <a href="{{ url_for('login') }}">Iniciar Sesión</a>
-            <a href="{{ url_for('register') }}">Crear Cuenta</a>
-            {% endif %}
+            <span class="user-name">{{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
         </div>
-    </header>
-
-
+        {% else %}
+        <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+        <a href="{{ url_for('register') }}">Crear Cuenta</a>
+        {% endif %}
+    </div>
+</header>
     <main>
         <div class= "container">
             <div class="left-panel">

@@ -9,6 +9,7 @@ import validators
 from models import db, User, Role, Servicio, VerificationToken, Reserva, Horario, Categoria, Dia, BloqueHora
 
 app = Flask(__name__)
+app.permanent_session_lifetime = timedelta(minutes=3)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Aestethic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -72,7 +73,8 @@ def logout():
     session.pop('user_apellido', None)
     session.pop('user_email', None)
     session.pop('avatar_color', None)
-    flash('¡SESIÓN CERRADA CON EXITO!', 'success')
+    session.permanent = True
+    flash('¡SESIÓN CERRADA CON ÉXITO!', 'danger')
     return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -107,6 +109,22 @@ def login():
         flash('CORREO/CONTRASEÑA INVALIDOS', 'danger')
     return render_template('login.html', mensaje_login=mensaje_login, registro_exitoso=registro_exitoso)
 
+@app.before_request
+def check_session_expiration():
+    excluded_endpoints = ['login', 'register', 'static', 'logout', 'home']
+    if request.endpoint not in excluded_endpoints and 'user_id' in session:
+        now = datetime.utcnow()
+        last_activity = session.get('last_activity')
+
+        if last_activity:
+            elapsed = now - last_activity
+            if elapsed > app.permanent_session_lifetime:
+                session.clear()
+                flash('¡Tu sesión ha expirado!', 'expire')
+                return redirect(url_for('login'))
+
+        session['last_activity'] = now
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -123,7 +141,7 @@ def register():
                 return jsonify(success=False, message='El correo debe ser una cuenta de Gmail.')
             if User.query.filter_by(email=email).first():
                 return jsonify(success=False, message='El correo ya está registrado.')
-            password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$'
+            password_regex = r'^[A-Z](?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,11}$'
             if not re.match(password_regex, password):
                 return jsonify(success=False, message='La contraseña debe iniciar con una mayúscula, tener entre 8 y 12 caracteres, incluir al menos un número y un carácter especial.')
 
